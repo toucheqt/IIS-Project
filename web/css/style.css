@@ -1,0 +1,48 @@
+/* 
+    Document   : style.css
+    Created on : 10.11.2014, 21:29:39
+    Authors    : Ondřej Krpec, xkrpec01@stud.fit.vutbr.cz
+               : Jiří Kulda, xkulda00@stud.fit.vutbr.cz
+*/
+
+.doc-container {
+    margin-top: 3%;
+    margin-left: 30%;
+    width: 60%;
+}
+
+.doc-form {
+    width: 50%;
+}
+
+.doc-button {
+    margin-left: 57.8%;
+    margin-top: -1%;
+}
+
+.myTooltip {
+    cursor: help;
+}
+
+.docAlert {
+    position: absolute;
+    bottom: 8%;
+    left: 4.5%;
+}
+
+.doc-warn {
+    margin-left: 20%;
+}
+
+.mySuccess {
+    padding: 2.2%;
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 7%;
+    text-align: center;
+}
+
+.my-btn-success {
+    margin-top: 4%;
+}
+

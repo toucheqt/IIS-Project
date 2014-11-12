@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/IIS_Nemocnice">
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
+        maxActive="15" maxIdle="3"
+        name="jdbc/mysql" type="javax.sql.DataSource"
+        url="jdbc:mysql://localhost:3306/nemocnice?useEncoding=true&amp;characterEncoding=UTF-8"
+        username="root" password="root" validationQuery="/* ping */ SELECT 1"/>
+    <Realm className="org.apache.catalina.realm.DataSourceRealm"
+    dataSourceName="jdbc/mysql" digest="MD5" localDataSource="true"
+    userTable="users" userNameCol="username" userCredCol="password"
+    userRoleTable="user_roles" roleNameCol="rolename"/>
+</Context>
