@@ -5,79 +5,62 @@
  */
 package Models;
 
+import servlets.Controller;
+
 /**
  *
  * @author Touche
  */
 public class Doctor {
     
-    private int id;
-    private String name;
+    private final String roleType;
+
+    private String username;
     private String surname;
     private String birthNum;
     private String address;
     private String city;
-    private Integer telNum;
-    private String mail;
+    private String email;
+    private Integer tel;
+    private String password;
     
-    public Doctor(String name, String surname, String birthNum, String address, String city, Integer telNum, String mail) {
-        this.name = name;
+    public Doctor(String username, String surname, String birthNum, String address, String city, String email,
+            Integer tel, String password) {
+        this.username = username;
         this.surname = surname;
         this.birthNum = birthNum;
         this.address = address;
         this.city = city;
-        this.telNum = telNum;
-        this.mail = mail;
-    }
-    
-    public Doctor(int id, String name, String surname, String birthNum, String address, String city, Integer telNum, String mail) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.birthNum = birthNum;
-        this.address = address;
-        this.city = city;
-        this.telNum = telNum;
-        this.mail = mail;
+        this.email = email;
+        this.tel = tel;
+        this.roleType = Controller.ROLE_USER;
+        this.password = password;
     }
     
     public void clearDoctor() {
-        this.id = 0;
-        this.name = null;
-        this.surname = null;
-        this.birthNum = null;
-        this.address = null;
-        this.city = null;
-        this.telNum = null;
-        this.setMail(null);
+        
+        setUsername(null);
+        setSurname(null);
+        setBirthNum(null);
+        setAddress(null);
+        setCity(null);
+        setEmail(null);
+        setTel(null);
+        
     }
 
     /**
-     * @return the id
+     * @return the username
      */
-    public int getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * @param id the id to set
+     * @param username the username to set
      */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
@@ -137,31 +120,52 @@ public class Doctor {
     }
 
     /**
-     * @return the telNum
+     * @return the email
      */
-    public Integer getTelNum() {
-        return telNum;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * @param telNum the telNum to set
+     * @param email the email to set
      */
-    public void setTelNum(Integer telNum) {
-        this.telNum = telNum;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     /**
-     * @return the mail
+     * @return the tel
      */
-    public String getMail() {
-        return mail;
+    public Integer getTel() {
+        return tel;
     }
 
     /**
-     * @param mail the mail to set
+     * @param tel the tel to set
      */
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setTel(Integer tel) {
+        this.tel = tel;
+    }
+    
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * @return the roleType
+     */
+    public String getRoleType() {
+        return roleType;
     }
     
 }

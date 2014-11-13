@@ -5,9 +5,11 @@
  */
 package Database;
 
+import Database.util.Connect;
 import Models.Doctor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,9 +21,11 @@ import javax.naming.NamingException;
  */
 public class EditDoctor {
     
-    public static final String INSERT_DOC = "INSERT INTO doctor (docName, docSurname, birthNum, address, city, tel, Email) VALUES (?, ?, ?, ?, ?, NULL, ?)";
-    public static final String INSERT_DOC_WITH_TEL = "INSERT INTO doctor (docName, docSurname, birthNum, address, city, tel, Email) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
+    public static final String INSERT_USER = "INSERT INTO usertable (username, surname, birthNum, address,"
+            + " city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?)";
+    public static final String INSERT_USER_WITH_TEL = "INSERT INTO usertable (username, surname, birthNum,"
+            + " address, city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
+    
     public void addDoctor(Doctor doctor) throws SQLException {
         
         Connection connection = null;
@@ -30,29 +34,33 @@ public class EditDoctor {
         try {
             String query;
             
-            if (doctor.getTelNum() != null) query = INSERT_DOC_WITH_TEL;
-            else query = INSERT_DOC;
+            if (doctor.getTel()!= null) query = INSERT_USER_WITH_TEL;
+            else query = INSERT_USER;
             
             connection = Connect.getConnection();
             stmt = connection.prepareStatement(query);
-            stmt.setString(1, doctor.getName());
+            stmt.setString(1, doctor.getUsername());
             stmt.setString(2, doctor.getSurname());
             stmt.setString(3, doctor.getBirthNum());
             stmt.setString(4, doctor.getAddress());
-            stmt.setString(5, doctor.getCity());        
-            if (doctor.getTelNum() != null) {
-                stmt.setInt(6, doctor.getTelNum());
-                stmt.setString(7, doctor.getMail());
+            stmt.setString(5, doctor.getCity());
+            stmt.setString(6, doctor.getEmail());
+            
+            if (doctor.getTel() != null) {
+                stmt.setInt(7, doctor.getTel());
+                stmt.setString(8, doctor.getRoleType());
+                stmt.setString(9, doctor.getPassword());
             }
             
             else {
-                stmt.setString(6, doctor.getMail());
+                stmt.setString(7, doctor.getRoleType());
+                stmt.setString(8, doctor.getPassword());
             }
-            
+        
             stmt.executeUpdate();
         }
         
-        catch (NamingException | SQLException ex) {
+        catch (NamingException ex) {
             Logger.getLogger(EditDoctor.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -61,6 +69,38 @@ public class EditDoctor {
             if (connection != null) connection.close();
         }
  
+    }
+    
+    public static String getUserRole(String user) throws SQLException {
+        
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String role = null;
+        String query = "SELECT roleType FROM usertable WHERE email = ?";
+        
+        try {
+            connection = Connect.getConnection();
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, user);
+            rs = stmt.executeQuery();
+            
+            rs.next();
+            role = rs.getString("roleType");
+        }
+        
+        catch (NamingException | SQLException ex) {
+            Logger.getLogger(EditDoctor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        finally {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (connection != null) connection.close();
+        }
+        
+        return role;
+        
     }
 
 }

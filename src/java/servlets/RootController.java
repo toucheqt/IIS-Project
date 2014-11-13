@@ -1,5 +1,4 @@
 /**
- * TODO comment
  * @author Ondřej Krpec, xkrpec01@stud.fit.vutbr.cz
  * @author Jiří Kulda, xkulda00@stud.fit.vutbr.cz
  */
@@ -7,15 +6,16 @@
 package servlets;
 
 import Database.EditDoctor;
-import Database.EditUser;
+import Database.util.MD5Generator;
 import Models.Doctor;
-import Models.User;
+import Utilities.MailSender;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.ServletSecurity;
@@ -36,10 +36,8 @@ public class RootController extends HttpServlet {
     
     private String address;
     private Doctor doctor;
-    private User user;
 
     /**
-     * TODO comment
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -83,95 +81,86 @@ public class RootController extends HttpServlet {
         setAddress(request.getServletPath());
         request.setCharacterEncoding("UTF-8");
         EditDoctor editDoctor = new EditDoctor();
-        EditUser editUser = new EditUser();
         
         if (getAddress().equals("/actionAddDoc")) {
-            setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"), 
-                    request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
-                    request.getParameter("inputCity"), null, request.getParameter("inputMail")));
             
-            // first check if the tel. number is filled
+            String passwd = UUID.randomUUID().toString();
+                
+            setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"),
+                    request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
+                    request.getParameter("inputCity"), request.getParameter("inputMail"),
+                    null, MD5Generator.generatePassword(passwd.substring(0, 7))));
+            
+            // check if the tel. number is filled
             if (!request.getParameter("inputTel").isEmpty()) {
                 try {
-                    getDoctor().setTelNum(Integer.parseInt(request.getParameter("inputTel")));
+                    getDoctor().setTel(Integer.parseInt(request.getParameter("inputTel")));
                 }
-
-                catch (Exception ex) {
-                    Controller.redirect(request, response, "/addDoc?telNum=True");
+                
+                catch (NumberFormatException ex) {
+                    Controller.redirect(request, response, "/addDoc?tel=True");
                     return;
                 }
-            }
-            
+            } 
+                        
             // check if all required values are correctly filled
-            if (getDoctor().getName().isEmpty() || !doctor.getName().matches("[\\p{L}]+")) {
+            
+            if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches("[\\p{L}]+")) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?docName=True");
+                Controller.redirect(request, response, "/addDoc?username=True");
                 return;
             }
             
-            else if (getDoctor().getSurname().isEmpty() || !doctor.getSurname().matches("[\\p{L}]+")) {
+            else if (getDoctor().getSurname().isEmpty() || !getDoctor().getSurname().matches("[\\p{L}]+")) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?docSurname=True");
+                Controller.redirect(request, response, "/addDoc?surname=True");
                 return;
             }
-            
-            else if (getDoctor().getBirthNum().isEmpty() || !doctor.getBirthNum().matches("[0-9]{6}/[0-9]{4}")) {
+                        
+            else if (getDoctor().getBirthNum().isEmpty() || !getDoctor().getBirthNum().matches("[0-9]{6}/[0-9]{4}")) {
                 request.setAttribute("doctor", getDoctor());
                 Controller.redirect(request, response, "/addDoc?birthNum=True");
                 return;
             }
             
+            else if (getDoctor().getEmail().isEmpty() || !getDoctor().getEmail().matches(".+@.+")) {
+                request.setAttribute("doctor", getDoctor());
+                Controller.redirect(request, response, "/addDoc?email=True");
+                return;
+            }
+                        
             else if (getDoctor().getAddress().isEmpty()) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?addr=True");
+                Controller.redirect(request, response, "/addDoc?address=True");
                 return;
             }
             
-            else if (getDoctor().getCity().isEmpty() || !doctor.getCity().matches("[\\p{L}]+")) {
+            else if (getDoctor().getCity().isEmpty() || !getDoctor().getCity().matches("[\\p{L}]+")) {
                 request.setAttribute("doctor", getDoctor());
                 Controller.redirect(request, response, "/addDoc?city=True");
                 return;
             }
-            
-            else if (getDoctor().getMail().isEmpty() || !doctor.getMail().matches(".+@.+")) {
-                request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?mail=True");
-                return;
-            }
         
-            try { // TODO: osetrit aby se provedlo vse
-                editDoctor.addDoctor(getDoctor());
-                
-                setUser(new User("x" + getDoctor().getSurname() + getDoctor().getId(), 
-                        Controller.ROLE_USER, stringToMd5("root")));
-                editUser.addUser(getUser());
-                editUser.addRole(getUser());
-                
+            try {
+                editDoctor.addDoctor(getDoctor());               
                 Controller.redirect(request, response, "/addedItem");
             }
                 
-            catch (SQLException | NoSuchAlgorithmException ex) {
-                Logger.getLogger(RootController.class.getName()).log(Level.SEVERE, null, ex);
+            catch (SQLException ex) {
+                try {
+                    request.setAttribute("doctor", getDoctor());
+                    MailSender.sendEmail(getDoctor().getEmail(), passwd.substring(0, 7));
+                    Controller.redirect(request, response, "/addDoc?used=True");
+                } catch (NamingException ex1) {
+                    Logger.getLogger(RootController.class.getName()).log(Level.SEVERE, null, ex1);
+                } catch (MessagingException ex1) {
+                    Logger.getLogger(RootController.class.getName()).log(Level.SEVERE, null, ex1);
+                }
             }
         }
         
     }
-    
-    private String stringToMd5(String passwd) throws NoSuchAlgorithmException {
-        
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(passwd.getBytes());
-        byte[] digest = md.digest();
-        StringBuilder sb = new StringBuilder();
-        
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b & 0xff));
-        }
-        
-        return sb.toString();
-        
-    }
-    
+       
     public void setAddress(String address) {
         this.address = address;
     }
@@ -192,20 +181,6 @@ public class RootController extends HttpServlet {
      */
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
-    }
-
-    /**
-     * @return the user
-     */
-    public User getUser() {
-        return user;
-    }
-
-    /**
-     * @param user the user to set
-     */
-    public void setUser(User user) {
-        this.user = user;
     }
     
 }

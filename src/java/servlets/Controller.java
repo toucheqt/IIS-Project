@@ -7,7 +7,12 @@
 
 package servlets;
 
+import Database.EditDoctor;
+import com.sun.xml.internal.bind.v2.util.EditDistance;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.ServletSecurity;
@@ -17,13 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "Controller", urlPatterns = {"/Controller"})
-@ServletSecurity(@HttpConstraint(rolesAllowed = {"root", "doctor"}))
+@ServletSecurity(@HttpConstraint(rolesAllowed = {"root", "user"}))
 public class Controller extends HttpServlet {
    
     /** Role for admin of the information system */
     public static final String ROLE_ROOT = "root";
     /** Role for any user of the information system */
-    public static final String ROLE_USER = "doctor";
+    public static final String ROLE_USER = "user";
     
     /** Default path where the server is launched */
     public static final String DEFAULT_PATH = "http://localhost:8084/IIS_Nemocnice/";
@@ -41,8 +46,14 @@ public class Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        setUserRole(request.getRemoteUser());
-              
+        try {
+            setUserRole(EditDoctor.getUserRole(request.getRemoteUser()));
+        } 
+        
+        catch (SQLException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+          
         // redirect root and user accordingly
         switch (userRole) {
             case ROLE_ROOT:

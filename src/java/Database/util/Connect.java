@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Database;
+package Database.util;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  */
 public class Connect {
     
-    protected static Connection getConnection() throws NamingException, SQLException {
+    public static Connection getConnection() throws NamingException, SQLException {
         
         Context initCtx = new InitialContext();
         Context ctx = (Context) initCtx.lookup("java:comp/env");

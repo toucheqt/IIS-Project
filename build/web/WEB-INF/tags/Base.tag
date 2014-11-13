@@ -23,7 +23,7 @@
         <jsp:doBody/>
         <div class="footer">
             <div class="container">
-                <p class="text-muted myFooter">© Informační systém Nemocnice na Veleslavínově, Veleslavínova 5, 612 00 Brno<br>
+                <p class="text-muted myFooter">© Informační systém Nemocnice na Veleslavíně, Veleslavínova 5, 612 00 Brno<br>
                 Připomínky zasílejte na info@naveleslavine.cz</p>
             </div>
         </div>
