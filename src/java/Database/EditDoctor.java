@@ -25,6 +25,7 @@ public class EditDoctor {
             + " city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?)";
     public static final String INSERT_USER_WITH_TEL = "INSERT INTO usertable (username, surname, birthNum,"
             + " address, city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
+    public static final String SELECT_ROLE_TYPE = "SELECT roleType FROM usertable WHERE email = ?";
     
     public void addDoctor(Doctor doctor) throws SQLException {
         
@@ -77,16 +78,16 @@ public class EditDoctor {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         String role = null;
-        String query = "SELECT roleType FROM usertable WHERE email = ?"; // todo konstanta
+        String column = "roleType";
         
         try {
             connection = Connect.getConnection();
-            stmt = connection.prepareStatement(query);
+            stmt = connection.prepareStatement(SELECT_ROLE_TYPE);
             stmt.setString(1, user);
             rs = stmt.executeQuery();
             
             rs.next();
-            role = rs.getString("roleType");
+            role = rs.getString(column);
         }
         
         catch (NamingException | SQLException ex) {

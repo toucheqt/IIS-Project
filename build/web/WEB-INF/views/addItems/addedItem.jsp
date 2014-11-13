@@ -19,8 +19,14 @@
     </script>
     
     <div class="alert alert-success mySuccess" role="alert">
-        <p><strong>Úspěch!</strong> Podařilo se úspěšně přidat lékaře do databáze nemocnice Na Veleslavíně.
-         Za moment dojde k přesměrování na úvodní stránku.</p>
+        <c:if test="${param.doc}">
+            <p><strong>Úspěch!</strong> Podařilo se úspěšně přidat lékaře
+                do databáze nemocnice Na Veleslavíně. Za moment dojde k přesměrování na úvodní stránku.</p>
+        </c:if>
+        <c:if test="${param.nurse}">
+            <p><strong>Úspěch!</strong> Podařilo se úspěšně přidat sestru
+                do databáze nemocnice Na Veleslavíně. Za moment dojde k přesměrování na úvodní stránku.</p>
+        </c:if>
         <a class="btn btn-lg btn-success my-btn-success" href='<c:url value="/RootController"/>' role="button">Pokračovat</a>
     </div>
     <img src='res/virtualni-nemocnice-logo.png' alt='logo' class='footer_logo'/>

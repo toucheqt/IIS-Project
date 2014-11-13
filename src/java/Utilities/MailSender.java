@@ -25,7 +25,12 @@ public class MailSender {
     public static void sendEmail(String receiver, String passwd) throws NamingException, MessagingException {
                 
         final String password = "iisproject";
+        final String messageSubject = "Bylo Vám vygenerováno heslo";
+        final String messageText = "Dobrý den,\nbylo vám vygenerováno heslo pro přístup do systému nemocnice"
+                    + " na Veleslavínově.\nLogin: " + receiver + "\nHeslo: " + passwd + "\n\nTato zpráva byla"
+                    + " generována automaticky.";
         
+        // setting up properities of server
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -39,26 +44,13 @@ public class MailSender {
                     }
                 });
         
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(ROOT_EMAIL));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiver));
-            //message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));
-            message.setSubject("Bylo Vám vygenerováno heslo");
-            message.setText("Dobrý den,\nbylo vám vygenerováno heslo pro přístup do systému nemocnice"
-                    + " na Veleslavínově.\nLogin: " + receiver + "\nHeslo: " + passwd + "\n\nTato zpráva byla"
-                    + " generována automaticky.");
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(ROOT_EMAIL));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiver));
+        message.setSubject(messageSubject);
+        message.setText(messageText);
             
-            Transport.send(message);
-        }
-        
-        catch (MessagingException ex) {
-            ex.printStackTrace();
-        }
-        
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Transport.send(message);
         
     }
     

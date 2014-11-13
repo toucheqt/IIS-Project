@@ -8,11 +8,8 @@
 package servlets;
 
 import Database.EditDoctor;
-import com.sun.xml.internal.bind.v2.util.EditDistance;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.ServletSecurity;
@@ -29,6 +26,9 @@ public class Controller extends HttpServlet {
     public static final String ROLE_ROOT = "root";
     /** Role for any user of the information system */
     public static final String ROLE_USER = "user";
+    
+    public static final String ROOT_CONTROLLER = "RootController";
+    public static final String USER_CONTROLLER = "DocController";
     
     /** Default path where the server is launched */
     public static final String DEFAULT_PATH = "http://localhost:8084/IIS_Nemocnice/";
@@ -51,19 +51,21 @@ public class Controller extends HttpServlet {
         } 
         
         catch (SQLException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            // TODO error 50x
+            ex.printStackTrace();
         }
           
         // redirect root and user accordingly
         switch (userRole) {
             case ROLE_ROOT:
-                response.sendRedirect(DEFAULT_PATH + "RootController");
+                response.sendRedirect(DEFAULT_PATH + ROOT_CONTROLLER);
                 break;
             case ROLE_USER:
-                response.sendRedirect(DEFAULT_PATH + "DocController");
+                response.sendRedirect(DEFAULT_PATH + USER_CONTROLLER);
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                // todo redirect 404
                 break;
         }
  

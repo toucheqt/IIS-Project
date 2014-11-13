@@ -31,9 +31,7 @@ import javax.servlet.http.HttpServletResponse;
         "/addNurseDel", "/addStaff", "/actionAddDoc", "/actionAddNurse", "/addedItem"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"root"}))
 public class RootController extends HttpServlet {
-
-    public static final String ROOT_CONTROLLER = "/RootController";
-    
+   
     public static final String ADD_DOC = "/addDoc";
     public static final String ADD_NURSE = "/addNurse";
     public static final String ADDED_ITEM = "/addedItem";
@@ -43,6 +41,8 @@ public class RootController extends HttpServlet {
     
     public static final String ACTION_DOC = "/actionAddDoc";
     public static final String ACTION_NURSE = "/actionAddNurse";
+    
+    public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
   
     private String address;
     private Doctor doctor;
@@ -60,38 +60,39 @@ public class RootController extends HttpServlet {
         setAddress(request.getServletPath());
         
         switch (address) {
-            case ROOT_CONTROLLER:
-                request.getRequestDispatcher("/WEB-INF/views/root.jsp").forward(request, response);
+            case Controller.ROOT_CONTROLLER:
+                request.getRequestDispatcher(VIEW_ADD_PATH + "/root.jsp").forward(request, response);
                 break;
                 
             case ADD_DOC:
                 request.setAttribute("doctor", getDoctor());
-                request.getRequestDispatcher("/WEB-INF/views/addDoc.jsp").forward(request, response);
+                request.getRequestDispatcher(VIEW_ADD_PATH + "/addDoc.jsp").forward(request, response);
                 break;
                 
             case ADD_DOC_DEL:
                 if (getDoctor() != null) getDoctor().clearDoctor();
                 request.setAttribute("doctor", getDoctor());
-                request.getRequestDispatcher("/WEB-INF/views/addDoc.jsp").forward(request, response);
+                request.getRequestDispatcher(VIEW_ADD_PATH + "/addDoc.jsp").forward(request, response);
                 break;
                 
             case ADD_NURSE:
                 request.setAttribute("nurse", getNurse());
-                request.getRequestDispatcher("/WEB-INF/views/addNurse.jsp").forward(request, response);
+                request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
                 
             case ADD_NURSE_DEL:
                 if (getNurse() != null) getNurse().clearNurse();
                 request.setAttribute("nurse", getNurse());
-                request.getRequestDispatcher("/WEB-INF/views/addNurse.jsp").forward(request, response);
+                request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
                 
             case ADDED_ITEM:
-                request.getRequestDispatcher("/WEB-INF/views/addedItem.jsp").forward(request, response);
+                request.getRequestDispatcher(VIEW_ADD_PATH + "/addedItem.jsp").forward(request, response);
                 break;
                 
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                // todo redirect 404
                 break;
                 
         }
@@ -100,13 +101,19 @@ public class RootController extends HttpServlet {
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
         setAddress(request.getServletPath());
         request.setCharacterEncoding("UTF-8");
-        
+             
+        String regxpAlpha = "[\\p{L}]+";
+        String regxpBirthNum = "[0-9]{6}/[0-9]{4}";
+        String regxpEmail = ".+@.+";
+                
         if (getAddress().equals(ACTION_DOC)) {
             
             EditDoctor editDoctor = new EditDoctor();
             String passwd = UUID.randomUUID().toString();
+            String attribute = "doctor";
                 
             setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"),
                     request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
@@ -127,70 +134,73 @@ public class RootController extends HttpServlet {
                         
             // check if all required values are correctly filled
             
-            if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches("[\\p{L}]+")) {
-                request.setAttribute("doctor", getDoctor());
+            if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches(regxpAlpha)) {
+                request.setAttribute(attribute, getDoctor());
                 Controller.redirect(request, response, ADD_DOC + "?username=True");
                 return;
             }
             
-            else if (getDoctor().getSurname().isEmpty() || !getDoctor().getSurname().matches("[\\p{L}]+")) {
-                request.setAttribute("doctor", getDoctor());
+            else if (getDoctor().getSurname().isEmpty() || !getDoctor().getSurname().matches(regxpAlpha)) {
+                request.setAttribute(attribute, getDoctor());
                 Controller.redirect(request, response, ADD_DOC + "?surname=True");
                 return;
             }
                         
-            else if (getDoctor().getBirthNum().isEmpty() || !getDoctor().getBirthNum().matches("[0-9]{6}/[0-9]{4}")) {
-                request.setAttribute("doctor", getDoctor());
+            else if (getDoctor().getBirthNum().isEmpty() || !getDoctor().getBirthNum().matches(regxpBirthNum)) {
+                request.setAttribute(attribute, getDoctor());
                 Controller.redirect(request, response, ADD_DOC + "?birthNum=True");
                 return;
             }
             
-            else if (getDoctor().getEmail().isEmpty() || !getDoctor().getEmail().matches(".+@.+")) {
-                request.setAttribute("doctor", getDoctor());
+            else if (getDoctor().getEmail().isEmpty() || !getDoctor().getEmail().matches(regxpEmail)) {
+                request.setAttribute(attribute, getDoctor());
                 Controller.redirect(request, response, ADD_DOC + "?email=True");
                 return;
             }
                         
             else if (getDoctor().getAddress().isEmpty()) {
-                request.setAttribute("doctor", getDoctor());
+                request.setAttribute(attribute, getDoctor());
                 Controller.redirect(request, response, ADD_DOC + "?address=True");
                 return;
             }
             
-            else if (getDoctor().getCity().isEmpty() || !getDoctor().getCity().matches("[\\p{L}]+")) {
-                request.setAttribute("doctor", getDoctor());
+            else if (getDoctor().getCity().isEmpty() || !getDoctor().getCity().matches(regxpAlpha)) {
+                request.setAttribute(attribute, getDoctor());
                 Controller.redirect(request, response, ADD_DOC + "?city=True");
                 return;
             }
         
             try {
-                editDoctor.addDoctor(getDoctor());               
-                Controller.redirect(request, response, ADDED_ITEM);
+                editDoctor.addDoctor(getDoctor());      
+                Controller.redirect(request, response, ADDED_ITEM + "?doc=True");
             }
                 
             catch (SQLException ex) {
                 try {
-                    request.setAttribute("doctor", getDoctor());
+                    request.setAttribute(attribute, getDoctor());
                     MailSender.sendEmail(getDoctor().getEmail(), passwd.substring(0, 7));
                     Controller.redirect(request, response, ADD_DOC + "?used=True");
                 } catch (NamingException | MessagingException ex1) {
-                    Logger.getLogger(RootController.class.getName()).log(Level.SEVERE, null, ex);
+                    // todo error 50x
+                    ex1.printStackTrace();
                 }
             }
         }
         
         else if (getAddress().equals(ACTION_NURSE)) {
-            // TODO prepsat uspesne pridani lekare/sesty na promenou
+            
             EditNurse editNurse = new EditNurse();
             int departmentId; 
+            String attribute = "nurse";
             
+            // department must be filled
             try {
                 departmentId = EditDepartment.getDepartmentId(request.getParameter("inputDepNum"));
             }
             
             catch (NamingException | SQLException ex) {
-                ex.printStackTrace();
-                Controller.redirect(request, response, "ERROR"); // todo exception handle MUSI SE VYBRAT NEJAKE ODDELENI
+                request.setAttribute(attribute, getNurse());
+                Controller.redirect(request, response, ADD_NURSE + "?depNum=True");
                 return;
             }
                        
@@ -200,46 +210,46 @@ public class RootController extends HttpServlet {
                  
             // check if all required values are correctly filled
 
-            if (getNurse().getUsername().isEmpty() || !getNurse().getUsername().matches("[\\p{L}]+")) {
-                request.setAttribute("nurse", getNurse());
+            if (getNurse().getUsername().isEmpty() || !getNurse().getUsername().matches(regxpAlpha)) {
+                request.setAttribute(attribute, getNurse());
                 Controller.redirect(request, response, ADD_NURSE + "?username=True");
                 return;
             }
             
-            else if (getNurse().getSurname().isEmpty() || !getNurse().getSurname().matches("[\\p{L}]+")) {
-                request.setAttribute("nurse", getNurse());
+            else if (getNurse().getSurname().isEmpty() || !getNurse().getSurname().matches(regxpAlpha)) {
+                request.setAttribute(attribute, getNurse());
                 Controller.redirect(request, response, ADD_NURSE + "?surname=True");
                 return;
             }
                         
-            else if (getNurse().getBirthNum().isEmpty() || !getNurse().getBirthNum().matches("[0-9]{6}/[0-9]{4}")) {
-                request.setAttribute("nurse", getNurse());
+            else if (getNurse().getBirthNum().isEmpty() || !getNurse().getBirthNum().matches(regxpBirthNum)) {
+                request.setAttribute(attribute, getNurse());
                 Controller.redirect(request, response, ADD_NURSE + "?birthNum=True");
                 return;
             }
                         
             else if (getNurse().getAddress().isEmpty()) {
-                request.setAttribute("nurse", getNurse());
+                request.setAttribute(attribute, getNurse());
                 Controller.redirect(request, response, ADD_NURSE + "?address=True");
                 return;
             }
             
-            else if (getNurse().getCity().isEmpty() || !getNurse().getCity().matches("[\\p{L}]+")) {
-                request.setAttribute("nurse", getNurse());
+            else if (getNurse().getCity().isEmpty() || !getNurse().getCity().matches(regxpAlpha)) {
+                request.setAttribute(attribute, getNurse());
                 Controller.redirect(request, response, ADD_NURSE + "?city=True");
                 return;
             }
         
             try {
                 editNurse.addNurse(getNurse());             
-                Controller.redirect(request, response, ADDED_ITEM);
+                Controller.redirect(request, response, ADDED_ITEM + "?nurse=True");
             }
                 
-            catch (SQLException ex) {
+            catch (SQLException | NamingException ex) {
                 ex.printStackTrace();
                 return;
-                // todo redirect error
-            }
+                // todo error 50x
+            } 
             
         }
         
