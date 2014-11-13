@@ -27,11 +27,11 @@ public class Controller extends HttpServlet {
     /** Role for any user of the information system */
     public static final String ROLE_USER = "user";
     
-    public static final String ROOT_CONTROLLER = "RootController";
-    public static final String USER_CONTROLLER = "DocController";
+    public static final String ROOT_CONTROLLER = "/RootController";
+    public static final String USER_CONTROLLER = "/DocController";
     
     /** Default path where the server is launched */
-    public static final String DEFAULT_PATH = "http://localhost:8084/IIS_Nemocnice/";
+    public static final String DEFAULT_PATH = "http://localhost:8084/IIS_Nemocnice";
     
     private String userRole;
 
