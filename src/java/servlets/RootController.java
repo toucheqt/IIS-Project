@@ -5,9 +5,12 @@
 
 package servlets;
 
+import Database.EditDepartment;
 import Database.EditDoctor;
+import Database.EditNurse;
 import Database.util.MD5Generator;
 import Models.Doctor;
+import Models.Nurse;
 import Utilities.MailSender;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -25,17 +28,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
-        "/addStaff", "/removeDoc", "/removeNurse", "/removeStaff", "/actionAddDoc", "/addedItem"})
+        "/addNurseDel", "/addStaff", "/actionAddDoc", "/actionAddNurse", "/addedItem"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"root"}))
 public class RootController extends HttpServlet {
 
     public static final String ROOT_CONTROLLER = "/RootController";
+    
     public static final String ADD_DOC = "/addDoc";
-    public static final String ADD_DOC_DEL = "/addDocDel";
+    public static final String ADD_NURSE = "/addNurse";
     public static final String ADDED_ITEM = "/addedItem";
     
+    public static final String ADD_DOC_DEL = "/addDocDel";
+    public static final String ADD_NURSE_DEL = "/addNurseDel";
+    
+    public static final String ACTION_DOC = "/actionAddDoc";
+    public static final String ACTION_NURSE = "/actionAddNurse";
+  
     private String address;
     private Doctor doctor;
+    private Nurse nurse;
 
     /**
      * @param request servlet request
@@ -64,6 +75,17 @@ public class RootController extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/views/addDoc.jsp").forward(request, response);
                 break;
                 
+            case ADD_NURSE:
+                request.setAttribute("nurse", getNurse());
+                request.getRequestDispatcher("/WEB-INF/views/addNurse.jsp").forward(request, response);
+                break;
+                
+            case ADD_NURSE_DEL:
+                if (getNurse() != null) getNurse().clearNurse();
+                request.setAttribute("nurse", getNurse());
+                request.getRequestDispatcher("/WEB-INF/views/addNurse.jsp").forward(request, response);
+                break;
+                
             case ADDED_ITEM:
                 request.getRequestDispatcher("/WEB-INF/views/addedItem.jsp").forward(request, response);
                 break;
@@ -80,10 +102,10 @@ public class RootController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         setAddress(request.getServletPath());
         request.setCharacterEncoding("UTF-8");
-        EditDoctor editDoctor = new EditDoctor();
         
-        if (getAddress().equals("/actionAddDoc")) {
+        if (getAddress().equals(ACTION_DOC)) {
             
+            EditDoctor editDoctor = new EditDoctor();
             String passwd = UUID.randomUUID().toString();
                 
             setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"),
@@ -98,7 +120,7 @@ public class RootController extends HttpServlet {
                 }
                 
                 catch (NumberFormatException ex) {
-                    Controller.redirect(request, response, "/addDoc?tel=True");
+                    Controller.redirect(request, response, ADD_DOC + "?tel=True");
                     return;
                 }
             } 
@@ -107,56 +129,118 @@ public class RootController extends HttpServlet {
             
             if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches("[\\p{L}]+")) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?username=True");
+                Controller.redirect(request, response, ADD_DOC + "?username=True");
                 return;
             }
             
             else if (getDoctor().getSurname().isEmpty() || !getDoctor().getSurname().matches("[\\p{L}]+")) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?surname=True");
+                Controller.redirect(request, response, ADD_DOC + "?surname=True");
                 return;
             }
                         
             else if (getDoctor().getBirthNum().isEmpty() || !getDoctor().getBirthNum().matches("[0-9]{6}/[0-9]{4}")) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?birthNum=True");
+                Controller.redirect(request, response, ADD_DOC + "?birthNum=True");
                 return;
             }
             
             else if (getDoctor().getEmail().isEmpty() || !getDoctor().getEmail().matches(".+@.+")) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?email=True");
+                Controller.redirect(request, response, ADD_DOC + "?email=True");
                 return;
             }
                         
             else if (getDoctor().getAddress().isEmpty()) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?address=True");
+                Controller.redirect(request, response, ADD_DOC + "?address=True");
                 return;
             }
             
             else if (getDoctor().getCity().isEmpty() || !getDoctor().getCity().matches("[\\p{L}]+")) {
                 request.setAttribute("doctor", getDoctor());
-                Controller.redirect(request, response, "/addDoc?city=True");
+                Controller.redirect(request, response, ADD_DOC + "?city=True");
                 return;
             }
         
             try {
                 editDoctor.addDoctor(getDoctor());               
-                Controller.redirect(request, response, "/addedItem");
+                Controller.redirect(request, response, ADDED_ITEM);
             }
                 
             catch (SQLException ex) {
                 try {
                     request.setAttribute("doctor", getDoctor());
                     MailSender.sendEmail(getDoctor().getEmail(), passwd.substring(0, 7));
-                    Controller.redirect(request, response, "/addDoc?used=True");
-                } catch (NamingException ex1) {
-                    Logger.getLogger(RootController.class.getName()).log(Level.SEVERE, null, ex1);
-                } catch (MessagingException ex1) {
-                    Logger.getLogger(RootController.class.getName()).log(Level.SEVERE, null, ex1);
+                    Controller.redirect(request, response, ADD_DOC + "?used=True");
+                } catch (NamingException | MessagingException ex1) {
+                    Logger.getLogger(RootController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }
+        
+        else if (getAddress().equals(ACTION_NURSE)) {
+            // TODO prepsat uspesne pridani lekare/sesty na promenou
+            EditNurse editNurse = new EditNurse();
+            int departmentId; 
+            
+            try {
+                departmentId = EditDepartment.getDepartmentId(request.getParameter("inputDepNum"));
+            }
+            
+            catch (NamingException | SQLException ex) {
+                ex.printStackTrace();
+                Controller.redirect(request, response, "ERROR"); // todo exception handle MUSI SE VYBRAT NEJAKE ODDELENI
+                return;
+            }
+                       
+            setNurse(new Nurse(request.getParameter("inputName"), request.getParameter("inputSurname"),
+                    request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
+                    request.getParameter("inputCity"), departmentId));
+                 
+            // check if all required values are correctly filled
+
+            if (getNurse().getUsername().isEmpty() || !getNurse().getUsername().matches("[\\p{L}]+")) {
+                request.setAttribute("nurse", getNurse());
+                Controller.redirect(request, response, ADD_NURSE + "?username=True");
+                return;
+            }
+            
+            else if (getNurse().getSurname().isEmpty() || !getNurse().getSurname().matches("[\\p{L}]+")) {
+                request.setAttribute("nurse", getNurse());
+                Controller.redirect(request, response, ADD_NURSE + "?surname=True");
+                return;
+            }
+                        
+            else if (getNurse().getBirthNum().isEmpty() || !getNurse().getBirthNum().matches("[0-9]{6}/[0-9]{4}")) {
+                request.setAttribute("nurse", getNurse());
+                Controller.redirect(request, response, ADD_NURSE + "?birthNum=True");
+                return;
+            }
+                        
+            else if (getNurse().getAddress().isEmpty()) {
+                request.setAttribute("nurse", getNurse());
+                Controller.redirect(request, response, ADD_NURSE + "?address=True");
+                return;
+            }
+            
+            else if (getNurse().getCity().isEmpty() || !getNurse().getCity().matches("[\\p{L}]+")) {
+                request.setAttribute("nurse", getNurse());
+                Controller.redirect(request, response, ADD_NURSE + "?city=True");
+                return;
+            }
+        
+            try {
+                editNurse.addNurse(getNurse());             
+                Controller.redirect(request, response, ADDED_ITEM);
+            }
+                
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                return;
+                // todo redirect error
+            }
+            
         }
         
     }
@@ -181,6 +265,20 @@ public class RootController extends HttpServlet {
      */
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
+    }
+    
+    /**
+     * @return the nurse
+     */
+    public Nurse getNurse() {
+        return nurse;
+    }
+
+    /**
+     * @param nurse the doctor to set
+     */
+    public void setNurse(Nurse nurse) {
+        this.nurse = nurse;
     }
     
 }

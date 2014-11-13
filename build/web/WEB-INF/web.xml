@@ -10,11 +10,10 @@
         <url-pattern>/addDoc</url-pattern>
         <url-pattern>/addDocDel</url-pattern>
         <url-pattern>/addNurse</url-pattern>
+        <url-pattern>/addNurseDel</url-pattern>
         <url-pattern>/addStaff</url-pattern>
-        <url-pattern>/removeDoc</url-pattern>
-        <url-pattern>/removeNurse</url-pattern>
-        <url-pattern>/removeStaff</url-pattern>
         <url-pattern>/actionAddDoc</url-pattern>
+        <url-pattern>/actionAddNurse</url-pattern>
         <url-pattern>/addedItem</url-pattern>
     </servlet-mapping>
     <session-config>

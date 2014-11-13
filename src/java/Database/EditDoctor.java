@@ -77,7 +77,7 @@ public class EditDoctor {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         String role = null;
-        String query = "SELECT roleType FROM usertable WHERE email = ?";
+        String query = "SELECT roleType FROM usertable WHERE email = ?"; // todo konstanta
         
         try {
             connection = Connect.getConnection();

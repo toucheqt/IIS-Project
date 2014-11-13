@@ -20,12 +20,9 @@
                 <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Personál<span class='caret'></span></a>
                 <ul class='dropdown-menu' role='menu'>
                     <li><a href='<c:url value="/addDocDel"/>'>Přidat lékaře</a></li>
-                    <li><a href='<c:url value="/addNurse"/>'>Přidat sestru</a></li>
-                    <li><a href='<c:url value="/addStaff"/>'>Přiřadit personál</a></li>
+                    <li><a href='<c:url value="/addNurseDel"/>'>Přidat sestru</a></li>
                     <li class='divider'></li>
-                    <li><a href='<c:url value="/removeDoc"/>'>Odebrat lékaře</a></li>
-                    <li><a href='<c:url value="/removeNurse"/>'>Odebrat sestru</a></li>
-                    <li><a href='<c:url value="/removeStaff"/>'>Odebrat personál</a></li>
+                    <li><a href='<c:url value="/addStaff"/>'>Přiřadit personál</a></li>
                 </ul>
             </li>
             <li class='dropdown'>
