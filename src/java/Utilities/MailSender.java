@@ -18,7 +18,7 @@ import javax.naming.NamingException;
  */
 public class MailSender {
     
-    // todo why im using gmail when its not working
+    // TODO try get functional email
     public static final String ROOT_EMAIL = "iisproject014@gmail.com";
     public static final String HOST = "smtp.gmail.com";
     

@@ -29,6 +29,8 @@ public class Controller extends HttpServlet {
     
     public static final String ROOT_CONTROLLER = "/RootController";
     public static final String USER_CONTROLLER = "/DocController";
+    public static final String ERROR_404 = "/404";
+    public static final String ERROR_500 = "/500";
     
     /** Default path where the server is launched */
     public static final String DEFAULT_PATH = "http://localhost:8084/IIS_Nemocnice";
@@ -51,8 +53,7 @@ public class Controller extends HttpServlet {
         } 
         
         catch (SQLException ex) {
-            // TODO error 50x
-            ex.printStackTrace();
+            response.sendRedirect(DEFAULT_PATH + ERROR_500);
         }
           
         // redirect root and user accordingly
@@ -65,7 +66,7 @@ public class Controller extends HttpServlet {
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                // todo redirect 404
+                response.sendRedirect(DEFAULT_PATH + ERROR_404);
                 break;
         }
  

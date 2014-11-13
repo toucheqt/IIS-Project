@@ -92,10 +92,9 @@ public class RootController extends HttpServlet {
                 break;
                 
             default:
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                // todo redirect 404
+                response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_404);
                 break;
-                
+                // TODO napsat .jsp error 404 a 500
         }
         
     }
@@ -182,7 +181,7 @@ public class RootController extends HttpServlet {
                     MailSender.sendEmail(getDoctor().getEmail(), passwd.substring(0, 7));
                     Controller.redirect(request, response, ADD_DOC + "?used=True");
                 } catch (NamingException | MessagingException ex1) {
-                    // todo error 50x
+                    Controller.redirect(request, response, Controller.ERROR_500);
                     ex1.printStackTrace();
                 }
             }
@@ -247,9 +246,7 @@ public class RootController extends HttpServlet {
             }
                 
             catch (SQLException | NamingException ex) {
-                ex.printStackTrace();
-                return;
-                // todo error 50x
+                Controller.redirect(request, response, Controller.ERROR_500);
             } 
             
         }

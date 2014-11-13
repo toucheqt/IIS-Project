@@ -4,6 +4,10 @@
         <servlet-name>RootController</servlet-name>
         <servlet-class>servlets.RootController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ErrorController</servlet-name>
+        <servlet-class>servlets.ErrorController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RootController</servlet-name>
         <url-pattern>/RootController</url-pattern>
@@ -15,6 +19,11 @@
         <url-pattern>/actionAddDoc</url-pattern>
         <url-pattern>/actionAddNurse</url-pattern>
         <url-pattern>/addedItem</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ErrorController</servlet-name>
+        <url-pattern>/404</url-pattern>
+        <url-pattern>/500</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

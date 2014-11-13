@@ -103,7 +103,7 @@
                         <option>Urologie</option>
                         <option>Chirurgie</option>
                         <option>Traumatologie</option>
-                        <!-- todo mel bych tohle pridavat dynamicky z databaze -->
+                        <!-- TODO mel bych tohle pridavat dynamicky z databaze -->
                     </select>
                 </div>
                 <button type='submit' class='btn btn-primary doc-button'>Přidat</button>
