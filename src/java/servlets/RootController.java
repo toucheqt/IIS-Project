@@ -42,6 +42,7 @@ public class RootController extends HttpServlet {
     public static final String ACTION_DOC = "/actionAddDoc";
     public static final String ACTION_NURSE = "/actionAddNurse";
     
+    public static final String VIEW_PATH = "/WEB-INF/views";
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
   
     private String address;
@@ -61,7 +62,7 @@ public class RootController extends HttpServlet {
         
         switch (address) {
             case Controller.ROOT_CONTROLLER:
-                request.getRequestDispatcher(VIEW_ADD_PATH + "/root.jsp").forward(request, response);
+                request.getRequestDispatcher(VIEW_PATH + "/root.jsp").forward(request, response);
                 break;
                 
             case ADD_DOC:
