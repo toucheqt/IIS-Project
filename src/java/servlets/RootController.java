@@ -15,8 +15,6 @@ import Utilities.MailSender;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -59,6 +57,8 @@ public class RootController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         setAddress(request.getServletPath());
+        String attrDoc = "doctor";
+        String attrNurse = "nurse";
         
         switch (address) {
             case Controller.ROOT_CONTROLLER:
@@ -66,24 +66,24 @@ public class RootController extends HttpServlet {
                 break;
                 
             case ADD_DOC:
-                request.setAttribute("doctor", getDoctor());
+                request.setAttribute(attrDoc, getDoctor());
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addDoc.jsp").forward(request, response);
                 break;
                 
             case ADD_DOC_DEL:
                 if (getDoctor() != null) getDoctor().clearDoctor();
-                request.setAttribute("doctor", getDoctor());
+                request.setAttribute(attrDoc, getDoctor());
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addDoc.jsp").forward(request, response);
                 break;
                 
             case ADD_NURSE:
-                request.setAttribute("nurse", getNurse());
+                request.setAttribute(attrNurse, getNurse());
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
                 
             case ADD_NURSE_DEL:
                 if (getNurse() != null) getNurse().clearNurse();
-                request.setAttribute("nurse", getNurse());
+                request.setAttribute(attrNurse, getNurse());
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
                 
@@ -109,146 +109,146 @@ public class RootController extends HttpServlet {
         String regxpBirthNum = "[0-9]{6}/[0-9]{4}";
         String regxpEmail = ".+@.+";
                 
-        if (getAddress().equals(ACTION_DOC)) {
-            
-            EditDoctor editDoctor = new EditDoctor();
-            String passwd = UUID.randomUUID().toString();
-            String attribute = "doctor";
+        switch (getAddress()) {
+            case ACTION_DOC: {
+                EditDoctor editDoctor = new EditDoctor();
+                String passwd = UUID.randomUUID().toString();
+                String attribute = "doctor";
+                setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"),
+                        request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
+                        request.getParameter("inputCity"), request.getParameter("inputMail"),
+                        null, MD5Generator.generatePassword(passwd.substring(0, 7))));
                 
-            setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"),
-                    request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
-                    request.getParameter("inputCity"), request.getParameter("inputMail"),
-                    null, MD5Generator.generatePassword(passwd.substring(0, 7))));
-            
-            // check if the tel. number is filled
-            if (!request.getParameter("inputTel").isEmpty()) {
-                try {
-                    getDoctor().setTel(Integer.parseInt(request.getParameter("inputTel")));
+                // check if the tel. number is filled
+                if (!request.getParameter("inputTel").isEmpty()) {
+                    try {
+                        getDoctor().setTel(Integer.parseInt(request.getParameter("inputTel")));
+                    } 
+                        
+                    catch (NumberFormatException ex) {
+                        Controller.redirect(request, response, ADD_DOC + "?tel=True");
+                        return;
+                    }
                 }
                 
-                catch (NumberFormatException ex) {
-                    Controller.redirect(request, response, ADD_DOC + "?tel=True");
+                // check if all required values are correctly filled
+                    
+                if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches(regxpAlpha)) {
+                    request.setAttribute(attribute, getDoctor());
+                    Controller.redirect(request, response, ADD_DOC + "?username=True");
                     return;
                 }
-            } 
-                        
-            // check if all required values are correctly filled
-            
-            if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches(regxpAlpha)) {
-                request.setAttribute(attribute, getDoctor());
-                Controller.redirect(request, response, ADD_DOC + "?username=True");
-                return;
-            }
-            
-            else if (getDoctor().getSurname().isEmpty() || !getDoctor().getSurname().matches(regxpAlpha)) {
-                request.setAttribute(attribute, getDoctor());
-                Controller.redirect(request, response, ADD_DOC + "?surname=True");
-                return;
-            }
-                        
-            else if (getDoctor().getBirthNum().isEmpty() || !getDoctor().getBirthNum().matches(regxpBirthNum)) {
-                request.setAttribute(attribute, getDoctor());
-                Controller.redirect(request, response, ADD_DOC + "?birthNum=True");
-                return;
-            }
-            
-            else if (getDoctor().getEmail().isEmpty() || !getDoctor().getEmail().matches(regxpEmail)) {
-                request.setAttribute(attribute, getDoctor());
-                Controller.redirect(request, response, ADD_DOC + "?email=True");
-                return;
-            }
-                        
-            else if (getDoctor().getAddress().isEmpty()) {
-                request.setAttribute(attribute, getDoctor());
-                Controller.redirect(request, response, ADD_DOC + "?address=True");
-                return;
-            }
-            
-            else if (getDoctor().getCity().isEmpty() || !getDoctor().getCity().matches(regxpAlpha)) {
-                request.setAttribute(attribute, getDoctor());
-                Controller.redirect(request, response, ADD_DOC + "?city=True");
-                return;
-            }
-        
-            try {
-                editDoctor.addDoctor(getDoctor());      
-                Controller.redirect(request, response, ADDED_ITEM + "?doc=True");
-            }
-                
-            catch (SQLException ex) {
-                try {
+                    
+                else if (getDoctor().getSurname().isEmpty() || !getDoctor().getSurname().matches(regxpAlpha)) {
                     request.setAttribute(attribute, getDoctor());
-                    MailSender.sendEmail(getDoctor().getEmail(), passwd.substring(0, 7));
-                    Controller.redirect(request, response, ADD_DOC + "?used=True");
-                } catch (NamingException | MessagingException ex1) {
-                    Controller.redirect(request, response, Controller.ERROR_500);
-                    ex1.printStackTrace();
+                    Controller.redirect(request, response, ADD_DOC + "?surname=True");
+                    return;
                 }
-            }
-        }
-        
-        else if (getAddress().equals(ACTION_NURSE)) {
-            
-            EditNurse editNurse = new EditNurse();
-            int departmentId; 
-            String attribute = "nurse";
-            
-            // department must be filled
-            try {
-                departmentId = EditDepartment.getDepartmentId(request.getParameter("inputDepNum"));
-            }
-            
-            catch (NamingException | SQLException ex) {
-                request.setAttribute(attribute, getNurse());
-                Controller.redirect(request, response, ADD_NURSE + "?depNum=True");
-                return;
-            }
-                       
-            setNurse(new Nurse(request.getParameter("inputName"), request.getParameter("inputSurname"),
-                    request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
-                    request.getParameter("inputCity"), departmentId));
-                 
-            // check if all required values are correctly filled
-
-            if (getNurse().getUsername().isEmpty() || !getNurse().getUsername().matches(regxpAlpha)) {
-                request.setAttribute(attribute, getNurse());
-                Controller.redirect(request, response, ADD_NURSE + "?username=True");
-                return;
-            }
-            
-            else if (getNurse().getSurname().isEmpty() || !getNurse().getSurname().matches(regxpAlpha)) {
-                request.setAttribute(attribute, getNurse());
-                Controller.redirect(request, response, ADD_NURSE + "?surname=True");
-                return;
-            }
-                        
-            else if (getNurse().getBirthNum().isEmpty() || !getNurse().getBirthNum().matches(regxpBirthNum)) {
-                request.setAttribute(attribute, getNurse());
-                Controller.redirect(request, response, ADD_NURSE + "?birthNum=True");
-                return;
-            }
-                        
-            else if (getNurse().getAddress().isEmpty()) {
-                request.setAttribute(attribute, getNurse());
-                Controller.redirect(request, response, ADD_NURSE + "?address=True");
-                return;
-            }
-            
-            else if (getNurse().getCity().isEmpty() || !getNurse().getCity().matches(regxpAlpha)) {
-                request.setAttribute(attribute, getNurse());
-                Controller.redirect(request, response, ADD_NURSE + "?city=True");
-                return;
-            }
-        
-            try {
-                editNurse.addNurse(getNurse());             
-                Controller.redirect(request, response, ADDED_ITEM + "?nurse=True");
-            }
+                    
+                else if (getDoctor().getBirthNum().isEmpty() || !getDoctor().getBirthNum().matches(regxpBirthNum)) {
+                    request.setAttribute(attribute, getDoctor());
+                    Controller.redirect(request, response, ADD_DOC + "?birthNum=True");
+                    return;
+                }
+                    
+                else if (getDoctor().getEmail().isEmpty() || !getDoctor().getEmail().matches(regxpEmail)) {
+                    request.setAttribute(attribute, getDoctor());
+                    Controller.redirect(request, response, ADD_DOC + "?email=True");
+                    return;
+                }
+                    
+                else if (getDoctor().getAddress().isEmpty()) {
+                    request.setAttribute(attribute, getDoctor());
+                    Controller.redirect(request, response, ADD_DOC + "?address=True");
+                    return;
+                }
+                    
+                else if (getDoctor().getCity().isEmpty() || !getDoctor().getCity().matches(regxpAlpha)) {
+                    request.setAttribute(attribute, getDoctor());
+                    Controller.redirect(request, response, ADD_DOC + "?city=True");
+                    return;
+                }       
                 
-            catch (SQLException | NamingException ex) {
-                Controller.redirect(request, response, Controller.ERROR_500);
-            } 
+                try {
+                    editDoctor.addDoctor(getDoctor());
+                    Controller.redirect(request, response, ADDED_ITEM + "?doc=True");
+                }
+                    
+                catch (SQLException ex) {
+                    try {
+                        request.setAttribute(attribute, getDoctor());
+                        MailSender.sendEmail(getDoctor().getEmail(), passwd.substring(0, 7));
+                        Controller.redirect(request, response, ADD_DOC + "?used=True");
+                    }
+                    
+                    catch (NamingException | MessagingException ex1) {
+                        Controller.redirect(request, response, Controller.ERROR_500);
+                    }
+                }       
+                
+                break;
+            }
+        
+            case ACTION_NURSE: {
+                EditNurse editNurse = new EditNurse();
+                int departmentId;
+                String attribute = "nurse";
+                
+                // department must be filled
+                try {
+                    departmentId = EditDepartment.getDepartmentId(request.getParameter("inputDepNum"));
+                }
             
+                catch (NamingException | SQLException ex) {
+                    request.setAttribute(attribute, getNurse());
+                    Controller.redirect(request, response, ADD_NURSE + "?depNum=True");
+                    return;
+                }       setNurse(new Nurse(request.getParameter("inputName"), request.getParameter("inputSurname"),
+                        request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
+                        request.getParameter("inputCity"), departmentId));
+                
+                // check if all required values are correctly filled
+                if (getNurse().getUsername().isEmpty() || !getNurse().getUsername().matches(regxpAlpha)) {
+                    request.setAttribute(attribute, getNurse());
+                    Controller.redirect(request, response, ADD_NURSE + "?username=True");
+                    return;
+                }
+
+                else if (getNurse().getSurname().isEmpty() || !getNurse().getSurname().matches(regxpAlpha)) {
+                    request.setAttribute(attribute, getNurse());
+                    Controller.redirect(request, response, ADD_NURSE + "?surname=True");
+                    return;
+                }
+
+                else if (getNurse().getBirthNum().isEmpty() || !getNurse().getBirthNum().matches(regxpBirthNum)) {
+                    request.setAttribute(attribute, getNurse());
+                    Controller.redirect(request, response, ADD_NURSE + "?birthNum=True");
+                    return;
+                }
+
+                else if (getNurse().getAddress().isEmpty()) {
+                    request.setAttribute(attribute, getNurse());
+                    Controller.redirect(request, response, ADD_NURSE + "?address=True");
+                    return;
+                }
+
+                else if (getNurse().getCity().isEmpty() || !getNurse().getCity().matches(regxpAlpha)) {
+                    request.setAttribute(attribute, getNurse());
+                    Controller.redirect(request, response, ADD_NURSE + "?city=True");
+                    return;
+                }       
+                
+                try {
+                    editNurse.addNurse(getNurse());             
+                    Controller.redirect(request, response, ADDED_ITEM + "?nurse=True");
+                }
+
+                catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                }       
+                
+                break;
+            }
         }
         
     }
