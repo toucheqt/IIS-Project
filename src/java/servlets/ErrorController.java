@@ -18,11 +18,45 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "ErrorController", urlPatterns = {"/404", "/500"})
 public class ErrorController extends HttpServlet {
+    
+    private String address;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        setAddress(request.getServletPath());
+        
+        switch (address) {
+            
+            case Controller.ERROR_404:
+                request.getRequestDispatcher(RootController.ERROR_PATH + "/404.jsp").forward(request, response);
+                break;
+                
+            case Controller.ERROR_500:
+                request.getRequestDispatcher(RootController.ERROR_PATH + "/500.jsp").forward(request, response);
+                break;
+                
+            default:
+                request.getRequestDispatcher(RootController.ERROR_PATH + "/404.jsp").forward(request, response);
+                break;
+                
+        }
+
+    }
+
+    /**
+     * @return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
     }
 
 }

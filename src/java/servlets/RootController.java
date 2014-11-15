@@ -42,6 +42,7 @@ public class RootController extends HttpServlet {
     
     public static final String VIEW_PATH = "/WEB-INF/views";
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
+    public static String ERROR_PATH = "/WEB-INF/views/errorPages";
   
     private String address;
     private Doctor doctor;
@@ -94,7 +95,6 @@ public class RootController extends HttpServlet {
             default:
                 response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_404);
                 break;
-                // TODO napsat .jsp error 404 a 500
         }
         
     }

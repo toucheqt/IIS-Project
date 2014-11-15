@@ -18,7 +18,6 @@ import javax.naming.NamingException;
  */
 public class MailSender {
     
-    // TODO try get functional email
     public static final String ROOT_EMAIL = "iisproject014@gmail.com";
     public static final String HOST = "smtp.gmail.com";
     
@@ -39,6 +38,7 @@ public class MailSender {
         
         Session session = Session.getInstance(props, 
                 new javax.mail.Authenticator() {
+                    @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(ROOT_EMAIL, password);
                     }
