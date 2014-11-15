@@ -22,14 +22,14 @@
                     <li><a href='<c:url value="/addDocDel"/>'>Přidat lékaře</a></li>
                     <li><a href='<c:url value="/addNurseDel"/>'>Přidat sestru</a></li>
                     <li class='divider'></li>
-                    <li><a href='<c:url value="/addStaff"/>'>Přiřadit personál</a></li>
+                    <li><a href='<c:url value="/assignStaff"/>'>Přiřadit personál</a></li>
                 </ul>
             </li>
             <li class='dropdown'>
                 <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Zobrazit<span class='caret'></span></a>
                 <ul class='dropdown-menu' role='menu'>
                     <li><a href='#'>Zobrazit lékáře</a></li>
-                    <li><a href='#'>Zobrazit sestru</a></li>
+                    <li><a href='#'>Zobrazit sestry</a></li>
                     <li><a href='#'>Zobrazit oddělení</a></li>
                 </ul>
             </li>

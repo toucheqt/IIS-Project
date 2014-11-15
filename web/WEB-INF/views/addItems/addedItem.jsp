@@ -27,6 +27,10 @@
             <p><strong>Úspěch!</strong> Podařilo se úspěšně přidat sestru
                 do databáze nemocnice Na Veleslavíně. Za moment dojde k přesměrování na úvodní stránku.</p>
         </c:if>
+        <c:if test="${param.staff}">
+            <p><strong>Úspěch!</strong> Podařilo se úspěšně přiřadit doktora k oddělení 
+                nemocnice Na Veleslavíně. Za moment dojde k přesměrování na úvodní stránku.</p>
+        </c:if>
         <a class="btn btn-lg btn-success my-btn-success" href='<c:url value="/RootController"/>' role="button">Pokračovat</a>
     </div>
     <img src='res/virtualni-nemocnice-logo.png' alt='logo' class='footer_logo'/>

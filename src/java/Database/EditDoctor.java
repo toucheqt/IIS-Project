@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
@@ -26,6 +28,9 @@ public class EditDoctor {
     public static final String INSERT_USER_WITH_TEL = "INSERT INTO usertable (username, surname, birthNum,"
             + " address, city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
     public static final String SELECT_ROLE_TYPE = "SELECT roleType FROM usertable WHERE email = ?";
+    public static final String SELECT_DOC_INFO = "SELECT username, surname, email FROM usertable ORDER BY username";
+    public static final String SELECT_EMAIL = "SELECT email FROM usertable WHERE email = ?";
+    // TODO tu kontrolu udelat jinak ??
     
     public void addDoctor(Doctor doctor) throws SQLException {
         
@@ -103,5 +108,49 @@ public class EditDoctor {
         return role;
         
     }
-
+    
+    public static List<Doctor> getDoctorInfo() throws NamingException, SQLException {
+        // TODO edit doktor by mel vyhazovat vyjimky
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String columns[] = {"username", "surname", "email"};
+        List<Doctor> doctors = new ArrayList();
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_DOC_INFO);
+        rs = stmt.executeQuery();
+        
+        while (rs.next()) {
+            doctors.add(new Doctor(rs.getString(columns[0]), rs.getString(columns[1]), null, null, null, 
+                    rs.getString(columns[2]), null, null));
+        }
+        
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        if (connection != null) connection.close();
+        
+        return doctors;
+        
+    }
+    
+    // it will run correctly if email is in db, otherwise it will throw exception
+    public static void checkEmail(String email) throws NamingException, SQLException {
+        
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String column = "email";
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_EMAIL);
+        stmt.setString(1, column);
+        rs = stmt.executeQuery();
+        rs.next();
+        // TODO toto cely predelat tvle
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        if (connection != null) connection.close();
+                
+    }
 }

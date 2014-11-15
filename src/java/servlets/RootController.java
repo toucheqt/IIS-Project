@@ -7,6 +7,7 @@ package servlets;
 
 import Database.EditDepartment;
 import Database.EditDoctor;
+import Database.EditIsWorking;
 import Database.EditNurse;
 import Database.util.MD5Generator;
 import Models.Doctor;
@@ -27,19 +28,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
-        "/addNurseDel", "/addStaff", "/actionAddDoc", "/actionAddNurse", "/addedItem"})
+        "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"root"}))
 public class RootController extends HttpServlet {
    
     public static final String ADD_DOC = "/addDoc";
     public static final String ADD_NURSE = "/addNurse";
     public static final String ADDED_ITEM = "/addedItem";
+    public static final String ASSIGN_STAFF = "/assignStaff";
     
     public static final String ADD_DOC_DEL = "/addDocDel";
     public static final String ADD_NURSE_DEL = "/addNurseDel";
     
     public static final String ACTION_DOC = "/actionAddDoc";
     public static final String ACTION_NURSE = "/actionAddNurse";
+    public static final String ACTION_ASSIGN_STAFF = "/actionAssignStaff";
     
     public static final String VIEW_PATH = "/WEB-INF/views";
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
@@ -96,7 +99,7 @@ public class RootController extends HttpServlet {
                 break;
             }
                 
-            case ADD_NURSE_DEL: 
+            case ADD_NURSE_DEL: {
                 if (getNurse() != null) getNurse().clearNurse();
                 
                 List<String> departments;
@@ -113,9 +116,28 @@ public class RootController extends HttpServlet {
                 request.setAttribute(attrNurse, getNurse());
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
+            }
                 
             case ADDED_ITEM:
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addedItem.jsp").forward(request, response);
+                break;
+                
+            case ASSIGN_STAFF: 
+                List<Doctor> doctors;
+                List<String> departments;
+                try {
+                    doctors = EditDoctor.getDoctorInfo();
+                    departments = EditDepartment.getDepartments();
+                }
+                // TODO: zeptat se na best practices u tabulky (2x FK nebo 2x FK + PK)
+                catch (NamingException | SQLException ex) {
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    return;
+                }
+                // TODO pokud bude cas, predelat v db nektere veci jako typ uvazku z varchar na enum
+                request.setAttribute(attrDoc, doctors);
+                request.setAttribute(attrDep, departments);
+                request.getRequestDispatcher(VIEW_ADD_PATH + "/assignStaff.jsp").forward(request, response);
                 break;
                 
             default:
@@ -277,6 +299,62 @@ public class RootController extends HttpServlet {
                 
                 break;
             }
+            
+            case ACTION_ASSIGN_STAFF: {
+                
+                int departmentId;
+                int telNum;
+                String attribute = "staff";
+                String workingTime;
+                String doctorInfo = request.getParameter("inputDoctor");
+                
+                // parse email from doctorinfo
+                for (int i = 0; i < doctorInfo.length(); i++) {
+                    if (doctorInfo.charAt(i) == ',') {
+                        doctorInfo = doctorInfo.substring(i + 2, doctorInfo.length());
+                        break;
+                    }
+                }
+                
+                // doctor, department and working time must be filled
+                try {
+                    EditDoctor.checkEmail(request.getParameter("inputDoctor"));
+                    departmentId = EditDepartment.getDepartmentId(request.getParameter("inputDepNum"));
+                    workingTime = request.getParameter("inputWorkingTime");
+                    telNum = Integer.parseInt(request.getParameter("inputTelDep"));
+                }
+                
+                catch (NamingException | SQLException ex) {
+                    // TODO: ukladat telefon
+                    Controller.redirect(request, response, ASSIGN_STAFF + "?other=True");
+                    return;
+                }
+                
+                catch (NumberFormatException ex1) {
+                    Controller.redirect(request, response, ASSIGN_STAFF + "?tel=True");
+                    return;
+                }
+                
+                // save data to db
+                try {
+                    EditIsWorking.assignDoctor(telNum, workingTime, departmentId, doctorInfo);
+                    Controller.redirect(request, response, ADDED_ITEM + "?staff=True");
+                    // TODO vyplneni udaju osetrit pomoci MySQLIntegrityConstraintViola.. exception
+                }
+                
+                catch (SQLException | NamingException ex) {
+                    ex.printStackTrace();
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                }
+                
+                break;
+                
+            }
+            
+            default:
+                Controller.redirect(request, response, Controller.ERROR_500);
+                break;
+                 
         }
         
     }
