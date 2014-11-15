@@ -98,12 +98,9 @@
                     <label for="inputDepNum" class="col-sm-2 control-label">Oddělení</label>
                     <select name="inputDepNum" class="form-control doc-form select">
                         <option></option>
-                        <option>ORL</option>
-                        <option>Ortopedie</option>
-                        <option>Urologie</option>
-                        <option>Chirurgie</option>
-                        <option>Traumatologie</option>
-                        <!-- TODO mel bych tohle pridavat dynamicky z databaze -->
+                        <c:forEach var="depName" items="${department}" varStatus="status">
+                            <option>${department[status.index]}</option>
+                        </c:forEach>
                     </select>
                 </div>
                 <button type='submit' class='btn btn-primary doc-button'>Přidat</button>

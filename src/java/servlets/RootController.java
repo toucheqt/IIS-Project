@@ -14,6 +14,7 @@ import Models.Nurse;
 import Utilities.MailSender;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.naming.NamingException;
@@ -60,6 +61,7 @@ public class RootController extends HttpServlet {
         setAddress(request.getServletPath());
         String attrDoc = "doctor";
         String attrNurse = "nurse";
+        String attrDep = "department";
         
         switch (address) {
             case Controller.ROOT_CONTROLLER:
@@ -77,13 +79,37 @@ public class RootController extends HttpServlet {
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addDoc.jsp").forward(request, response);
                 break;
                 
-            case ADD_NURSE:
+            case ADD_NURSE: {
+                List<String> departments;
+                try {
+                     departments = EditDepartment.getDepartments();
+                }
+                
+                catch (NamingException | SQLException ex) {
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    return;
+                }
+                
+                request.setAttribute(attrDep, departments);
                 request.setAttribute(attrNurse, getNurse());
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
+            }
                 
-            case ADD_NURSE_DEL:
+            case ADD_NURSE_DEL: 
                 if (getNurse() != null) getNurse().clearNurse();
+                
+                List<String> departments;
+                try {
+                     departments = EditDepartment.getDepartments();
+                }
+                
+                catch (NamingException | SQLException ex) {
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    return;
+                }
+                
+                request.setAttribute(attrDep, departments);
                 request.setAttribute(attrNurse, getNurse());
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
