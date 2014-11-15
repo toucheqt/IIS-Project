@@ -229,7 +229,9 @@ public class RootController extends HttpServlet {
                     request.setAttribute(attribute, getNurse());
                     Controller.redirect(request, response, ADD_NURSE + "?depNum=True");
                     return;
-                }       setNurse(new Nurse(request.getParameter("inputName"), request.getParameter("inputSurname"),
+                }       
+                
+                setNurse(new Nurse(request.getParameter("inputName"), request.getParameter("inputSurname"),
                         request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
                         request.getParameter("inputCity"), departmentId));
                 

@@ -7,5 +7,5 @@ CREATE TABLE department (
 INSERT INTO department (depName) VALUES ("ORL");
 INSERT INTO department (depName) VALUES ("Ortopedie");
 INSERT INTO department (depName) VALUES ("Urologie");
-INSERT INTO department (depName) VALUES ("Chirurgue");
+INSERT INTO department (depName) VALUES ("Chirurgie");
 INSERT INTO department (depName) VALUES ("Traumatologie");

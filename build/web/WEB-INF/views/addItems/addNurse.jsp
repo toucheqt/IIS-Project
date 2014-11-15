@@ -107,7 +107,7 @@
             </fieldset>
         </form>
     </div>
-        <c:if test="${param.username or param.surname or param.birthNum or param.address or param.city}">
+        <c:if test="${param.username or param.surname or param.birthNum or param.address or param.city or param.depNum}">
         <div class="alert alert-dismissable alert-danger myAlert docAlert">
             <button type="button" class="close" data-dismiss="alert">×</button>
             <c:if test="${param.username}">
@@ -125,7 +125,7 @@
             <c:if test="${param.city}">
                 <strong class='doc-warn'>Prosím, zadejte korektně město.</strong>
             </c:if>
-            <c:if test="${param.dep}">
+            <c:if test="${param.depNum}">
                 <strong class="doc-warn">Prosím, zařaďte sestru na oddělení.</strong>
             </c:if>
         </div>          
