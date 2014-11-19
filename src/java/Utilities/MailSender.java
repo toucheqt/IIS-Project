@@ -8,8 +8,6 @@ package Utilities;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**

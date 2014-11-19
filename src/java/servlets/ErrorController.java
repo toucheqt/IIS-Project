@@ -28,16 +28,12 @@ public class ErrorController extends HttpServlet {
         setAddress(request.getServletPath());
         
         switch (address) {
-            
-            case Controller.ERROR_404:
-                request.getRequestDispatcher(RootController.ERROR_PATH + "/404.jsp").forward(request, response);
-                break;
-                
+                            
             case Controller.ERROR_500:
                 request.getRequestDispatcher(RootController.ERROR_PATH + "/500.jsp").forward(request, response);
                 break;
                 
-            default:
+            default: // as default app should redirect to /404
                 request.getRequestDispatcher(RootController.ERROR_PATH + "/404.jsp").forward(request, response);
                 break;
                 

@@ -6,7 +6,6 @@
 package Database;
 
 import Database.util.Connect;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -41,7 +40,7 @@ public class EditIsWorking {
         }
         
         else {
-            stmt = connection.prepareStatement(ASSIGN_DOCTOR);
+            stmt = connection.prepareStatement(ASSIGN_DOCTOR_W_TEL);
             stmt.setInt(1, telNum);
             stmt.setString(2, workingTime);
             stmt.setInt(3, departmentNum);

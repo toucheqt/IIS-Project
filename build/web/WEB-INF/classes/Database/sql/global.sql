@@ -1,6 +1,6 @@
 CREATE TABLE userTable (
     username VARCHAR(25) NOT NULL,
-    surname VARCHAR(25),
+    surname VARCHAR(25) NOT NULL,
     birthNum VARCHAR(11),
     address VARCHAR(35),
     city VARCHAR(20),
@@ -46,5 +46,5 @@ INSERT INTO department (depName) VALUES ("Urologie");
 INSERT INTO department (depName) VALUES ("Chirurgie");
 INSERT INTO department (depName) VALUES ("Traumatologie");
 
-INSERT INTO userTable (username, email, roleType, password) VALUES ("admin", "admin", "root", "21232f297a57a5a743894a0e4a801fc3");
+INSERT INTO userTable (username, surname, email, roleType, password) VALUES ("admin", "admin", "admin", "root", "21232f297a57a5a743894a0e4a801fc3");
 

@@ -26,7 +26,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.taglibs.standard.tag.common.core.NullAttributeException;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
         "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem"})
@@ -61,7 +60,8 @@ public class RootController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         
         setAddress(request.getServletPath());
         String attrDoc = "doctor";
@@ -134,7 +134,6 @@ public class RootController extends HttpServlet {
 
                 catch (NamingException | SQLException ex) {
                     response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
-                    ex.printStackTrace();
                     return;
                 }
                 // TODO FRONT predelat par veci v db z varchar na enum
@@ -151,7 +150,8 @@ public class RootController extends HttpServlet {
     }
     
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         
         setAddress(request.getServletPath());
         request.setCharacterEncoding("UTF-8");
@@ -183,7 +183,6 @@ public class RootController extends HttpServlet {
                 }
                 
                 // check if all required values are correctly filled
-                    
                 if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches(regxpAlpha)) {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?username=True");
@@ -213,7 +212,8 @@ public class RootController extends HttpServlet {
                     Controller.redirect(request, response, ADD_DOC + "?city=True");
                     return;
                 }
-                               
+                     
+                // try to add doctor and then send email with password to him
                 try {
                     EditDoctor.addDoctor(getDoctor());
                     request.setAttribute(attribute, getDoctor());
@@ -226,15 +226,10 @@ public class RootController extends HttpServlet {
                     return;
                 }
                 
-                catch (NamingException ex) {
+                catch (NamingException | MessagingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     return;
-                }
-                
-                catch (MessagingException ex) {   
-                    Controller.redirect(request, response, Controller.ERROR_500);
-                    return;
-                }    
+                }          
                        
                 Controller.redirect(request, response, ADDED_ITEM + "?doc=True");
                 break;
@@ -303,8 +298,8 @@ public class RootController extends HttpServlet {
                 int departmentId;
                 Integer telNum = null;
                 String attribute = "staff";
-                String workingTime;
-                String doctorInfo;
+                String workingTime = null;
+                String doctorInfo = null;
 
                 // doctor, department and working time must be filled
                 try {
@@ -357,7 +352,6 @@ public class RootController extends HttpServlet {
                 }
                 
                 break;
-                
             }
             
             default:

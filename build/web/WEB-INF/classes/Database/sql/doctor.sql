@@ -1,6 +1,6 @@
 CREATE TABLE userTable (
     username VARCHAR(25) NOT NULL,
-    surname VARCHAR(25),
+    surname VARCHAR(25) NOT NULL,
     birthNum VARCHAR(11),
     address VARCHAR(35),
     city VARCHAR(20),
