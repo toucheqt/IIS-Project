@@ -18,23 +18,35 @@ import javax.naming.NamingException;
  */
 public class EditIsWorking {
     
-    public static String ASSIGN_DOCTOR = "INSERT INTO isworking (tel, workingTime, departmentNum, doctor)"
+    public static String ASSIGN_DOCTOR_W_TEL = "INSERT INTO isworking (tel, workingTime, departmentNum, doctor)"
             + " VALUES (?, ?, ?, ?)";
+    public static String ASSIGN_DOCTOR = "INSERT INTO isworking (workingTime, departmentNum, doctor)"
+            + " VALUES(?, ?, ?)";  
     
     private EditIsWorking() {};
             
-    public static void assignDoctor(int telNum, String workingTime, int departmentNum, String docEmail) 
+    public static void assignDoctor(Integer telNum, String workingTime, int departmentNum, String docEmail) 
             throws NamingException, SQLException {
         
         Connection connection = null;
         PreparedStatement stmt = null;
         
         connection = Connect.getConnection();
-        stmt = connection.prepareStatement(ASSIGN_DOCTOR);
-        stmt.setInt(1, telNum);
-        stmt.setString(2, workingTime);
-        stmt.setInt(3, departmentNum);
-        stmt.setString(4, docEmail);
+        
+        if (telNum == null) {
+            stmt = connection.prepareCall(ASSIGN_DOCTOR);
+            stmt.setString(1, workingTime);
+            stmt.setInt(2, departmentNum);
+            stmt.setString(3, docEmail);
+        }
+        
+        else {
+            stmt = connection.prepareStatement(ASSIGN_DOCTOR);
+            stmt.setInt(1, telNum);
+            stmt.setString(2, workingTime);
+            stmt.setInt(3, departmentNum);
+            stmt.setString(4, docEmail);
+        }
         
         stmt.executeUpdate();
         

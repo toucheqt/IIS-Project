@@ -4,7 +4,7 @@
  */
 
 package servlets;
-
+// TODO FRONT obnova hesla
 import Database.EditDepartment;
 import Database.EditDoctor;
 import Database.EditIsWorking;
@@ -26,6 +26,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.taglibs.standard.tag.common.core.NullAttributeException;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
         "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem"})
@@ -51,6 +52,7 @@ public class RootController extends HttpServlet {
     private String address;
     private Doctor doctor;
     private Nurse nurse;
+    
 
     /**
      * @param request servlet request
@@ -129,12 +131,13 @@ public class RootController extends HttpServlet {
                     doctors = EditDoctor.getDoctorInfo();
                     departments = EditDepartment.getDepartments();
                 }
-                // TODO: zeptat se na best practices u tabulky (2x FK nebo 2x FK + PK)
+
                 catch (NamingException | SQLException ex) {
                     response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    ex.printStackTrace();
                     return;
                 }
-                // TODO pokud bude cas, predelat v db nektere veci jako typ uvazku z varchar na enum
+                // TODO FRONT predelat par veci v db z varchar na enum
                 request.setAttribute(attrDoc, doctors);
                 request.setAttribute(attrDep, departments);
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/assignStaff.jsp").forward(request, response);
@@ -159,7 +162,7 @@ public class RootController extends HttpServlet {
                 
         switch (getAddress()) {
             case ACTION_DOC: {
-                EditDoctor editDoctor = new EditDoctor();
+
                 String passwd = UUID.randomUUID().toString();
                 String attribute = "doctor";
                 setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"),
@@ -193,7 +196,7 @@ public class RootController extends HttpServlet {
                     return;
                 }
                     
-                else if (getDoctor().getBirthNum().isEmpty() || !getDoctor().getBirthNum().matches(regxpBirthNum)) {
+                else if (!getDoctor().getBirthNum().isEmpty() && !getDoctor().getBirthNum().matches(regxpBirthNum)) {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?birthNum=True");
                     return;
@@ -204,47 +207,52 @@ public class RootController extends HttpServlet {
                     Controller.redirect(request, response, ADD_DOC + "?email=True");
                     return;
                 }
-                    
-                else if (getDoctor().getAddress().isEmpty()) {
-                    request.setAttribute(attribute, getDoctor());
-                    Controller.redirect(request, response, ADD_DOC + "?address=True");
-                    return;
-                }
-                    
-                else if (getDoctor().getCity().isEmpty() || !getDoctor().getCity().matches(regxpAlpha)) {
+                                        
+                else if (!getDoctor().getCity().isEmpty() && !getDoctor().getCity().matches(regxpAlpha)) {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?city=True");
                     return;
-                }       
-                
-                try {
-                    editDoctor.addDoctor(getDoctor());
-                    Controller.redirect(request, response, ADDED_ITEM + "?doc=True");
                 }
-                    
+                               
+                try {
+                    EditDoctor.addDoctor(getDoctor());
+                    request.setAttribute(attribute, getDoctor());
+                    MailSender.sendEmail(getDoctor().getEmail(), passwd.substring(0, 7));
+                }
+
                 catch (SQLException ex) {
-                    try {
-                        request.setAttribute(attribute, getDoctor());
-                        MailSender.sendEmail(getDoctor().getEmail(), passwd.substring(0, 7));
-                        Controller.redirect(request, response, ADD_DOC + "?used=True");
-                    }
-                    
-                    catch (NamingException | MessagingException ex1) {
-                        Controller.redirect(request, response, Controller.ERROR_500);
-                    }
-                }       
+                    request.setAttribute(attribute, getDoctor());
+                    Controller.redirect(request, response, ADD_DOC + "?used=True");
+                    return;
+                }
                 
+                catch (NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    return;
+                }
+                
+                catch (MessagingException ex) {   
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    return;
+                }    
+                       
+                Controller.redirect(request, response, ADDED_ITEM + "?doc=True");
                 break;
             }
-        
+
             case ACTION_NURSE: {
                 EditNurse editNurse = new EditNurse();
                 int departmentId;
                 String attribute = "nurse";
                 
+                setNurse(new Nurse(request.getParameter("inputName"), request.getParameter("inputSurname"),
+                        request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
+                        request.getParameter("inputCity"), -1));
+                
                 // department must be filled
                 try {
                     departmentId = EditDepartment.getDepartmentId(request.getParameter("inputDepNum"));
+                    getNurse().setDepartmentNum(departmentId);
                 }
             
                 catch (NamingException | SQLException ex) {
@@ -252,10 +260,6 @@ public class RootController extends HttpServlet {
                     Controller.redirect(request, response, ADD_NURSE + "?depNum=True");
                     return;
                 }       
-                
-                setNurse(new Nurse(request.getParameter("inputName"), request.getParameter("inputSurname"),
-                        request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
-                        request.getParameter("inputCity"), departmentId));
                 
                 // check if all required values are correctly filled
                 if (getNurse().getUsername().isEmpty() || !getNurse().getUsername().matches(regxpAlpha)) {
@@ -270,19 +274,13 @@ public class RootController extends HttpServlet {
                     return;
                 }
 
-                else if (getNurse().getBirthNum().isEmpty() || !getNurse().getBirthNum().matches(regxpBirthNum)) {
+                else if (!getNurse().getBirthNum().isEmpty() && !getNurse().getBirthNum().matches(regxpBirthNum)) {
                     request.setAttribute(attribute, getNurse());
                     Controller.redirect(request, response, ADD_NURSE + "?birthNum=True");
                     return;
                 }
 
-                else if (getNurse().getAddress().isEmpty()) {
-                    request.setAttribute(attribute, getNurse());
-                    Controller.redirect(request, response, ADD_NURSE + "?address=True");
-                    return;
-                }
-
-                else if (getNurse().getCity().isEmpty() || !getNurse().getCity().matches(regxpAlpha)) {
+                else if (!getNurse().getCity().isEmpty() && !getNurse().getCity().matches(regxpAlpha)) {
                     request.setAttribute(attribute, getNurse());
                     Controller.redirect(request, response, ADD_NURSE + "?city=True");
                     return;
@@ -303,48 +301,59 @@ public class RootController extends HttpServlet {
             case ACTION_ASSIGN_STAFF: {
                 
                 int departmentId;
-                int telNum;
+                Integer telNum = null;
                 String attribute = "staff";
                 String workingTime;
-                String doctorInfo = request.getParameter("inputDoctor");
-                
-                // parse email from doctorinfo
-                for (int i = 0; i < doctorInfo.length(); i++) {
-                    if (doctorInfo.charAt(i) == ',') {
-                        doctorInfo = doctorInfo.substring(i + 2, doctorInfo.length());
-                        break;
-                    }
-                }
-                
+                String doctorInfo;
+
                 // doctor, department and working time must be filled
                 try {
-                    EditDoctor.checkEmail(request.getParameter("inputDoctor"));
+                    doctorInfo = request.getParameter("inputDoctor");
+                    
+                    // get telephone
+                    if (!request.getParameter("inputTelDep").isEmpty()) { 
+                        telNum = Integer.parseInt(request.getParameter("inputTelDep"));
+                    }
+                    
+                    // parse email from doctorinfo
+                    for (int i = 0; i < doctorInfo.length(); i++) {
+                        if (doctorInfo.charAt(i) == ',') {
+                            doctorInfo = doctorInfo.substring(i + 2, doctorInfo.length());
+                            break;
+                        }
+                    }
+                                  
                     departmentId = EditDepartment.getDepartmentId(request.getParameter("inputDepNum"));
                     workingTime = request.getParameter("inputWorkingTime");
-                    telNum = Integer.parseInt(request.getParameter("inputTelDep"));
+                    
+                    if (workingTime == null) throw new NullPointerException();
                 }
                 
-                catch (NamingException | SQLException ex) {
-                    // TODO: ukladat telefon
+                catch (NamingException | SQLException | NullPointerException ex) {
+                    // TODO FRONT ukladat telefon
                     Controller.redirect(request, response, ASSIGN_STAFF + "?other=True");
                     return;
                 }
                 
-                catch (NumberFormatException ex1) {
+                catch (NumberFormatException ex) {
                     Controller.redirect(request, response, ASSIGN_STAFF + "?tel=True");
                     return;
                 }
-                
+                // TODO FRONT nemel bych pri prirazeni zobrazovat lekare kteri uz plny uvazek maji
                 // save data to db
                 try {
                     EditIsWorking.assignDoctor(telNum, workingTime, departmentId, doctorInfo);
                     Controller.redirect(request, response, ADDED_ITEM + "?staff=True");
-                    // TODO vyplneni udaju osetrit pomoci MySQLIntegrityConstraintViola.. exception
+                }
+                // TODO FRONT uchovavat aj selecty
+                catch (SQLException ex) {
+                    Controller.redirect(request, response, ASSIGN_STAFF + "?mail=True");
+                    break;
                 }
                 
-                catch (SQLException | NamingException ex) {
-                    ex.printStackTrace();
+                catch (NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
                 }
                 
                 break;

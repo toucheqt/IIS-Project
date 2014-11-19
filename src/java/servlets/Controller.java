@@ -10,6 +10,7 @@ package servlets;
 import Database.EditDoctor;
 import java.io.IOException;
 import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HttpConstraint;
 import javax.servlet.annotation.ServletSecurity;
@@ -52,7 +53,7 @@ public class Controller extends HttpServlet {
             setUserRole(EditDoctor.getUserRole(request.getRemoteUser()));
         } 
         
-        catch (SQLException ex) {
+        catch (SQLException | NamingException ex) {
             response.sendRedirect(DEFAULT_PATH + ERROR_500);
         }
           

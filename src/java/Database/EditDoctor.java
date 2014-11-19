@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
+import servlets.Controller;
 
 /**
  *
@@ -28,56 +29,47 @@ public class EditDoctor {
     public static final String INSERT_USER_WITH_TEL = "INSERT INTO usertable (username, surname, birthNum,"
             + " address, city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
     public static final String SELECT_ROLE_TYPE = "SELECT roleType FROM usertable WHERE email = ?";
-    public static final String SELECT_DOC_INFO = "SELECT username, surname, email FROM usertable ORDER BY username";
-    public static final String SELECT_EMAIL = "SELECT email FROM usertable WHERE email = ?";
-    // TODO tu kontrolu udelat jinak ??
+    public static final String SELECT_DOC_INFO = "SELECT username, surname, email FROM usertable"
+            + " WHERE roleType = ? ORDER BY username";
     
-    public void addDoctor(Doctor doctor) throws SQLException {
+    public static void addDoctor(Doctor doctor) throws SQLException, NamingException {
         
         Connection connection = null;
         PreparedStatement stmt = null;
         
-        try {
-            String query;
+        String query;
             
-            if (doctor.getTel()!= null) query = INSERT_USER_WITH_TEL;
-            else query = INSERT_USER;
+        if (doctor.getTel()!= null) query = INSERT_USER_WITH_TEL;
+        else query = INSERT_USER;
             
-            connection = Connect.getConnection();
-            stmt = connection.prepareStatement(query);
-            stmt.setString(1, doctor.getUsername());
-            stmt.setString(2, doctor.getSurname());
-            stmt.setString(3, doctor.getBirthNum());
-            stmt.setString(4, doctor.getAddress());
-            stmt.setString(5, doctor.getCity());
-            stmt.setString(6, doctor.getEmail());
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(query);
+        stmt.setString(1, doctor.getUsername());
+        stmt.setString(2, doctor.getSurname());
+        stmt.setString(3, doctor.getBirthNum());
+        stmt.setString(4, doctor.getAddress());
+        stmt.setString(5, doctor.getCity());
+        stmt.setString(6, doctor.getEmail());
             
-            if (doctor.getTel() != null) {
-                stmt.setInt(7, doctor.getTel());
-                stmt.setString(8, doctor.getRoleType());
-                stmt.setString(9, doctor.getPassword());
-            }
+        if (doctor.getTel() != null) {
+            stmt.setInt(7, doctor.getTel());
+            stmt.setString(8, doctor.getRoleType());
+            stmt.setString(9, doctor.getPassword());
+        }
             
-            else {
-                stmt.setString(7, doctor.getRoleType());
-                stmt.setString(8, doctor.getPassword());
-            }
-        
-            stmt.executeUpdate();
+        else {
+            stmt.setString(7, doctor.getRoleType());
+            stmt.setString(8, doctor.getPassword());
         }
         
-        catch (NamingException ex) {
-            Logger.getLogger(EditDoctor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        stmt.executeUpdate();
         
-        finally {
-            if (stmt != null) stmt.close();
-            if (connection != null) connection.close();
-        }
+        if (stmt != null) stmt.close();
+        if (connection != null) connection.close();
  
     }
     
-    public static String getUserRole(String user) throws SQLException {
+    public static String getUserRole(String user) throws SQLException, NamingException {
         
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -85,32 +77,23 @@ public class EditDoctor {
         String role = null;
         String column = "roleType";
         
-        try {
-            connection = Connect.getConnection();
-            stmt = connection.prepareStatement(SELECT_ROLE_TYPE);
-            stmt.setString(1, user);
-            rs = stmt.executeQuery();
-            
-            rs.next();
-            role = rs.getString(column);
-        }
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_ROLE_TYPE);
+        stmt.setString(1, user);
+        rs = stmt.executeQuery();      
+        rs.next();
+        role = rs.getString(column);
         
-        catch (NamingException | SQLException ex) {
-            Logger.getLogger(EditDoctor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        finally {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (connection != null) connection.close();
-        }
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        if (connection != null) connection.close();
         
         return role;
         
     }
     
     public static List<Doctor> getDoctorInfo() throws NamingException, SQLException {
-        // TODO edit doktor by mel vyhazovat vyjimky
+
         Connection connection = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -119,6 +102,7 @@ public class EditDoctor {
         
         connection = Connect.getConnection();
         stmt = connection.prepareStatement(SELECT_DOC_INFO);
+        stmt.setString(1, Controller.ROLE_USER);
         rs = stmt.executeQuery();
         
         while (rs.next()) {
@@ -134,23 +118,4 @@ public class EditDoctor {
         
     }
     
-    // it will run correctly if email is in db, otherwise it will throw exception
-    public static void checkEmail(String email) throws NamingException, SQLException {
-        
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        String column = "email";
-        
-        connection = Connect.getConnection();
-        stmt = connection.prepareStatement(SELECT_EMAIL);
-        stmt.setString(1, column);
-        rs = stmt.executeQuery();
-        rs.next();
-        // TODO toto cely predelat tvle
-        if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
-                
-    }
 }
