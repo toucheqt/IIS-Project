@@ -28,9 +28,10 @@
             <li class='dropdown'>
                 <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Zobrazit<span class='caret'></span></a>
                 <ul class='dropdown-menu' role='menu'>
-                    <li><a href='#'>Zobrazit lékáře</a></li>
-                    <li><a href='#'>Zobrazit sestry</a></li>
-                    <li><a href='#'>Zobrazit oddělení</a></li>
+                    <li><a href='<c:url value="/showDoctor"/>'>Zobrazit lékáře</a></li>
+                    <li><a href='<c:url value="/showNurse"/>'>Zobrazit sestry</a></li>
+                    <li class="divider"></li>
+                    <li><a href='<c:url value="/showDepartment"/>'>Zobrazit oddělení</a></li>
                 </ul>
             </li>
           </ul>

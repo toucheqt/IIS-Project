@@ -28,7 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
-        "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem"})
+        "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem",
+        "/showDoctor", "/showNurse", "/showDepartment"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"root"}))
 public class RootController extends HttpServlet {
    
@@ -44,9 +45,14 @@ public class RootController extends HttpServlet {
     public static final String ACTION_NURSE = "/actionAddNurse";
     public static final String ACTION_ASSIGN_STAFF = "/actionAssignStaff";
     
+    public static final String SHOW_DOCTOR = "/showDoctor";
+    public static final String SHOW_NURSE = "/showNurse";
+    public static final String SHOW_DEPARTMENT = "/showDepartment";
+    
     public static final String VIEW_PATH = "/WEB-INF/views";
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
-    public static String ERROR_PATH = "/WEB-INF/views/errorPages";
+    public static final String VIEW_SHOW_PATH = "/WEB-INF/views/showItems";
+    public static final String ERROR_PATH = "/WEB-INF/views/errorPages";
   
     private String address;
     private Doctor doctor;
@@ -140,6 +146,18 @@ public class RootController extends HttpServlet {
                 request.setAttribute(attrDoc, doctors);
                 request.setAttribute(attrDep, departments);
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/assignStaff.jsp").forward(request, response);
+                break;
+                
+            case SHOW_DOCTOR:
+                request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDoctor.jsp").forward(request, response);
+                break;
+                
+            case SHOW_NURSE:
+                request.getRequestDispatcher(VIEW_SHOW_PATH + "/showNurse.jsp").forward(request, response);
+                break;
+                
+            case SHOW_DEPARTMENT:
+                request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDepartment.jsp").forward(request, response);
                 break;
                 
             default:

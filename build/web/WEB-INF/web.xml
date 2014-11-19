@@ -20,6 +20,9 @@
         <url-pattern>/actionAssignStaff</url-pattern>
         <url-pattern>/assignStaff</url-pattern>
         <url-pattern>/addedItem</url-pattern>
+        <url-pattern>/showDoctor</url-pattern>
+        <url-pattern>/showNurse</url-pattern>
+        <url-pattern>/showDepartment</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ErrorController</servlet-name>
