@@ -61,15 +61,17 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                      <th>Jméno</th>
-                      <th>Příjmení</th>
-                      <th>Název oddělení</th>
+                        <th>Identifikační číslo</th>
+                        <th>Jméno</th>
+                        <th>Příjmení</th>
+                        <th>Název oddělení</th>
                     </tr>
                 </thead>
                 <tbody>
                     <c:forEach var="nurseInfo" items="${nurse}" varStatus="status">
                         <tr>
-                            <td><span class="shift-table">${nurse[status.index].username}</span></td>
+                            <td class="col-sm-1 col-md-2">${nurse[status.index].id}</td>
+                            <td>${nurse[status.index].username}</td>
                             <td>${nurse[status.index].surname}</td>
                             <td>${nurse[status.index].departmentName}</td>
                             <td class="col-sm-1 col-md-1">
