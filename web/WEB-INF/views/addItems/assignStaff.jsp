@@ -15,7 +15,6 @@
         <form class='form-horizontal' role='form' method='POST' action='<c:url value="/actionAssignStaff"/>'>
             <fieldset>
                 <div class="form-group">
-                    ${message}
                     <label for="staff" class="col-sm-2 control-label">Lékaři</label>
                     <select name="inputDoctor" class="form-control doc-form select">
                         <option disabled selected>Vyberte lékaře</option>

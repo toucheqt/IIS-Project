@@ -30,8 +30,7 @@
                 <ul class='dropdown-menu' role='menu'>
                     <li><a href='<c:url value="/showDoctor"/>'>Zobrazit lékáře</a></li>
                     <li><a href='<c:url value="/showNurse"/>'>Zobrazit sestry</a></li>
-                    <li class="divider"></li>
-                    <li><a href='<c:url value="/showDepartment"/>'>Zobrazit oddělení</a></li>
+                    <li><a href="<c:url value="/showDepartment"/>">Zobrazit oddělení</a></li>
                 </ul>
             </li>
           </ul>

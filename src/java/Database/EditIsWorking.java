@@ -20,7 +20,7 @@ public class EditIsWorking {
     public static String ASSIGN_DOCTOR_W_TEL = "INSERT INTO isworking (tel, workingTime, departmentNum, doctor)"
             + " VALUES (?, ?, ?, ?)";
     public static String ASSIGN_DOCTOR = "INSERT INTO isworking (workingTime, departmentNum, doctor)"
-            + " VALUES(?, ?, ?)";  
+            + " VALUES(?, ?, ?)";
     
     private EditIsWorking() {};
             

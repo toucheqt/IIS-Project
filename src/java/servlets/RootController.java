@@ -130,7 +130,7 @@ public class RootController extends HttpServlet {
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addedItem.jsp").forward(request, response);
                 break;
                 
-            case ASSIGN_STAFF: 
+            case ASSIGN_STAFF: {
                 List<Doctor> doctors;
                 List<String> departments;
                 try {
@@ -147,6 +147,7 @@ public class RootController extends HttpServlet {
                 request.setAttribute(attrDep, departments);
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/assignStaff.jsp").forward(request, response);
                 break;
+            }
                 
             case SHOW_DOCTOR:
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDoctor.jsp").forward(request, response);
@@ -157,6 +158,20 @@ public class RootController extends HttpServlet {
                 break;
                 
             case SHOW_DEPARTMENT:
+                List<String> departments;
+                List<Nurse> nurse;
+                try {
+                    departments = EditDepartment.getDepartments();
+                    nurse = EditNurse.getNurseInfo();
+                }
+                
+                catch (NamingException | SQLException ex) {
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    return;
+                }
+
+                request.setAttribute(attrNurse, nurse);
+                request.setAttribute(attrDep, departments);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDepartment.jsp").forward(request, response);
                 break;
                 

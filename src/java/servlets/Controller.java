@@ -63,9 +63,11 @@ public class Controller extends HttpServlet {
             case ROLE_ROOT:
                 response.sendRedirect(DEFAULT_PATH + ROOT_CONTROLLER);
                 break;
+                
             case ROLE_USER:
                 response.sendRedirect(DEFAULT_PATH + USER_CONTROLLER);
                 break;
+                
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 response.sendRedirect(DEFAULT_PATH + ERROR_404);

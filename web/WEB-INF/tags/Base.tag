@@ -15,9 +15,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
         <title>${title}</title>
         <link rel='stylesheet' href='<c:url value="/bootstrap/css/bootstrap.css"/>' />
-        <link rel='stylesheet' href='<c:url value="/css/stickyfooter.css"/>' />
         <link rel='stylesheet' href='<c:url value="/css/signin.css"/>' />   
         <link rel='stylesheet' href='<c:url value="/css/style.css"/>' />
+        <link rel="stylesheet" href="<c:url value="/css/dashboard.css"/>" />
+        <link rel='stylesheet' href='<c:url value="/css/stickyfooter.css"/>' />
     </head>
     <body>
         <jsp:doBody/>

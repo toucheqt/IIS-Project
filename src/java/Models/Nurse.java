@@ -18,6 +18,7 @@ public class Nurse {
     private String address;
     private String city;
     private Integer departmentNum;
+    private String departmentName;
     
     public Nurse(String username, String surname, String birthNum, String address, String city, Integer deparmentNum) {
         
@@ -131,6 +132,20 @@ public class Nurse {
      */
     public void setDepartmentNum(Integer departmentNum) {
         this.departmentNum = departmentNum;
+    }
+
+    /**
+     * @return the departmentName
+     */
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    /**
+     * @param departmentName the departmentName to set
+     */
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
         
 }

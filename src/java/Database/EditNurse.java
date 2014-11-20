@@ -9,7 +9,10 @@ import Database.util.Connect;
 import Models.Nurse;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.naming.NamingException;
 
 /**
@@ -20,6 +23,8 @@ public class EditNurse {
     
     public static final String INSERT_NURSE = "INSERT INTO nurse (username, surname, birthNum, address, city,"
             + "departmentNum) VALUES (?, ?, ?, ?, ?, ?)";
+    public static final String SELECT_NURSE_INFO = "SELECT username, surname, depName FROM nurse JOIN department"
+            + " WHERE department.id = nurse.departmentNum";
     
     public void addNurse(Nurse nurse) throws SQLException, NamingException {
         
@@ -40,6 +45,33 @@ public class EditNurse {
         if (stmt != null) stmt.close();
         if (connection != null) connection.close();
         
+    }
+    // TODO predelat edity na static
+    
+    public static List<Nurse> getNurseInfo() throws NamingException, SQLException {
+        
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String[] columns = {"username", "surname", "depName"};
+        List<Nurse> nurse = new ArrayList();
+        // TODO predelat pole na preferred way
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_NURSE_INFO);
+        rs = stmt.executeQuery();
+        
+        int i = 0;
+        while(rs.next()) {
+            nurse.add(new Nurse(rs.getString(columns[0]), rs.getString(columns[1]), null, null, null, null));
+            nurse.get(i).setDepartmentName(rs.getString(columns[2]));
+            i++;
+        }
+        
+        if (rs != null) rs.close();
+        if (stmt != null) stmt.close();
+        if (connection != null) connection.close();
+        
+        return nurse;
     }
         
 }

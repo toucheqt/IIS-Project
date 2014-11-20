@@ -23,6 +23,8 @@ public class Doctor {
     private String email;
     private Integer tel;
     private String password;
+    private String workingTime;
+    private String departmentName;
     
     public Doctor(String username, String surname, String birthNum, String address, String city, String email,
             Integer tel, String password) {
@@ -166,6 +168,34 @@ public class Doctor {
      */
     public String getRoleType() {
         return roleType;
+    }
+
+    /**
+     * @return the workingTime
+     */
+    public String getWorkingTime() {
+        return workingTime;
+    }
+
+    /**
+     * @param workingTime the workingTime to set
+     */
+    public void setWorkingTime(String workingTime) {
+        this.workingTime = workingTime;
+    }
+
+    /**
+     * @return the departmentName
+     */
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    /**
+     * @param departmentName the departmentName to set
+     */
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
     
 }

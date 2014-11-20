@@ -20,6 +20,19 @@
     margin-top: -1%;
 }
 
+.dep-display {
+    margin-left: 35%;
+    margin-top: 1%;
+}
+
+.nurse-change {
+    margin-left: 40%;
+}
+
+.nurse-remove {
+    margin-left: 10%;
+}
+
 .myTooltip {
     cursor: help;
 }
