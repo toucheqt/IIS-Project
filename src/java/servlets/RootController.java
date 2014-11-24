@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
         "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem",
-        "/showDoctor", "/showNurse", "/showDepartment"})
+        "/showDoctor", "/showNurse", "/showDepartment", "/delDecWork"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"root"}))
 public class RootController extends HttpServlet {
    
@@ -48,6 +48,8 @@ public class RootController extends HttpServlet {
     public static final String SHOW_DOCTOR = "/showDoctor";
     public static final String SHOW_NURSE = "/showNurse";
     public static final String SHOW_DEPARTMENT = "/showDepartment";
+    
+    public static final String DELETE_DOC_WORK = "/delDocWork";
     
     public static final String VIEW_PATH = "/WEB-INF/views";
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
@@ -159,17 +161,21 @@ public class RootController extends HttpServlet {
                 
             case SHOW_DEPARTMENT:
                 List<String> departments;
+                List<Doctor> doctors;
                 List<Nurse> nurse;
                 try {
                     departments = EditDepartment.getDepartments();
                     nurse = EditNurse.getNurseInfo();
+                    doctors = EditDoctor.getDoctorWork();
                 }
                 
                 catch (NamingException | SQLException ex) {
+                    ex.printStackTrace();
                     response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
                     return;
                 }
 
+                request.setAttribute(attrDoc, doctors);
                 request.setAttribute(attrNurse, nurse);
                 request.setAttribute(attrDep, departments);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDepartment.jsp").forward(request, response);
@@ -386,6 +392,22 @@ public class RootController extends HttpServlet {
                 
                 break;
             }
+            // TODO: od sestry smazat odebrat a nechat tam jenom zmenit
+            case DELETE_DOC_WORK:
+                String email = request.getParameter("email");
+                String depName = request.getParameter("depName");
+                
+                try {
+                    EditIsWorking.removeDocWork(email, depName);
+                }
+                
+                catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break; 
+                }
+                
+                Controller.redirect(request, response, SHOW_DEPARTMENT);
+                break;
             
             default:
                 Controller.redirect(request, response, Controller.ERROR_500);

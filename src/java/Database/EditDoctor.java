@@ -29,7 +29,17 @@ public class EditDoctor {
     public static final String SELECT_ROLE_TYPE = "SELECT roleType FROM usertable WHERE email = ?";
     public static final String SELECT_DOC_INFO = "SELECT username, surname, email FROM usertable"
             + " WHERE roleType = ? ORDER BY username";
-    
+    public static final String SELECT_DOC_DEP = "SELECT username, surname, email, depName, workingTime, isworking.tel"
+            + " FROM usertable"
+            + " JOIN isworking ON usertable.email = isworking.doctor"
+            + " JOIN department ON isworking.departmentNum = department.id"
+            + " ORDER BY username";
+    // TODO prepsat selecty
+            /*select s.name as Student, c.name as Course 
+from student s
+inner join bridge b on s.id = b.sid
+inner join course c on b.cid  = c.id 
+order by s.name*/
     public static void addDoctor(Doctor doctor) throws SQLException, NamingException {
         
         Connection connection = null;
@@ -111,6 +121,35 @@ public class EditDoctor {
         if (rs != null) rs.close();
         if (stmt != null) stmt.close();
         if (connection != null) connection.close();
+        
+        return doctors;
+        
+    }
+    
+    public static List<Doctor> getDoctorWork() throws NamingException, SQLException {
+        
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Doctor> doctors = new ArrayList();
+        String[] columns = {"username", "surname", "email", "depName", "workingTime", "isworking.tel"};
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_DOC_DEP);
+        rs = stmt.executeQuery();
+        
+        int i = 0;
+        while (rs.next()) {
+            doctors.add(new Doctor(rs.getString(columns[0]), rs.getString(columns[1]), null, null, null,
+                    rs.getString(columns[2]), rs.getInt(columns[5]), null));
+            doctors.get(i).setDepartmentName(rs.getString(columns[3]));
+            doctors.get(i).setWorkingTime(rs.getString(columns[4]));
+            i++;
+        }
+        
+        if (connection != null) connection.close();
+        if (stmt != null) stmt.close();
+        if (rs != null) rs.close();
         
         return doctors;
         
