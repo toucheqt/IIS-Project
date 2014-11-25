@@ -24,6 +24,7 @@
         <url-pattern>/showNurse</url-pattern>
         <url-pattern>/showDepartment</url-pattern>
         <url-pattern>/delDocWork</url-pattern>
+        <url-pattern>/updateDocWork</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ErrorController</servlet-name>

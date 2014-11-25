@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
         "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem",
-        "/showDoctor", "/showNurse", "/showDepartment", "/delDecWork"})
+        "/showDoctor", "/showNurse", "/showDepartment", "/delDecWork", "/updateDocWork"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"root"}))
 public class RootController extends HttpServlet {
    
@@ -50,6 +50,8 @@ public class RootController extends HttpServlet {
     public static final String SHOW_DEPARTMENT = "/showDepartment";
     
     public static final String DELETE_DOC_WORK = "/delDocWork";
+    
+    public static final String UPDATE_DOC_WORK = "/updateDocWork";
     
     public static final String VIEW_PATH = "/WEB-INF/views";
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
@@ -393,7 +395,7 @@ public class RootController extends HttpServlet {
                 break;
             }
             // TODO: od sestry smazat odebrat a nechat tam jenom zmenit
-            case DELETE_DOC_WORK:
+            case DELETE_DOC_WORK: {
                 String email = request.getParameter("email");
                 String depName = request.getParameter("depName");
                 
@@ -406,6 +408,30 @@ public class RootController extends HttpServlet {
                     break; 
                 }
                 
+                Controller.redirect(request, response, SHOW_DEPARTMENT);
+                break;
+            }
+                
+            case UPDATE_DOC_WORK:
+                // TODO uvolnovat nepouzivane objekty
+                try {
+                    EditIsWorking.updateDocWork(Integer.parseInt(request.getParameter("inputTel")),
+                            request.getParameter("inputWorkingTime"), 
+                            EditDepartment.getDepartmentId(request.getParameter("inputDepName")),
+                            EditDepartment.getDepartmentId(request.getParameter("defaultDepName")),
+                            request.getParameter("defaultEmail"));
+                }
+            // TODO: dat do uvozovek otazniky v selectech
+                // TODO: poresit SQL injection
+                // TODO: poresit aby se u updatovani nemohlo stat, ze nezadam hodnotu
+                catch (NumberFormatException ex) {
+                    Controller.redirect(request, response, SHOW_DEPARTMENT + "?err=True"); // TODO vypsat error ze bylo blby cislo
+                }
+            
+                catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                }
+            
                 Controller.redirect(request, response, SHOW_DEPARTMENT);
                 break;
             

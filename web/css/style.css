@@ -33,6 +33,10 @@
     margin-left: 10%;
 }
 
+.nurse-update {
+    margin-left: 16%;
+}
+
 .myTooltip {
     cursor: help;
 }
@@ -62,5 +66,34 @@
 .select {
     margin-left: 18.5%;
     width: 46.5%;
+}
+
+.change-form {
+    margin-left: 60%;
+    margin-top: -1%;
+    width: 110%;
+}
+
+.change-form-label {
+    margin-left: -30.5%;
+}
+
+.change-form-select-label {
+    margin-left: 17.8%;
+    margin-right: -5%;
+    margin-top: 0.5%;
+}
+
+.change-form-select {
+    margin-left: 10%;
+    width: 51.5%;
+}
+
+.alert-update {
+    padding: 0.5%;
+    width: 50%;
+    margin-left: 25%; 
+    margin-bottom: -4%;
+    text-align: center;
 }
 

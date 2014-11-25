@@ -22,6 +22,8 @@ public class EditIsWorking {
     public static String ASSIGN_DOCTOR = "INSERT INTO isworking (workingTime, departmentNum, doctor)"
             + " VALUES(?, ?, ?)";
     public static String DELETE_DOC_WORK = "DELETE FROM isworking WHERE departmentNum = ? AND doctor = ?";
+    public static String UPDATE_DOC_WORK = "UPDATE isworking SET tel = ?, workingTime = ?, departmentNum = ?"
+            + " WHERE departmentNum = ? AND doctor = ?";
     
     private EditIsWorking() {};
             
@@ -71,6 +73,26 @@ public class EditIsWorking {
         if (stmt != null) stmt.close();
         if (connection != null) stmt.close();
                 
+    }
+    
+    public static void updateDocWork(Integer telNum, String workingTime, int departmentNum, int defDepartmentNum, 
+            String docEmail) throws SQLException, NamingException {
+        
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareCall(UPDATE_DOC_WORK);
+        stmt.setInt(1, telNum);
+        stmt.setString(2, workingTime);
+        stmt.setInt(3, departmentNum);
+        stmt.setInt(4, defDepartmentNum);
+        stmt.setString(5, docEmail);
+        stmt.executeUpdate();
+        
+        if (stmt != null) stmt.close();
+        if (connection != null) connection.close();
+        
     }
            
 }

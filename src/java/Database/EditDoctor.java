@@ -34,7 +34,7 @@ public class EditDoctor {
             + " JOIN isworking ON usertable.email = isworking.doctor"
             + " JOIN department ON isworking.departmentNum = department.id"
             + " ORDER BY username";
-    // TODO prepsat selecty
+    // TODO prepsat selecty tj. pouzivat v nich ON
             /*select s.name as Student, c.name as Course 
 from student s
 inner join bridge b on s.id = b.sid
