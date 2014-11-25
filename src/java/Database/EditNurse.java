@@ -25,6 +25,7 @@ public class EditNurse {
             + "departmentNum) VALUES (?, ?, ?, ?, ?, ?)";
     public static final String SELECT_NURSE_INFO = "SELECT username, surname, depName, nurse.id FROM nurse JOIN department"
             + " WHERE department.id = nurse.departmentNum";
+    public static final String UPDATE_NURSE_WORK = "UPDATE nurse SET departmentNum = ? WHERE id = ?";
     
     public void addNurse(Nurse nurse) throws SQLException, NamingException {
         
@@ -73,6 +74,22 @@ public class EditNurse {
         if (connection != null) connection.close();
         
         return nurse;
+    }
+    
+    public static void updateWork(int nurseId, int depId) throws SQLException, NamingException {
+        
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(UPDATE_NURSE_WORK);
+        stmt.setInt(1, depId);
+        stmt.setInt(2, nurseId);
+        stmt.executeUpdate();
+        
+        if (stmt != null) stmt.close();
+        if (connection != null) connection.close();
+        
     }
         
 }

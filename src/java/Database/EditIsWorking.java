@@ -82,7 +82,7 @@ public class EditIsWorking {
         PreparedStatement stmt = null;
         
         connection = Connect.getConnection();
-        stmt = connection.prepareCall(UPDATE_DOC_WORK);
+        stmt = connection.prepareStatement(UPDATE_DOC_WORK);
         stmt.setInt(1, telNum);
         stmt.setString(2, workingTime);
         stmt.setInt(3, departmentNum);

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
         "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem",
-        "/showDoctor", "/showNurse", "/showDepartment", "/delDecWork", "/updateDocWork"})
+        "/showDoctor", "/showNurse", "/showDepartment", "/delDecWork", "/updateDocWork", "/updateNurseWork"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"root"}))
 public class RootController extends HttpServlet {
    
@@ -52,6 +52,7 @@ public class RootController extends HttpServlet {
     public static final String DELETE_DOC_WORK = "/delDocWork";
     
     public static final String UPDATE_DOC_WORK = "/updateDocWork";
+    public static final String UPDATE_NURSE_WORK = "/updateNurseWork";
     
     public static final String VIEW_PATH = "/WEB-INF/views";
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
@@ -429,6 +430,20 @@ public class RootController extends HttpServlet {
                 }
             
                 catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                }
+            
+                Controller.redirect(request, response, SHOW_DEPARTMENT);
+                break;
+                
+            case UPDATE_NURSE_WORK:
+                
+                try {
+                    EditNurse.updateWork(Integer.parseInt(request.getParameter("defaultId")),
+                            EditDepartment.getDepartmentId(request.getParameter("inputDepName")));
+                }
+            
+                catch (NumberFormatException | SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
                 }
             
