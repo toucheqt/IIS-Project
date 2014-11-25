@@ -158,9 +158,25 @@ public class RootController extends HttpServlet {
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDoctor.jsp").forward(request, response);
                 break;
                 
-            case SHOW_NURSE:
+            case SHOW_NURSE: {
+                List<Nurse> nurses;
+                List<String> departments;
+                
+                try {
+                    departments = EditDepartment.getDepartments();
+                    nurses = EditNurse.getNurse();
+                }
+                
+                catch (SQLException | NamingException ex) {
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    return;
+                }
+                
+                request.setAttribute(attrNurse, nurses);
+                request.setAttribute(attrDep, departments);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showNurse.jsp").forward(request, response);
                 break;
+            }
                 
             case SHOW_DEPARTMENT:
                 List<String> departments;
@@ -176,9 +192,9 @@ public class RootController extends HttpServlet {
                     response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
                     return;
                 }
-
+                
                 request.setAttribute(attrDoc, doctors);
-                request.setAttribute(attrNurse, nurse);
+                request.setAttribute(attrNurse, nurses);
                 request.setAttribute(attrDep, departments);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDepartment.jsp").forward(request, response);
                 break;

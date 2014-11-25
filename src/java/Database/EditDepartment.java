@@ -22,6 +22,7 @@ public class EditDepartment {
     
     public static String SELECT_ID = "SELECT id FROM department WHERE depName = ?";
     public static String SELECT_NAME = "SELECT depName FROM department";
+    public static String SELECT_NAME_FROM_ID = "SELECT depName FROM department ON id == ?";
     
     public static int getDepartmentId(String departmentName) throws NamingException, SQLException {
                
@@ -68,6 +69,31 @@ public class EditDepartment {
         
         return names;
                
+    }
+    
+    public static String getNameFromId(int id) throws NamingException, SQLException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        String name = null;
+        String column = "depName";
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_NAME_FROM_ID);
+        stmt.setInt(1, id);
+        rs = stmt.executeQuery();
+        
+        while (rs.next()) {
+            name = rs.getString(column);
+        }
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return name;
+       
     }
     
 }

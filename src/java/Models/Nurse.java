@@ -31,6 +31,18 @@ public class Nurse {
         
     }
     
+    public Nurse(int id, String username, String surname, String birthNum, String address, String city, Integer deparmentNum) {
+        
+        this.id = id;
+        this.username = username;
+        this.surname = surname;
+        this.birthNum = birthNum;
+        this.address = address;
+        this.city = city;
+        this.departmentNum = deparmentNum;
+        
+    }
+    
     public void clearNurse() {
         
         this.id = null;
