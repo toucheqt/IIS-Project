@@ -25,9 +25,9 @@ public class EditDepartment {
     
     public static int getDepartmentId(String departmentName) throws NamingException, SQLException {
                
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
         int depId;
         String column = "id";
         
@@ -38,9 +38,9 @@ public class EditDepartment {
         rs.next();
         depId = rs.getInt(column);
         
-        if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        rs.close();
+        stmt.close();
+        connection.close();
         
         return depId;
         
@@ -48,9 +48,9 @@ public class EditDepartment {
     
     public static List<String> getDepartments() throws NamingException, SQLException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
         List<String> names = new ArrayList();
         String column = "depName";
         
@@ -62,9 +62,9 @@ public class EditDepartment {
             names.add(rs.getString(column));
         }
         
-        if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        rs.close();
+        stmt.close();
+        connection.close();
         
         return names;
                

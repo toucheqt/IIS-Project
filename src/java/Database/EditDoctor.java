@@ -42,16 +42,14 @@ inner join course c on b.cid  = c.id
 order by s.name*/
     public static void addDoctor(Doctor doctor) throws SQLException, NamingException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        
-        String query;
-            
-        if (doctor.getTel()!= null) query = INSERT_USER_WITH_TEL;
-        else query = INSERT_USER;
+        Connection connection;
+        PreparedStatement stmt;
             
         connection = Connect.getConnection();
-        stmt = connection.prepareStatement(query);
+        
+        if (doctor.getTel() != null) stmt = connection.prepareStatement(INSERT_USER_WITH_TEL);
+        else stmt = connection.prepareStatement(INSERT_USER);
+        
         stmt.setString(1, doctor.getUsername());
         stmt.setString(2, doctor.getSurname());
         stmt.setString(3, doctor.getBirthNum());
@@ -72,17 +70,17 @@ order by s.name*/
         
         stmt.executeUpdate();
         
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        stmt.close();
+        connection.close();
  
     }
     
     public static String getUserRole(String user) throws SQLException, NamingException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        String role = null;
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        String role;
         String column = "roleType";
         
         connection = Connect.getConnection();
@@ -92,9 +90,9 @@ order by s.name*/
         rs.next();
         role = rs.getString(column);
         
-        if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        rs.close();
+        stmt.close();
+        connection.close();
         
         return role;
         
@@ -102,10 +100,10 @@ order by s.name*/
     
     public static List<Doctor> getDoctorInfo() throws NamingException, SQLException {
 
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        String columns[] = {"username", "surname", "email"};
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        String[] columns = {"username", "surname", "email"};
         List<Doctor> doctors = new ArrayList();
         
         connection = Connect.getConnection();
@@ -118,9 +116,9 @@ order by s.name*/
                     rs.getString(columns[2]), null, null));
         }
         
-        if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        rs.close();
+        stmt.close();
+        connection.close();
         
         return doctors;
         
@@ -128,9 +126,9 @@ order by s.name*/
     
     public static List<Doctor> getDoctorWork() throws NamingException, SQLException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
         List<Doctor> doctors = new ArrayList();
         String[] columns = {"username", "surname", "email", "depName", "workingTime", "isworking.tel"};
         
@@ -147,9 +145,9 @@ order by s.name*/
             i++;
         }
         
-        if (connection != null) connection.close();
-        if (stmt != null) stmt.close();
-        if (rs != null) rs.close();
+        connection.close();
+        stmt.close();
+        rs.close();
         
         return doctors;
         

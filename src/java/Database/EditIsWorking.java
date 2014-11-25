@@ -30,8 +30,8 @@ public class EditIsWorking {
     public static void assignDoctor(Integer telNum, String workingTime, int departmentNum, String docEmail) 
             throws NamingException, SQLException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
+        Connection connection;
+        PreparedStatement stmt;
         
         connection = Connect.getConnection();
         
@@ -52,17 +52,15 @@ public class EditIsWorking {
         
         stmt.executeUpdate();
         
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
-        
-        return;
-        
+        stmt.close();
+        connection.close();
+                
     }
     
     public static void removeDocWork(String email, String depName) throws SQLException, NamingException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
+        Connection connection;
+        PreparedStatement stmt;
         
         connection = Connect.getConnection();
         stmt = connection.prepareStatement(DELETE_DOC_WORK);
@@ -70,16 +68,16 @@ public class EditIsWorking {
         stmt.setString(2, email);
         stmt.executeUpdate();
         
-        if (stmt != null) stmt.close();
-        if (connection != null) stmt.close();
+        stmt.close();
+        connection.close();
                 
     }
     
     public static void updateDocWork(Integer telNum, String workingTime, int departmentNum, int defDepartmentNum, 
             String docEmail) throws SQLException, NamingException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
+        Connection connection;
+        PreparedStatement stmt;
         
         connection = Connect.getConnection();
         stmt = connection.prepareStatement(UPDATE_DOC_WORK);
@@ -90,8 +88,8 @@ public class EditIsWorking {
         stmt.setString(5, docEmail);
         stmt.executeUpdate();
         
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        stmt.close();
+        connection.close();
         
     }
            

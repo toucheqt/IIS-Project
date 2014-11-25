@@ -7,8 +7,6 @@ package Database.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,12 +16,15 @@ public class MD5Generator {
     
     private static MessageDigest md;
     
+    public static final String HASH_ALGORITHM = "MD5";
+    
     public static String generatePassword(String passwd) {
         
         try {
-            md = MessageDigest.getInstance("MD5");
+            md = MessageDigest.getInstance(HASH_ALGORITHM);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(MD5Generator.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            // TODO zpracovat vyjimku
         }
         
         md.update(passwd.getBytes());

@@ -27,10 +27,10 @@ public class EditNurse {
             + " WHERE department.id = nurse.departmentNum";
     public static final String UPDATE_NURSE_WORK = "UPDATE nurse SET departmentNum = ? WHERE id = ?";
     
-    public void addNurse(Nurse nurse) throws SQLException, NamingException {
+    public static void addNurse(Nurse nurse) throws SQLException, NamingException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
+        Connection connection;
+        PreparedStatement stmt;
         
         connection = Connect.getConnection();
         stmt = connection.prepareCall(INSERT_NURSE);
@@ -43,20 +43,19 @@ public class EditNurse {
             
         stmt.executeUpdate();
         
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        stmt.close();
+        connection.close();
         
     }
-    // TODO predelat edity na static
     
     public static List<Nurse> getNurseInfo() throws NamingException, SQLException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
         String[] columns = {"username", "surname", "depName", "nurse.id"};
         List<Nurse> nurse = new ArrayList();
-        // TODO predelat pole na preferred way
+
         connection = Connect.getConnection();
         stmt = connection.prepareStatement(SELECT_NURSE_INFO);
         rs = stmt.executeQuery();
@@ -69,17 +68,17 @@ public class EditNurse {
             i++;
         }
         
-        if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        rs.close();
+        stmt.close();
+        connection.close();
         
         return nurse;
     }
     
     public static void updateWork(int nurseId, int depId) throws SQLException, NamingException {
         
-        Connection connection = null;
-        PreparedStatement stmt = null;
+        Connection connection;
+        PreparedStatement stmt;
         
         connection = Connect.getConnection();
         stmt = connection.prepareStatement(UPDATE_NURSE_WORK);
@@ -87,8 +86,8 @@ public class EditNurse {
         stmt.setInt(2, nurseId);
         stmt.executeUpdate();
         
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        stmt.close();
+        connection.close();
         
     }
         

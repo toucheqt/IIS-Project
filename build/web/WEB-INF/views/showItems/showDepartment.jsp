@@ -46,7 +46,7 @@
                     </c:choose>
                 </c:forEach>
             </ul>         
-        </div> <!-- TODO radit pomoci js tablesorter 2.0 -->
+        </div> <!-- TODO FRONT radit pomoci js tablesorter 2.0 -->
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h2 class="sub-header">Oddělení ${param.dep} | doktoři</h2>
             <div class="table-responsive">

@@ -165,15 +165,14 @@ public class RootController extends HttpServlet {
             case SHOW_DEPARTMENT:
                 List<String> departments;
                 List<Doctor> doctors;
-                List<Nurse> nurse;
+                List<Nurse> nurses;
                 try {
                     departments = EditDepartment.getDepartments();
-                    nurse = EditNurse.getNurseInfo();
+                    nurses = EditNurse.getNurseInfo();
                     doctors = EditDoctor.getDoctorWork();
                 }
                 
                 catch (NamingException | SQLException ex) {
-                    ex.printStackTrace();
                     response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
                     return;
                 }
@@ -278,7 +277,6 @@ public class RootController extends HttpServlet {
             }
 
             case ACTION_NURSE: {
-                EditNurse editNurse = new EditNurse();
                 int departmentId;
                 String attribute = "nurse";
                 
@@ -324,7 +322,7 @@ public class RootController extends HttpServlet {
                 }       
                 
                 try {
-                    editNurse.addNurse(getNurse());             
+                    EditNurse.addNurse(getNurse());             
                     Controller.redirect(request, response, ADDED_ITEM + "?nurse=True");
                 }
 
@@ -340,8 +338,8 @@ public class RootController extends HttpServlet {
                 int departmentId;
                 Integer telNum = null;
                 String attribute = "staff";
-                String workingTime = null;
-                String doctorInfo = null;
+                String workingTime;
+                String doctorInfo;
 
                 // doctor, department and working time must be filled
                 try {
@@ -395,7 +393,7 @@ public class RootController extends HttpServlet {
                 
                 break;
             }
-            // TODO: od sestry smazat odebrat a nechat tam jenom zmenit
+
             case DELETE_DOC_WORK: {
                 String email = request.getParameter("email");
                 String depName = request.getParameter("depName");
@@ -422,7 +420,7 @@ public class RootController extends HttpServlet {
                             EditDepartment.getDepartmentId(request.getParameter("defaultDepName")),
                             request.getParameter("defaultEmail"));
                 }
-            // TODO: dat do uvozovek otazniky v selectech
+// TODO: odstranit osetreni jmen a cisel pomoci regulaku
                 // TODO: poresit SQL injection
                 // TODO: poresit aby se u updatovani nemohlo stat, ze nezadam hodnotu
                 catch (NumberFormatException ex) {
