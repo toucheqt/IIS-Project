@@ -34,6 +34,16 @@ public class EditDoctor {
             + " JOIN isworking ON usertable.email = isworking.doctor"
             + " JOIN department ON isworking.departmentNum = department.id"
             + " ORDER BY username";
+    public static final String SELECT_DOCTOR = "SELECT username, surname, birthNum, address, city, email, usertable.tel,"
+            + " depName"
+            + " FROM usertable"
+            + " LEFT JOIN isworking ON usertable.email = isworking.doctor"
+            + " LEFT JOIN department ON isworking.departmentNum = department.id"
+            + " WHERE roleType = ?"
+            + " ORDER BY username";
+    public static final String DELETE_DOCTOR = "DELETE FROM usertable WHERE email = ?";
+    public static final String UPDATE_DOCTOR = "UPDATE usertable SET username = ?, surname = ?, birthNum = ?,"
+            + " address = ?, city = ?, email = ?, tel = ? WHERE email = ?";
     // TODO prepsat selecty tj. pouzivat v nich ON
             /*select s.name as Student, c.name as Course 
 from student s
@@ -124,6 +134,35 @@ order by s.name*/
         
     }
     
+    public static List<Doctor> getDoctors() throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        List<Doctor> doctors = new ArrayList();
+        String[] columns = {"username", "surname", "birthNum", "address", "city", "email", "tel", "depName"};
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_DOCTOR);
+        stmt.setString(1, Controller.ROLE_USER);
+        rs = stmt.executeQuery();
+        
+        // TODO zkusit najit nejakou nahradu za ten hnusnej while
+        for (int i = 0; rs.next(); i++) {     
+            doctors.add(new Doctor(rs.getString(columns[0]), rs.getString(columns[1]),
+                    rs.getString(columns[2]), rs.getString(columns[3]), rs.getString(columns[4]),
+                    rs.getString(columns[5]), rs.getInt(columns[6]), null)); 
+            doctors.get(i).setDepartmentName(rs.getString(columns[7]));
+        }
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return doctors;
+        
+    }
+    
     public static List<Doctor> getDoctorWork() throws NamingException, SQLException {
         
         Connection connection;
@@ -150,6 +189,43 @@ order by s.name*/
         rs.close();
         
         return doctors;
+        
+    }
+    
+    public static void deleteDoctor(String email) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(DELETE_DOCTOR);
+        stmt.setString(1, email);
+        stmt.executeUpdate();
+        
+        stmt.close();
+        connection.close();
+        
+    }
+    
+    public static void updateDoctor(Doctor doctor, String defaultEmail) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(UPDATE_DOCTOR);
+        stmt.setString(1, doctor.getUsername());
+        stmt.setString(2, doctor.getSurname());
+        stmt.setString(3, doctor.getBirthNum());
+        stmt.setString(4, doctor.getAddress());
+        stmt.setString(5, doctor.getCity());
+        stmt.setString(6, doctor.getEmail());
+        stmt.setInt(7, doctor.getTel());
+        stmt.setString(8, defaultEmail);
+        stmt.executeUpdate();
+        
+        stmt.close();
+        connection.close();
         
     }
     

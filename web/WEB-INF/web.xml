@@ -24,8 +24,12 @@
         <url-pattern>/showNurse</url-pattern>
         <url-pattern>/showDepartment</url-pattern>
         <url-pattern>/delDocWork</url-pattern>
+        <url-pattern>/delNurse</url-pattern>
+        <url-pattern>/delDoctor</url-pattern>
         <url-pattern>/updateDocWork</url-pattern>
         <url-pattern>/updateNurseWork</url-pattern>
+        <url-pattern>/updateNurse</url-pattern>
+        <url-pattern>/updateDoctor</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ErrorController</servlet-name>

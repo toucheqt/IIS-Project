@@ -29,7 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RootController", urlPatterns = {"/RootController", "/addDoc", "/addDocDel", "/addNurse",
         "/addNurseDel", "/assignStaff", "/actionAddDoc", "/actionAddNurse", "actionAssignStaff", "/addedItem",
-        "/showDoctor", "/showNurse", "/showDepartment", "/delDecWork", "/updateDocWork", "/updateNurseWork"})
+        "/showDoctor", "/showNurse", "/showDepartment", "/delDecWork", "/updateDocWork", "/updateNurseWork",
+        "/delNurse", "/updateNurse", "updateDoctor", "delDoctor"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"root"}))
 public class RootController extends HttpServlet {
    
@@ -50,9 +51,13 @@ public class RootController extends HttpServlet {
     public static final String SHOW_DEPARTMENT = "/showDepartment";
     
     public static final String DELETE_DOC_WORK = "/delDocWork";
+    public static final String DELETE_NURSE = "/delNurse";
+    public static final String DELETE_DOCTOR = "/delDoctor";
     
     public static final String UPDATE_DOC_WORK = "/updateDocWork";
     public static final String UPDATE_NURSE_WORK = "/updateNurseWork";
+    public static final String UPDATE_NURSE = "/updateNurse";
+    public static final String UPDATE_DOCTOR = "/updateDoctor";
     
     public static final String VIEW_PATH = "/WEB-INF/views";
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
@@ -154,9 +159,26 @@ public class RootController extends HttpServlet {
                 break;
             }
                 
-            case SHOW_DOCTOR:
+            case SHOW_DOCTOR: {
+                List<Doctor> doctors;
+                List<String> departments;
+                
+                try {
+                    doctors = EditDoctor.getDoctors();
+                    departments = EditDepartment.getDepartments();
+                }
+                
+                catch (SQLException | NamingException ex) {
+                    ex.printStackTrace();
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    break; // TODO nahradit returny za break;
+                }
+                
+                request.setAttribute(attrDoc, doctors);
+                request.setAttribute(attrDep, departments);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDoctor.jsp").forward(request, response);
                 break;
+            }
                 
             case SHOW_NURSE: {
                 List<Nurse> nurses;
@@ -463,7 +485,73 @@ public class RootController extends HttpServlet {
             
                 Controller.redirect(request, response, SHOW_DEPARTMENT);
                 break;
+                
+            case DELETE_DOCTOR:
+                
+                try {
+                    EditDoctor.deleteDoctor(request.getParameter("defaultEmail"));
+                }
             
+                catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, SHOW_DOCTOR);
+                break;
+                
+            case DELETE_NURSE:
+                                
+                try {
+                    EditNurse.deleteNurse(Integer.parseInt(request.getParameter("defaultId-delete")));
+                }
+            
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, SHOW_NURSE);
+                break;
+                
+            case UPDATE_DOCTOR:
+                
+                try {
+                    EditDoctor.updateDoctor(new Doctor(request.getParameter("inputName"), 
+                            request.getParameter("inputSurname"), request.getParameter("inputBirthNum"), 
+                            request.getParameter("inputAddr"), request.getParameter("inputCity"), 
+                            request.getParameter("inputEmail"), Integer.parseInt(request.getParameter("inputTel")), null),
+                            request.getParameter("defaultEmail"));
+                }
+            
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break; // TODO pri numberFormatEx vypsat error, ne chybu serveru
+                }
+            
+                Controller.redirect(request, response, SHOW_DOCTOR);
+                break;
+                
+            case UPDATE_NURSE:
+                
+                try {
+                    EditNurse.updateNurse(new Nurse(Integer.parseInt(request.getParameter("defaultId-change")), 
+                            request.getParameter("inputName"), request.getParameter("inputSurname"),
+                            request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
+                            request.getParameter("inputCity"), null));
+                }
+            
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, SHOW_NURSE);
+                break;
+                // TODO refaktorovat html
+                // TODO nevracet pouze na hlavni stranku zobrazeni, ale vracet i podle oddeleni                
+                // TODO predelat html modaly do tabulek
+                // TODO mit jen jeden div a hazet do nej data dynamicky
             default:
                 Controller.redirect(request, response, Controller.ERROR_500);
                 break;

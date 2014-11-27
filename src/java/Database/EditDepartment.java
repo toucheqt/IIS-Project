@@ -19,10 +19,10 @@ import javax.naming.NamingException;
  * @author Touche
  */
 public class EditDepartment {
-    
+    // TODO pokud neni telefon zadan, tak to automaticky vyplnuje nulu, to nechcem
     public static String SELECT_ID = "SELECT id FROM department WHERE depName = ?";
     public static String SELECT_NAME = "SELECT depName FROM department";
-    public static String SELECT_NAME_FROM_ID = "SELECT depName FROM department ON id == ?";
+    public static String SELECT_NAME_FROM_ID = "SELECT depName FROM department WHERE id = ?";
     
     public static int getDepartmentId(String departmentName) throws NamingException, SQLException {
                

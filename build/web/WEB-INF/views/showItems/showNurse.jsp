@@ -137,7 +137,7 @@
                                                                     </div>
                                                                 </div>               
                                                                 <div class="modal-footer">
-                                                                    <input type="hidden" value="${nurse[status.index].id}" name="defaultId"/>
+                                                                    <input type="hidden" value="${nurse[status.index].id}" name="defaultId-change"/>
                                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
                                                                     <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
                                                                 </div>
@@ -160,7 +160,7 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <form method="POST" action="<c:url value="/delNurse"/>">
-                                                                <input type="hidden" value="${nurse[status.index].id}" name="id"/>
+                                                                <input type="hidden" value="${nurse[status.index].id}" name="defaultId-delete"/>
                                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
                                                                 <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
                                                             </form>
@@ -239,7 +239,7 @@
                                                                         </div>
                                                                     </div>               
                                                                     <div class="modal-footer">
-                                                                        <input type="hidden" value="${nurse[status.index].id}" name="defaultId"/>
+                                                                        <input type="hidden" value="${nurse[status.index].id}" name="defaultId-change"/>
                                                                         <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
                                                                         <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
                                                                     </div>
@@ -262,7 +262,7 @@
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <form method="POST" action="<c:url value="/delNurse"/>">
-                                                                    <input type="hidden" value="${nurse[status.index].id}" name="id"/>
+                                                                    <input type="hidden" value="${nurse[status.index].id}" name="defaultId-delete"/>
                                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
                                                                     <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
                                                                 </form>

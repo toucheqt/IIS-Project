@@ -27,6 +27,10 @@ public class EditNurse {
     public static final String SELECT_NURSE_INFO = "SELECT username, surname, depName, nurse.id FROM nurse JOIN department"
             + " WHERE department.id = nurse.departmentNum";
     public static final String UPDATE_NURSE_WORK = "UPDATE nurse SET departmentNum = ? WHERE id = ?";
+    public static final String UPDATE_NURSE = "UPDATE nurse SET username = ?, surname = ?, birthNum = ?,"
+            + " address = ?, city = ? WHERE id = ?";
+    public static final String DELETE_NURSE = "DELETE FROM nurse WHERE id = ?";
+    
     
     public static void addNurse(Nurse nurse) throws SQLException, NamingException {
         
@@ -114,6 +118,41 @@ public class EditNurse {
         stmt = connection.prepareStatement(UPDATE_NURSE_WORK);
         stmt.setInt(1, depId);
         stmt.setInt(2, nurseId);
+        stmt.executeUpdate();
+        
+        stmt.close();
+        connection.close();
+        
+    }
+    
+    public static void updateNurse(Nurse nurse) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(UPDATE_NURSE);
+        stmt.setString(1, nurse.getUsername());
+        stmt.setString(2, nurse.getSurname());
+        stmt.setString(3, nurse.getBirthNum());
+        stmt.setString(4, nurse.getAddress());
+        stmt.setString(5, nurse.getCity());
+        stmt.setInt(6, nurse.getId());
+        stmt.executeUpdate();
+        
+        stmt.close();
+        connection.close();
+        
+    }
+    
+    public static void deleteNurse(int id) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(DELETE_NURSE);
+        stmt.setInt(1, id);
         stmt.executeUpdate();
         
         stmt.close();
