@@ -28,6 +28,7 @@ public class Controller extends HttpServlet {
     /** Role for any user of the information system */
     public static final String ROLE_USER = "user";
     
+    public static final String LOGIN = "/signIn";
     public static final String ROOT_CONTROLLER = "/RootController";
     public static final String USER_CONTROLLER = "/DocController";
     public static final String ERROR_404 = "/404";
@@ -66,6 +67,10 @@ public class Controller extends HttpServlet {
                 
             case ROLE_USER:
                 response.sendRedirect(DEFAULT_PATH + USER_CONTROLLER);
+                break;
+                
+            case LOGIN:
+                response.sendRedirect(DEFAULT_PATH + LOGIN);
                 break;
                 
             default:

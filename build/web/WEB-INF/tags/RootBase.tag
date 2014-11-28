@@ -38,12 +38,49 @@
               <li class='dropdown'>
                   <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Nastavení<span class='caret'></span></a>
                   <ul class='dropdown-menu' role='menu'>
-                      <li><a href='#'>Změnit heslo</a></li>
+                      <li><a href='#' data-toggle="modal" data-target="#updatePasswd" >Změnit heslo</a></li>
                       <li><a href='#'>Změnit osobní údaje</a></li>
                   </ul>
               </li>
-            <li class="active"><a href="./">Logout</a></li>
+              <li class="active"><a href="<c:url value="/logout"/>">Logout</a></li>
           </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
+          
+<div class="modal fade bs-example-modal-sm" id="updatePasswd" tabindex="-1" role="dialog"
+        aria-labelledby="modalDelete" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-passwd">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Změna hesla</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" method="POST" action="<c:url value="/updatePasswd"/>">
+                    <div class="form-group">
+                        <label for="oldPasswd" class="control-label change-form-label">Staré heslo</label>
+                        <div class="col-sm-10 doc-form">
+                            <input type="text" class="form-control change-form" name="oldPasswd"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPasswd1" class="control-label change-form-label">Nové heslo</label>
+                        <div class="col-sm-10 doc-form">
+                            <input type="text" class="form-control change-form" name="newPasswd1"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPasswd2" class="control-label change-form-label">Nové heslo</label>
+                        <div class="col-sm-10 doc-form">
+                            <input type="text" class="form-control change-form" name="newPasswd2"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
+                        <input type="submit" value="Změnit" class="btn btn-primary" data-dissmiss="modal"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

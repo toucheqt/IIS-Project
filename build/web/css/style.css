@@ -68,6 +68,10 @@
     width: 46.5%;
 }
 
+.modal-passwd {
+    width: 50%;
+}
+
 .change-form {
     margin-left: 60%;
     margin-top: -1%;

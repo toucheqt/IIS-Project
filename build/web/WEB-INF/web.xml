@@ -8,6 +8,10 @@
         <servlet-name>ErrorController</servlet-name>
         <servlet-class>servlets.ErrorController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Autentificator</servlet-name>
+        <servlet-class>servlets.Autentificator</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RootController</servlet-name>
         <url-pattern>/RootController</url-pattern>
@@ -36,14 +40,26 @@
         <url-pattern>/404</url-pattern>
         <url-pattern>/500</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Autentificator</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
-            30
+            5
         </session-timeout>
     </session-config>
     <welcome-file-list>
         <welcome-file>Controller</welcome-file>
     </welcome-file-list>
+    <!--<error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/views/errorPages/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/views/errorPages/500.jsp</location>
+    </error-page>-->
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>mainRealm</realm-name>
