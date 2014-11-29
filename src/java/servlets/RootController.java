@@ -247,19 +247,7 @@ public class RootController extends HttpServlet {
                 setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"),
                         request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
                         request.getParameter("inputCity"), request.getParameter("inputMail"),
-                        null, MD5Generator.generatePassword(passwd.substring(0, 7))));
-                
-                // check if the tel. number is filled
-                if (!request.getParameter("inputTel").isEmpty()) {
-                    try {
-                        getDoctor().setTel(Integer.parseInt(request.getParameter("inputTel")));
-                    } 
-                        
-                    catch (NumberFormatException ex) {
-                        Controller.redirect(request, response, ADD_DOC + "?tel=True");
-                        return;
-                    }
-                }
+                        request.getParameter("inputTel"), MD5Generator.generatePassword(passwd.substring(0, 7))));   
                 
                 // check if all required values are correctly filled
                 if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches(regxpAlpha)) {
@@ -279,7 +267,7 @@ public class RootController extends HttpServlet {
                     Controller.redirect(request, response, ADD_DOC + "?birthNum=True");
                     return;
                 }
-                    
+                   // todo checknout jestli v telefonu nejsou uplne picoviny 
                 else if (getDoctor().getEmail().isEmpty() || !getDoctor().getEmail().matches(regxpEmail)) {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?email=True");
@@ -464,7 +452,8 @@ public class RootController extends HttpServlet {
                 catch (NumberFormatException ex) {
                     Controller.redirect(request, response, SHOW_DEPARTMENT + "?err=True"); // TODO vypsat error ze bylo blby cislo
                 }
-            
+            // TODO zavest praci s db jen tam, kde je to nutne, udelat si tridni promenne do kterych nacist data z db
+                // nekdy na zacatku a pak to jen aktualizovat, pokud se provede delete nebo update
                 catch (SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
                 }
@@ -520,7 +509,7 @@ public class RootController extends HttpServlet {
                     EditDoctor.updateDoctor(new Doctor(request.getParameter("inputName"), 
                             request.getParameter("inputSurname"), request.getParameter("inputBirthNum"), 
                             request.getParameter("inputAddr"), request.getParameter("inputCity"), 
-                            request.getParameter("inputEmail"), Integer.parseInt(request.getParameter("inputTel")), null),
+                            request.getParameter("inputEmail"), request.getParameter("inputTel"), null),
                             request.getParameter("defaultEmail"));
                 }
             

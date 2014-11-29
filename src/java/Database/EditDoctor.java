@@ -22,9 +22,7 @@ import servlets.Controller;
  */
 public class EditDoctor {
     
-    public static final String INSERT_USER = "INSERT INTO usertable (username, surname, birthNum, address,"
-            + " city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, NULL, ?, ?)";
-    public static final String INSERT_USER_WITH_TEL = "INSERT INTO usertable (username, surname, birthNum,"
+    public static final String INSERT_USER = "INSERT INTO usertable (username, surname, birthNum,"
             + " address, city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
     public static final String SELECT_ROLE_TYPE = "SELECT roleType FROM usertable WHERE email = ?";
     public static final String SELECT_DOC_INFO = "SELECT username, surname, email FROM usertable"
@@ -59,8 +57,7 @@ order by s.name*/
             
         connection = Connect.getConnection();
         
-        if (doctor.getTel() != null) stmt = connection.prepareStatement(INSERT_USER_WITH_TEL);
-        else stmt = connection.prepareStatement(INSERT_USER);
+        stmt = connection.prepareStatement(INSERT_USER);
         
         stmt.setString(1, doctor.getUsername());
         stmt.setString(2, doctor.getSurname());
@@ -68,18 +65,9 @@ order by s.name*/
         stmt.setString(4, doctor.getAddress());
         stmt.setString(5, doctor.getCity());
         stmt.setString(6, doctor.getEmail());
-            
-        if (doctor.getTel() != null) {
-            stmt.setInt(7, doctor.getTel());
-            stmt.setString(8, doctor.getRoleType());
-            stmt.setString(9, doctor.getPassword());
-        }
-            
-        else {
-            stmt.setString(7, doctor.getRoleType());
-            stmt.setString(8, doctor.getPassword());
-        }
-        
+        stmt.setString(7, doctor.getTel());
+        stmt.setString(8, doctor.getRoleType());
+        stmt.setString(9, doctor.getPassword());      
         stmt.executeUpdate();
         
         stmt.close();
@@ -153,7 +141,7 @@ order by s.name*/
         for (int i = 0; rs.next(); i++) {     
             doctors.add(new Doctor(rs.getString(columns[0]), rs.getString(columns[1]),
                     rs.getString(columns[2]), rs.getString(columns[3]), rs.getString(columns[4]),
-                    rs.getString(columns[5]), rs.getInt(columns[6]), null)); 
+                    rs.getString(columns[5]), rs.getString(columns[6]), null)); 
             doctors.get(i).setDepartmentName(rs.getString(columns[7]));
         }
         
@@ -180,7 +168,7 @@ order by s.name*/
         int i = 0;
         while (rs.next()) {
             doctors.add(new Doctor(rs.getString(columns[0]), rs.getString(columns[1]), null, null, null,
-                    rs.getString(columns[2]), rs.getInt(columns[5]), null));
+                    rs.getString(columns[2]), rs.getString(columns[5]), null));
             doctors.get(i).setDepartmentName(rs.getString(columns[3]));
             doctors.get(i).setWorkingTime(rs.getString(columns[4]));
             i++;
@@ -222,7 +210,7 @@ order by s.name*/
         stmt.setString(4, doctor.getAddress());
         stmt.setString(5, doctor.getCity());
         stmt.setString(6, doctor.getEmail());
-        stmt.setInt(7, doctor.getTel());
+        stmt.setString(7, doctor.getTel());
         stmt.setString(8, defaultEmail);
         stmt.executeUpdate();
         

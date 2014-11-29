@@ -44,6 +44,7 @@
         <servlet-name>Autentificator</servlet-name>
         <url-pattern>/logout</url-pattern>
         <url-pattern>/updatePasswd</url-pattern>
+        <url-pattern>/updateAbout</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

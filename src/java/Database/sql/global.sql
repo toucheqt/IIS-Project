@@ -4,8 +4,8 @@ CREATE TABLE userTable (
     birthNum VARCHAR(11),
     address VARCHAR(35),
     city VARCHAR(20),
-    email VARCHAR(30) UNIQUE NOT NULL,
-    tel NUMERIC(9),
+    email VARCHAR(35) UNIQUE NOT NULL,
+    tel VARCHAR(15),
     roleType VARCHAR(4) NOT NULL,
     password VARCHAR(40) NOT NULL,
     PRIMARY KEY (email)
@@ -33,7 +33,7 @@ CREATE TABLE isWorking (
     tel NUMERIC(9),
     workingTime VARCHAR(15) NOT NULL,
     departmentNum INT NOT NULL,
-    doctor VARCHAR(25) NOT NULL,
+    doctor VARCHAR(35) NOT NULL,
     FOREIGN KEY (departmentNum) REFERENCES department(id),
     FOREIGN KEY (doctor) REFERENCES usertable(email),
     PRIMARY KEY (departmentNum, doctor)

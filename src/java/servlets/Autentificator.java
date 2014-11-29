@@ -7,6 +7,7 @@ package servlets;
 
 import Database.EditDoctor;
 import Database.util.MD5Generator;
+import Models.Doctor;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.naming.NamingException;
@@ -21,12 +22,12 @@ import javax.servlet.http.HttpSession;
  *
  * @author Touche
  */
-@WebServlet(name = "Autentificator", urlPatterns = {"/logout", "/updatePasswd"})
+@WebServlet(name = "Autentificator", urlPatterns = {"/logout", "/updatePasswd", "/updateAbout"})
 public class Autentificator extends HttpServlet {
     
     public static final String LOGOUT = "/logout";
     public static final String UPDATE_PASSWD = "/updatePasswd";
-
+    public static final String UPDATE_ABOUT = "/updateAbout";
 
     private String address;
 
@@ -116,6 +117,30 @@ public class Autentificator extends HttpServlet {
             
                 Controller.redirect(request, response, Controller.ROOT_CONTROLLER); // TODO presmerovat na success kid page
                 break;
+                
+            case UPDATE_ABOUT:
+                
+                try {
+                    // TODO: predvyplnit udaje ve zmene osobnich udaju
+                    EditDoctor.updateDoctor(new Doctor(request.getParameter("inputName"),
+                            request.getParameter("inputSurname"), request.getParameter("inputBirthNum"),
+                            request.getParameter("inputAddr"), request.getParameter("inputCity"),
+                            request.getParameter("inputEmail"), request.getParameter("inputTel"), null), user);
+                }
+            
+                catch (NumberFormatException ex) {
+                    Controller.redirect(request, response, "chybny telefon"); // TODO error
+                    break;
+                }
+            
+                catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, "success update");
+                break; // TODO redirect
+                // TODO naplnit db daty
                 
             default:
                 Controller.redirect(request, response, Controller.ERROR_404);

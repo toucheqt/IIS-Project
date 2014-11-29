@@ -21,13 +21,13 @@ public class Doctor {
     private String address;
     private String city;
     private String email;
-    private Integer tel;
+    private String tel;
     private String password;
     private String workingTime;
     private String departmentName;
     
     public Doctor(String username, String surname, String birthNum, String address, String city, String email,
-            Integer tel, String password) {
+            String tel, String password) {
         this.username = username;
         this.surname = surname;
         this.birthNum = birthNum;
@@ -138,14 +138,14 @@ public class Doctor {
     /**
      * @return the tel
      */
-    public Integer getTel() {
+    public String getTel() {
         return tel;
     }
 
     /**
      * @param tel the tel to set
      */
-    public void setTel(Integer tel) {
+    public void setTel(String tel) {
         this.tel = tel;
     }
     
