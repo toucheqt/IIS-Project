@@ -43,6 +43,7 @@
     <servlet-mapping>
         <servlet-name>Autentificator</servlet-name>
         <url-pattern>/logout</url-pattern>
+        <url-pattern>/updatePasswd</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -59,7 +60,7 @@
     <error-page>
         <error-code>500</error-code>
         <location>/WEB-INF/views/errorPages/500.jsp</location>
-    </error-page>-->
+    </error-page>--> <!-- TODO tohle odmazat -->
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>mainRealm</realm-name>

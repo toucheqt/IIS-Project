@@ -58,21 +58,21 @@
             <div class="modal-body">
                 <form class="form-horizontal" role="form" method="POST" action="<c:url value="/updatePasswd"/>">
                     <div class="form-group">
-                        <label for="oldPasswd" class="control-label change-form-label">Staré heslo</label>
+                        <label for="oldPasswd" class="control-label change-pass-label">Staré heslo</label>
                         <div class="col-sm-10 doc-form">
-                            <input type="text" class="form-control change-form" name="oldPasswd"/>
+                            <input type="password" class="form-control change-pass" name="oldPasswd"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="newPasswd1" class="control-label change-form-label">Nové heslo</label>
+                        <label for="newPasswd1" class="control-label change-pass-label">Nové heslo</label>
                         <div class="col-sm-10 doc-form">
-                            <input type="text" class="form-control change-form" name="newPasswd1"/>
+                            <input type="password" class="form-control change-pass" name="newPasswd1"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="newPasswd2" class="control-label change-form-label">Nové heslo</label>
+                        <label for="newPasswd2" class="control-label change-pass-label">Nové heslo</label>
                         <div class="col-sm-10 doc-form">
-                            <input type="text" class="form-control change-form" name="newPasswd2"/>
+                            <input type="password" class="form-control change-pass" name="newPasswd2"/>
                         </div>
                     </div>
                     <div class="modal-footer">

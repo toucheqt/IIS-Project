@@ -5,7 +5,11 @@
  */
 package servlets;
 
+import Database.EditDoctor;
+import Database.util.MD5Generator;
 import java.io.IOException;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,10 +21,11 @@ import javax.servlet.http.HttpSession;
  *
  * @author Touche
  */
-@WebServlet(name = "Autentificator", urlPatterns = {"/logout"})
+@WebServlet(name = "Autentificator", urlPatterns = {"/logout", "/updatePasswd"})
 public class Autentificator extends HttpServlet {
     
     public static final String LOGOUT = "/logout";
+    public static final String UPDATE_PASSWD = "/updatePasswd";
 
 
     private String address;
@@ -49,7 +54,6 @@ public class Autentificator extends HttpServlet {
                 session.invalidate();
                 response.sendRedirect(Controller.DEFAULT_PATH);
                 break;
-                // TODO poresit aby nefungovalo back xD
             
         }
         
@@ -67,8 +71,58 @@ public class Autentificator extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        
-        
+        String user = request.getRemoteUser();
+        setAddress(request.getServletPath());
+
+        switch (getAddress()) {
+            
+            case UPDATE_PASSWD:
+                
+                String defaultPasswd;
+                String newPasswd = request.getParameter("newPasswd1");
+                String newPasswdCheck = request.getParameter("newPasswd2");
+                
+                // check if new passwords are identical
+                if (!newPasswd.equals(newPasswdCheck)) {
+                    Controller.redirect(request, response, "nesedi nova hesla");
+                    break; // TODO nejak vymyslet error pri spatne zadanych heslech
+                }
+                
+                // check if old password is correct
+                try {
+                    defaultPasswd =  EditDoctor.getPasswd(user);
+                }
+                
+                catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+                
+                if (!defaultPasswd.equals(MD5Generator.generatePassword(request.getParameter("oldPasswd")))) {
+                    Controller.redirect(request, response, "nesedi stara hesla");
+                    break;
+                }
+            
+                // update passwd
+                try {
+                    EditDoctor.updatePasswd(user, MD5Generator.generatePassword(newPasswd));
+                }
+            
+                catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                    // TODO error pri prihlasovani vycentrovat na stred
+                }
+            
+                Controller.redirect(request, response, Controller.ROOT_CONTROLLER); // TODO presmerovat na success kid page
+                break;
+                
+            default:
+                Controller.redirect(request, response, Controller.ERROR_404);
+                break;
+                
+        }
+         
     }
 
     /**

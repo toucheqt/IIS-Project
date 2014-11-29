@@ -44,6 +44,8 @@ public class EditDoctor {
     public static final String DELETE_DOCTOR = "DELETE FROM usertable WHERE email = ?";
     public static final String UPDATE_DOCTOR = "UPDATE usertable SET username = ?, surname = ?, birthNum = ?,"
             + " address = ?, city = ?, email = ?, tel = ? WHERE email = ?";
+    public static final String SELECT_PASSWD = "SELECT password FROM usertable WHERE email = ?";
+    public static final String UPDATE_PASSWD = "UPDATE usertable SET password = ? WHERE email = ?";
     // TODO prepsat selecty tj. pouzivat v nich ON
             /*select s.name as Student, c.name as Course 
 from student s
@@ -222,6 +224,46 @@ order by s.name*/
         stmt.setString(6, doctor.getEmail());
         stmt.setInt(7, doctor.getTel());
         stmt.setString(8, defaultEmail);
+        stmt.executeUpdate();
+        
+        stmt.close();
+        connection.close();
+        
+    }
+    
+    public static String getPasswd(String user) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        String column = "password";
+        String password;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_PASSWD);
+        stmt.setString(1, user);
+        rs = stmt.executeQuery();
+        
+        rs.next();
+        password = rs.getString(column);
+        
+        connection.close();
+        stmt.close();
+        rs.close();
+        
+        return password;
+        
+    }
+    
+    public static void updatePasswd(String user, String passwd) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(UPDATE_PASSWD);
+        stmt.setString(1, passwd);
+        stmt.setString(2, user);
         stmt.executeUpdate();
         
         stmt.close();
