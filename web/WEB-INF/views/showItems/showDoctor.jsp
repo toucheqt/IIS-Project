@@ -80,10 +80,10 @@
                                             <td>${doctor[status.index].address}</td>
                                             <td>${doctor[status.index].city}</td>
                                             <td>${doctor[status.index].email}</td>
-                                            <c:if test="${doctor[status.index].tel == 0}">
+                                            <c:if test="${empty doctor[status.index].tel}">
                                                 <td></td>
                                             </c:if>
-                                            <c:if test="${doctor[status.index].tel != 0}">
+                                            <c:if test="${not empty doctor[status.index].tel}">
                                                 <td>${doctor[status.index].tel}</td>
                                             </c:if>
                                             <td>${doctor[status.index].departmentName}</td>

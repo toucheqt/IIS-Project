@@ -238,7 +238,8 @@ public class RootController extends HttpServlet {
         String regxpAlpha = "[\\p{L}]+";
         String regxpBirthNum = "[0-9]{6}/[0-9]{4}";
         String regxpEmail = ".+@.+";
-                
+        String regxpNotLetters = "[^a-zA-z]+";
+                // TODO najit jinou bootstrap sablonu
         switch (getAddress()) {
             case ACTION_DOC: {
 
@@ -277,6 +278,12 @@ public class RootController extends HttpServlet {
                 else if (!getDoctor().getCity().isEmpty() && !getDoctor().getCity().matches(regxpAlpha)) {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?city=True");
+                    return;
+                }
+                
+                else if (!getDoctor().getTel().isEmpty() && !getDoctor().getTel().matches(regxpNotLetters)) {
+                    request.setAttribute(attribute, getDoctor());
+                    Controller.redirect(request, response, ADD_DOC + "?tel=True");
                     return;
                 }
                      

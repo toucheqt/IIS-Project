@@ -141,6 +141,8 @@ public class Autentificator extends HttpServlet {
                 Controller.redirect(request, response, "success update");
                 break; // TODO redirect
                 // TODO naplnit db daty
+                // TODO kontrolovat na korektni data i osobni udaje
+                // TODO rodne cislo predelat na regulak obsahujici 0-9/
                 
             default:
                 Controller.redirect(request, response, Controller.ERROR_404);

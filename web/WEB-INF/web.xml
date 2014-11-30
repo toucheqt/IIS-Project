@@ -12,6 +12,10 @@
         <servlet-name>Autentificator</servlet-name>
         <servlet-class>servlets.Autentificator</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DocController</servlet-name>
+        <servlet-class>servlets.DocController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RootController</servlet-name>
         <url-pattern>/RootController</url-pattern>
@@ -46,6 +50,10 @@
         <url-pattern>/updatePasswd</url-pattern>
         <url-pattern>/updateAbout</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DocController</servlet-name>
+        <url-pattern>/DocController</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             5
@@ -61,7 +69,8 @@
     <error-page>
         <error-code>500</error-code>
         <location>/WEB-INF/views/errorPages/500.jsp</location>
-    </error-page>--> <!-- TODO tohle odmazat -->
+    </error-page>-->
+    <!-- TODO tohle odmazat -->
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>mainRealm</realm-name>
