@@ -5,11 +5,13 @@
  */
 package servlets;
 
+import Database.EditDepartment;
 import Database.EditPatient;
 import Models.Patient;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,12 +23,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Touche
  */
-@WebServlet(name = "DocController", urlPatterns = {"/docController", "addPatient", "actionAddPatient"})
+@WebServlet(name = "DocController", urlPatterns = {"/docController", "/addPatient", "/actionAddPatient",
+        "/viewPatients"})
 public class DocController extends HttpServlet {
     
     public static final String ADD_PATIENT = "/addPatient";
     
     public static final String ACTION_ADD_PATIENT = "/actionAddPatient";
+    public static final String VIEW_PATIENTS = "/viewPatients";
     
     private String address;
     private Patient patient;
@@ -37,6 +41,7 @@ public class DocController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        String attrDep = "department";
         String attrPatient = "patient";
         
         // TODO pridat vyhledavani
@@ -51,6 +56,25 @@ public class DocController extends HttpServlet {
             case ADD_PATIENT:
                 request.setAttribute(attrPatient, getPatient());
                 request.getRequestDispatcher(RootController.VIEW_ADD_PATH + "/addPatient.jsp").forward(request, response);
+                break;
+                
+            case VIEW_PATIENTS:
+                List<String> departments;
+                List<Patient> patients;
+                
+                try {
+                    departments = EditDepartment.getDepartments();
+                    patients = EditPatient.getPatients();
+                }
+                
+                catch (SQLException | NamingException ex) {
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    break;
+                }
+                
+                request.setAttribute(attrDep, departments);
+                request.setAttribute(attrPatient, patients);
+                request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatients.jsp").forward(request, response);
                 break;
                 
             default:
@@ -106,6 +130,10 @@ public class DocController extends HttpServlet {
                 catch (SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
+                }
+                
+                finally {
+                    getPatient().clear();
                 }
                 
                 Controller.redirect(request, response, RootController.ADDED_ITEM + "?patient=True");

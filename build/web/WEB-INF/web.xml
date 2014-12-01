@@ -53,6 +53,9 @@
     <servlet-mapping>
         <servlet-name>DocController</servlet-name>
         <url-pattern>/DocController</url-pattern>
+        <url-pattern>/addPatient</url-pattern>
+        <url-pattern>/actionAddPatient</url-pattern>
+        <url-pattern>/viewPatients</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

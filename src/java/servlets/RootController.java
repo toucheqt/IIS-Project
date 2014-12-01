@@ -244,7 +244,7 @@ public class RootController extends HttpServlet {
             case ACTION_DOC: {
 
                 String passwd = UUID.randomUUID().toString();
-                String attribute = "doctor";
+                String attribute = "doctor"; // TODO prepsat tady ty atrributy na tridni prommene konstany
                 setDoctor(new Doctor(request.getParameter("inputName"), request.getParameter("inputSurname"),
                         request.getParameter("inputBirthNum"), request.getParameter("inputAddr"),
                         request.getParameter("inputCity"), request.getParameter("inputMail"),
@@ -299,7 +299,7 @@ public class RootController extends HttpServlet {
                     Controller.redirect(request, response, ADD_DOC + "?used=True");
                     return;
                 }
-                
+                // TODO errorove stranky MUSI zohlednit, ktery uzivatel je prihlaseny
                 catch (NamingException | MessagingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     return;
@@ -549,7 +549,7 @@ public class RootController extends HttpServlet {
                 // TODO predelat html modaly do tabulek
                 // TODO mit jen jeden div a hazet do nej data dynamicky
             default:
-                Controller.redirect(request, response, Controller.ERROR_500);
+                Controller.redirect(request, response, Controller.ERROR_404);
                 break;
                  
         }
