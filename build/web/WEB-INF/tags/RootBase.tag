@@ -7,7 +7,7 @@
 
 <%@tag description="Base template root view" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<!-- TODO prejmenovat tagy nejak rozumne aby slo poznat co kurva delaji -->
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">

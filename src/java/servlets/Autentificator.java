@@ -32,7 +32,6 @@ public class Autentificator extends HttpServlet {
     private String address;
 
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -74,6 +73,7 @@ public class Autentificator extends HttpServlet {
         
         String user = request.getRemoteUser();
         setAddress(request.getServletPath());
+        request.setCharacterEncoding("UTF-8");
 
         switch (getAddress()) {
             

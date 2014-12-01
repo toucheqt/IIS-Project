@@ -7,43 +7,42 @@
 
 <%@tag description="Base template root view" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!-- TODO prejmenovat tagy nejak rozumne aby slo poznat co kurva delaji -->
+
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href='<c:url value="/RootController"/>'>Nemocnice na Veleslavíně</a>
+            <a class="navbar-brand" href='<c:url value="/DocController"/>'>Nemocnice na Veleslavíně</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href='<c:url value="/RootController"/>'>Domů</a></li>
-            <li class='dropdown'>
-                <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Personál<span class='caret'></span></a>
-                <ul class='dropdown-menu' role='menu'>
-                    <li><a href='<c:url value="/addDocDel"/>'>Přidat lékaře</a></li>
-                    <li><a href='<c:url value="/addNurseDel"/>'>Přidat sestru</a></li>
-                    <li class='divider'></li>
-                    <li><a href='<c:url value="/assignStaff"/>'>Přiřadit personál</a></li>
-                </ul>
-            </li>
-            <li class='dropdown'>
-                <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Zobrazit<span class='caret'></span></a>
-                <ul class='dropdown-menu' role='menu'>
-                    <li><a href='<c:url value="/showDoctor"/>'>Zobrazit lékáře</a></li>
-                    <li><a href='<c:url value="/showNurse"/>'>Zobrazit sestry</a></li>
-                    <li><a href="<c:url value="/showDepartment"/>">Zobrazit oddělení</a></li>
-                </ul>
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-              <li class='dropdown'>
-                  <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Nastavení<span class='caret'></span></a>
-                  <ul class='dropdown-menu' role='menu'>
-                      <li><a href='#' data-toggle="modal" data-target="#updatePasswd" >Změnit heslo</a></li>
-                      <li><a href='#' data-toggle="modal" data-target="#updateAbout">Změnit osobní údaje</a></li>
-                  </ul>
-              </li>
-              <li class="active"><a href="<c:url value="/logout"/>">Logout</a></li>
-          </ul>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href='<c:url value="/DocController"/>'>Domů</a></li>
+                <li class='dropdown'>
+                    <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+                        Pacienti<span class='caret'></span>
+                    </a>
+                    <ul class='dropdown-menu' role='menu'>
+                        <li><a href='<c:url value="/addPatient"/>'>Přidat pacienta</a></li>
+                        <li class='divider'></li>
+                        <li><a href='<c:url value="/viewPatients"/>'>Zobrazit pacienty</a></li>
+                        <li><a href="<c:url value="/viewDrugs"/>">Zobrazit léky</a></li>                    
+                    </ul>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left" method="POST" action="<c:url value="/userSearch"/>">
+                <input class="form-control col-lg-8" placeholder="Hledat" type="text" name="inputSearch">
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li class='dropdown'>
+                    <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+                        Nastavení<span class='caret'></span>
+                    </a>
+                    <ul class='dropdown-menu' role='menu'>
+                        <li><a href='#' data-toggle="modal" data-target="#updatePasswd" >Změnit heslo</a></li>
+                        <li><a href='#' data-toggle="modal" data-target="#updateAbout">Změnit osobní údaje</a></li>
+                    </ul>
+                </li>
+                <li class="active"><a href="<c:url value="/logout"/>">Logout</a></li>
+            </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>

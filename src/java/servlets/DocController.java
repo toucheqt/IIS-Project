@@ -5,8 +5,12 @@
  */
 package servlets;
 
+import Database.EditPatient;
+import Models.Patient;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,31 +21,36 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Touche
  */
-@WebServlet(name = "DocController", urlPatterns = {"/docController"})
+@WebServlet(name = "DocController", urlPatterns = {"/docController", "addPatient", "actionAddPatient"})
 public class DocController extends HttpServlet {
     
+    public static final String ADD_PATIENT = "/addPatient";
+    
+    public static final String ACTION_ADD_PATIENT = "/actionAddPatient";
+    
     private String address;
+    private Patient patient;
 
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+   
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        String attrPatient = "patient";
+        
+        // TODO pridat vyhledavani
         setAddress(request.getServletPath()); // TODO to by tu nemuselo vubec byt
         // TODO prepsat odkazy na adresy
         switch (getAddress()) {
             
             case Controller.USER_CONTROLLER:
                 request.getRequestDispatcher(RootController.VIEW_PATH + "/user.jsp").forward(request, response);
+                break;
+                
+            case ADD_PATIENT:
+                request.setAttribute(attrPatient, getPatient());
+                request.getRequestDispatcher(RootController.VIEW_ADD_PATH + "/addPatient.jsp").forward(request, response);
                 break;
                 
             default:
@@ -63,6 +72,50 @@ public class DocController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        request.setCharacterEncoding("UTF-8");
+        
+        switch (request.getServletPath()) {
+            
+            case ACTION_ADD_PATIENT:
+                
+                String attribute = "patient";
+                setPatient(new Patient(request.getParameter("inputName"), 
+                        request.getParameter("inputSurname"), request.getParameter("inputBirthNum"),
+                        request.getParameter("inputAddr"), request.getParameter("inputCity")));
+                
+                // check if all required values are correctly filled
+                if (getPatient().getName().isEmpty()) {
+                    request.setAttribute(attribute, getPatient());
+                    Controller.redirect(request, response, ADD_PATIENT + "?name=True");
+                    break;
+                }
+                
+                else if (getPatient().getSurname().isEmpty()) {
+                    request.setAttribute(attribute, getPatient());
+                    Controller.redirect(request, response, ADD_PATIENT + "?surname=True");
+                    break;
+                }
+                
+                // add patient to db
+                // TODO ADDED ITEM by mel by pristupny i pro docController
+                try {
+                    EditPatient.addPatient(getPatient());
+                }
+                
+                catch (SQLException | NamingException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+                
+                Controller.redirect(request, response, RootController.ADDED_ITEM + "?patient=True");
+                break;
+                
+            default:
+                Controller.redirect(request, response, Controller.ERROR_404);
+                break;
+            
+        }
         
     }
 
@@ -89,5 +142,19 @@ public class DocController extends HttpServlet {
      */
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    /**
+     * @return the patient
+     */
+    public Patient getPatient() {
+        return patient;
+    }
+
+    /**
+     * @param patient the patient to set
+     */
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 }

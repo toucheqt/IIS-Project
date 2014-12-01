@@ -10,7 +10,7 @@
 <%@taglib tagdir="/WEB-INF/tags" prefix="m"%>
 
 <m:Base title="Nemocnice - správa">
-    <m:RootBase/>
+    <m:UserBase/>
     <div class="container">
         <div class="jumbotron">
             <h1>Zpráva dne</h1>
@@ -39,5 +39,5 @@
                 </div>
             </div>
         </div>
-    </div> <!-- /container -->
+    </div> <!-- /container --> 
 </m:Base>
