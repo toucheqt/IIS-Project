@@ -6,7 +6,7 @@
 package servlets;
 
 import Database.EditDoctor;
-import Database.util.MD5Generator;
+import Utilities.MD5Generator;
 import Models.Doctor;
 import java.io.IOException;
 import java.sql.SQLException;

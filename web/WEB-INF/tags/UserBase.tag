@@ -22,9 +22,7 @@
                     </a>
                     <ul class='dropdown-menu' role='menu'>
                         <li><a href='<c:url value="/addPatient"/>'>Přidat pacienta</a></li>
-                        <li class='divider'></li>
-                        <li><a href='<c:url value="/viewPatients"/>'>Zobrazit pacienty</a></li>
-                        <li><a href="<c:url value="/viewDrugs"/>">Zobrazit léky</a></li>                    
+                        <li><a href='<c:url value="/viewPatients"/>'>Zobrazit pacienty</a></li>                  
                     </ul>
                 </li>
             </ul>

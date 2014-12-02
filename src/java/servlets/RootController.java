@@ -9,7 +9,7 @@ import Database.EditDepartment;
 import Database.EditDoctor;
 import Database.EditIsWorking;
 import Database.EditNurse;
-import Database.util.MD5Generator;
+import Utilities.MD5Generator;
 import Models.Doctor;
 import Models.Nurse;
 import Utilities.MailSender;

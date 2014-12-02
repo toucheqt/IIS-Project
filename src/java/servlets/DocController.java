@@ -9,8 +9,8 @@ import Database.EditDepartment;
 import Database.EditPatient;
 import Models.Patient;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -24,17 +24,25 @@ import javax.servlet.http.HttpServletResponse;
  * @author Touche
  */
 @WebServlet(name = "DocController", urlPatterns = {"/docController", "/addPatient", "/actionAddPatient",
-        "/viewPatients"})
+        "/viewPatients", "/userSearch"})
 public class DocController extends HttpServlet {
+    
+    // TODO oddeleni se nemeni, tak by ho stacilo nacist jen jednou
     
     public static final String ADD_PATIENT = "/addPatient";
     
     public static final String ACTION_ADD_PATIENT = "/actionAddPatient";
     public static final String VIEW_PATIENTS = "/viewPatients";
+    public static final String DETAIL_PATIENT = "/patient";
     
-    private String address;
-    private Patient patient;
-
+    public static final String USER_SEARCH = "/userSearch";
+    
+    private List<Patient> patients;
+    
+    public DocController() {
+        patients = new ArrayList();
+        patients.add(new Patient());
+    }
 
    
     @Override
@@ -45,26 +53,24 @@ public class DocController extends HttpServlet {
         String attrPatient = "patient";
         
         // TODO pridat vyhledavani
-        setAddress(request.getServletPath()); // TODO to by tu nemuselo vubec byt
         // TODO prepsat odkazy na adresy
-        switch (getAddress()) {
+        switch (request.getServletPath()) {
             
             case Controller.USER_CONTROLLER:
                 request.getRequestDispatcher(RootController.VIEW_PATH + "/user.jsp").forward(request, response);
                 break;
                 
             case ADD_PATIENT:
-                request.setAttribute(attrPatient, getPatient());
+                request.setAttribute(attrPatient, getPatient(0));
                 request.getRequestDispatcher(RootController.VIEW_ADD_PATH + "/addPatient.jsp").forward(request, response);
                 break;
                 
             case VIEW_PATIENTS:
-                List<String> departments;
-                List<Patient> patients;
+                List<String> departments; // TODO toto hodit VSUDE do konstruktoru
                 
                 try {
                     departments = EditDepartment.getDepartments();
-                    patients = EditPatient.getPatients();
+                    setPatients(EditPatient.getPatients());
                 }
                 
                 catch (SQLException | NamingException ex) {
@@ -73,12 +79,12 @@ public class DocController extends HttpServlet {
                 }
                 
                 request.setAttribute(attrDep, departments);
-                request.setAttribute(attrPatient, patients);
+                request.setAttribute(attrPatient, getPatients());
                 request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatients.jsp").forward(request, response);
-                break;
-                
+                break;  
+                                
             default:
-                response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_404);
+                response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
                 break;
             
         }
@@ -98,47 +104,61 @@ public class DocController extends HttpServlet {
             throws ServletException, IOException {
         
         request.setCharacterEncoding("UTF-8");
+        String attribute = "patient";
         
         switch (request.getServletPath()) {
             
             case ACTION_ADD_PATIENT:
                 
-                String attribute = "patient";
                 setPatient(new Patient(request.getParameter("inputName"), 
                         request.getParameter("inputSurname"), request.getParameter("inputBirthNum"),
                         request.getParameter("inputAddr"), request.getParameter("inputCity")));
                 
                 // check if all required values are correctly filled
-                if (getPatient().getName().isEmpty()) {
-                    request.setAttribute(attribute, getPatient());
+                if (getPatient(0).getName().isEmpty()) {
+                    request.setAttribute(attribute, getPatient(0));
                     Controller.redirect(request, response, ADD_PATIENT + "?name=True");
                     break;
                 }
                 
-                else if (getPatient().getSurname().isEmpty()) {
-                    request.setAttribute(attribute, getPatient());
+                else if (getPatient(0).getSurname().isEmpty()) {
+                    request.setAttribute(attribute, getPatient(0));
                     Controller.redirect(request, response, ADD_PATIENT + "?surname=True");
                     break;
                 }
                 
                 // add patient to db
-                // TODO ADDED ITEM by mel by pristupny i pro docController
                 try {
-                    EditPatient.addPatient(getPatient());
+                    EditPatient.addPatient(getPatient(0));
+                    setPatient(EditPatient.getLastPatient());
                 }
                 
                 catch (SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
+                    getPatient(0).clear();
+                    break;
+                }
+                                
+                Controller.redirect(request, response, DETAIL_PATIENT + "?id=" + getPatient(0).getId());
+                getPatient(0).clear();
+                break;    
+                
+            case USER_SEARCH:
+                String pattern = request.getParameter("inputSearch");
+                
+                try {
+                    setPatients(EditPatient.searchPatients(pattern));
+                }
+                
+                catch (SQLException | NamingException ex) {
+                    ex.printStackTrace();
+                    Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
                 
-                finally {
-                    getPatient().clear();
-                }
-                
-                Controller.redirect(request, response, RootController.ADDED_ITEM + "?patient=True");
+                Controller.redirect(request, response, getPatient(0).getAddress());
                 break;
-                
+ 
             default:
                 Controller.redirect(request, response, Controller.ERROR_404);
                 break;
@@ -159,30 +179,24 @@ public class DocController extends HttpServlet {
 // TODO dopsat do controlleru get servletinfo metodu
 
     /**
-     * @return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * @param address the address to set
-     */
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    /**
      * @return the patient
      */
-    public Patient getPatient() {
-        return patient;
+    public Patient getPatient(int index) {
+        return patients.get(index);
     }
 
     /**
      * @param patient the patient to set
      */
     public void setPatient(Patient patient) {
-        this.patient = patient;
+        this.patients.set(0, patient);
+    }
+    
+    public List<Patient> getPatients() {
+        return patients;
+    }
+    
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
     }
 }

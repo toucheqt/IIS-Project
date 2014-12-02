@@ -5,7 +5,6 @@
  */
 package Database;
 
-import Database.util.Connect;
 import Models.Doctor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

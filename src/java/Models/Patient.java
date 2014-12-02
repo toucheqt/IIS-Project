@@ -21,6 +21,18 @@ public class Patient {
     private String doctorName;
     private String doctorSurname;
     
+    public Patient() {
+        this.id = null;
+        this.name = null;
+        this.surname = null;
+        this.birthNum = null;
+        this.address = null;
+        this.city = null;
+        this.departmentName = null;
+        this.doctorName = null;
+        this.doctorSurname = null;
+    }
+    
     public Patient(String name, String surname, String birthNum, String address, String city) {
         this.name = name;
         this.surname = surname;

@@ -70,7 +70,7 @@
                         <tbody>
                             <c:choose>
                                 <c:when test="${empty param.dep}">
-                                    <c:forEach var="nurseInfo" items="${patient}" varStatus="status">
+                                    <c:forEach var="patientInfo" items="${patient}" varStatus="status">
                                         <tr>
                                             <td>${patient[status.index].name}</td>
                                             <td>${patient[status.index].surname}</td>
@@ -79,15 +79,17 @@
                                             <td>${patient[status.index].city}</td>
                                             <td>${patient[status.index].doctorName} ${patient[status.index].doctorSurname}</td>
                                             <td class="col-sm-1 col-md-1">
-                                                <button type="button" class="btn btn-sm btn-primary">
-                                                    Více informací &raquo;
-                                                </button>
+                                                <form method="GET" action="<c:url value="/patient"/>">
+                                                    <button type="submit" class="btn btn-sm btn-primary">
+                                                        Více informací &raquo;
+                                                    </button>
+                                                </form>
                                             </td>  
                                         </tr>
                                     </c:forEach>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="nurseInfo" items="${patient}" varStatus="status">
+                                    <c:forEach var="patientInfo" items="${patient}" varStatus="status">
                                         <c:if test="${param.dep == patient[status.index].departmentName}">
                                             <tr>
                                                 <td>${patient[status.index].name}</td>
@@ -97,9 +99,11 @@
                                                 <td>${patient[status.index].city}</td>
                                                 <td>${patient[status.index].doctorName} ${patient[status.index].doctorSurname}</td>
                                                 <td class="col-sm-1 col-md-1">
-                                                    <button type="button" class="btn btn-sm btn-primary">
-                                                        Více informací &raquo;
-                                                    </button>
+                                                    <form method="GET" action="<c:url value="/patient"/>">
+                                                        <button type="submit" class="btn btn-sm btn-primary">
+                                                            Více informací &raquo;
+                                                         </button>              
+                                                    </form>
                                                 </td>  
                                             </tr>
                                         </c:if>

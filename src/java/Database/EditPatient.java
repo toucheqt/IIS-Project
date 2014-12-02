@@ -5,7 +5,6 @@
  */
 package Database;
 
-import Database.util.Connect;
 import Models.Patient;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,6 +26,10 @@ public class EditPatient {
             + " LEFT JOIN hospitalization H ON P.id = H.id"
             + " LEFT JOIN department D ON H.departmentNum = D.id"
             + " LEFT JOIN usertable U ON H.doctor = U.email";
+    public static final String SELECT_LAST_PATIENT = "SELECT patientName, surname FROM patients ORDER BY id DESC LIMIT 1";
+    public static final String SEARCH_PATIENTS = "SELECT * FROM patients"
+            + " WHERE (patientName LIKE ? AND surname LIKE ?)"
+            + " OR (patientName LIKE ? AND surname LIKE ?)";
     
     public static void addPatient(Patient patient) throws SQLException, NamingException {
         
@@ -68,6 +71,73 @@ public class EditPatient {
             patients.get(i).setDoctorName(rs.getString(columns[7]));
             patients.get(i).setDoctorSurname(rs.getString(columns[8]));
         }
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return patients;
+        
+    }
+    
+    public static Patient getLastPatient() throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        Patient patient;
+        String[] columns = {"P.id", "P.patientName", "P.surname", "P.birthNum", "P.address", "P.city",
+                 "D.depName", "U.username", "U.surname"};
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_LAST_PATIENT);
+        rs = stmt.executeQuery();
+        rs.next();
+        
+        patient = new Patient(rs.getString(columns[1]), rs.getString(columns[2]), rs.getString(columns[3]), 
+                rs.getString(columns[4]), rs.getString(columns[5]));
+        patient.setId(rs.getInt(columns[0]));
+        patient.setDepartmentName(rs.getString(columns[6]));
+        patient.setDoctorName(rs.getString(columns[7]));
+        patient.setDoctorSurname(rs.getString(columns[8]));
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return patient;
+        
+    }
+    
+    public static List<Patient> searchPatients(String pattern) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        List<Patient> patients = new ArrayList();
+        String[] columns = {"id", "patientName", "surname", "birthNum", "address", "city"};
+        //String name = PatternParser.getName();
+        //String surname = PatternParser.getSurname();
+        String name = "%zuzana%";
+        String surname = "%%";
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SEARCH_PATIENTS);
+        stmt.setString(1, name);
+        stmt.setString(2, surname);
+        stmt.setString(3, surname);
+        stmt.setString(4, name);
+        rs = stmt.executeQuery();
+        
+        for (int i = 0; rs.next(); i++) {
+            patients.add(new Patient(rs.getString(columns[1]), rs.getString(columns[2]), rs.getString(columns[3]), 
+                rs.getString(columns[4]), rs.getString(columns[5])));
+            patients.get(i).setId(rs.getInt(columns[0]));
+        }
+        
+        rs.close();
+        stmt.close();
+        connection.close();
         
         return patients;
         
