@@ -6,6 +6,7 @@
 package Database;
 
 import Models.Patient;
+import Utilities.PatternParser;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -116,17 +117,16 @@ public class EditPatient {
         ResultSet rs;
         List<Patient> patients = new ArrayList();
         String[] columns = {"id", "patientName", "surname", "birthNum", "address", "city"};
-        //String name = PatternParser.getName();
-        //String surname = PatternParser.getSurname();
-        String name = "%zuzana%";
-        String surname = "%%";
+        PatternParser patternParser = new PatternParser();
+        patternParser.parsePattern(pattern);
+
         
         connection = Connect.getConnection();
         stmt = connection.prepareStatement(SEARCH_PATIENTS);
-        stmt.setString(1, name);
-        stmt.setString(2, surname);
-        stmt.setString(3, surname);
-        stmt.setString(4, name);
+        stmt.setString(1, '%' + patternParser.getName() + '%');
+        stmt.setString(2, '%' + patternParser.getSurname() + '%');
+        stmt.setString(3, '%' + patternParser.getSurname() + '%');
+        stmt.setString(4, '%' + patternParser.getName() + '%');
         rs = stmt.executeQuery();
         
         for (int i = 0; rs.next(); i++) {

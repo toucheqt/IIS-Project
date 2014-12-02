@@ -57,6 +57,8 @@
         <url-pattern>/actionAddPatient</url-pattern>
         <url-pattern>/viewPatients</url-pattern>
         <url-pattern>/userSearch</url-pattern>
+        <url-pattern>/searchFound</url-pattern>
+        <url-pattern>/searchNotFound</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

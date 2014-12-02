@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Touche
  */
 @WebServlet(name = "DocController", urlPatterns = {"/docController", "/addPatient", "/actionAddPatient",
-        "/viewPatients", "/userSearch"})
+        "/viewPatients", "/userSearch", "/searchFound", "/searchNotFound"})
 public class DocController extends HttpServlet {
     
     // TODO oddeleni se nemeni, tak by ho stacilo nacist jen jednou
@@ -36,6 +36,8 @@ public class DocController extends HttpServlet {
     public static final String DETAIL_PATIENT = "/patient";
     
     public static final String USER_SEARCH = "/userSearch";
+    public static final String SEARCH_FOUND = "/searchFound";
+    public static final String SEARCH_NOT_FOUND = "/searchNotFound";
     
     private List<Patient> patients;
     
@@ -82,6 +84,24 @@ public class DocController extends HttpServlet {
                 request.setAttribute(attrPatient, getPatients());
                 request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatients.jsp").forward(request, response);
                 break;  
+                
+            case SEARCH_FOUND:
+                                
+                // found only one recored
+                if (getPatients().size() == 1) {
+                    request.setAttribute(attrPatient, getPatient(0));
+                    request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatientInfo.jsp").forward(request, response);
+                    break;
+                }
+            
+                request.setAttribute(attrPatient, getPatients());
+                request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatientSearch.jsp").forward(request, response);
+                break;
+                
+            case SEARCH_NOT_FOUND:
+                
+                request.getRequestDispatcher(RootController.ERROR_PATH + "/patientNotFound.jsp").forward(request, response);
+                break;
                                 
             default:
                 response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
@@ -151,12 +171,17 @@ public class DocController extends HttpServlet {
                 }
                 
                 catch (SQLException | NamingException ex) {
-                    ex.printStackTrace();
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
                 
-                Controller.redirect(request, response, getPatient(0).getAddress());
+                // if no match were found, redirect to not found page
+                if (getPatients().isEmpty()) {
+                    Controller.redirect(request, response, SEARCH_NOT_FOUND);
+                    break;
+                }
+                
+                Controller.redirect(request, response, SEARCH_FOUND);
                 break;
  
             default:
