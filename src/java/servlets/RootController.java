@@ -2,7 +2,8 @@
  * @author Ondřej Krpec, xkrpec01@stud.fit.vutbr.cz
  * @author Jiří Kulda, xkulda00@stud.fit.vutbr.cz
  */
-
+// TODO do zobrazeni pacientu pridat datum vysetreni
+// TODO pri vyhledani pacienta jeste predavat oddeleni, leky, osetrujici lekare atd.
 package servlets;
 // TODO FRONT obnova hesla
 import Database.EditDepartment;
