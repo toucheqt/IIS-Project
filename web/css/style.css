@@ -114,3 +114,14 @@
     color: red;
 }
 
+.row-offcanvas-left
+.sidebar-offcanvas {
+  left: -75%;
+}
+  
+.jumbotron-shift {
+  left: 22%;  
+  padding-left: 2%;
+  padding-right: 2%;
+}
+

@@ -12,7 +12,7 @@
     <m:UserBase/>
     <div class="alert alert-danger mySuccess" role="alert">
         <p><strong>Pacient nenalezen!</strong> Omlouváme se, ale pacient, kterého hledáte nebyl nalezen.</p>
-        <a class="btn btn-lg btn-danger my-btn-success" href='<c:url value="/RootController"/>' role="button">Pokračovat</a>
+        <a class="btn btn-lg btn-danger my-btn-success" href='<c:url value="/DocController"/>' role="button">Pokračovat</a>
     </div>
     <img src='res/virtualni-nemocnice-logo.png' alt='logo' class='footer_logo'/>    
 </m:Base>
