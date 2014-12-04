@@ -59,6 +59,8 @@
         <url-pattern>/userSearch</url-pattern>
         <url-pattern>/searchFound</url-pattern>
         <url-pattern>/searchNotFound</url-pattern>
+        <url-pattern>/updatePatient</url-pattern>
+        <url-pattern>/deletePatient</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

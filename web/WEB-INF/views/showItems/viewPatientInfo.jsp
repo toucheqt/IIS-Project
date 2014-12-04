@@ -11,7 +11,7 @@
 <m:Base title="Nemocnice - Pacienti">
     <m:UserBase/>
     <br>
-    <div class="container">
+    <div class="container" style="margin-top: -0.1%;">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title">${patient.name} ${patient.surname}</h3>
@@ -107,11 +107,12 @@
                                 <p class="list-group-item active"><strong>Rodné číslo:&nbsp;</strong>${patient.birthNum}</p>
                                 <p class="list-group-item active"><strong>Adresa:&nbsp;</strong>${patient.address}</p>
                                 <p class="list-group-item active"><strong>Město:&nbsp;</strong>${patient.city}</p>
-                                <a href="#" class="list-group-item">Aktualizovat údaje</a>
+                                <a href="#" class="list-group-item" data-toggle="modal" data-target="#update">Aktualizovat údaje</a>
                                 <a href="#" class="list-group-item">Přiřadit léky</a>
                                 <a href="#" class="list-group-item">Zadat vyšetření</a>
                                 <a href="#" class="list-group-item">Zadat výsledky vyšetření</a>
                                 <a href="#" class="list-group-item">Hospitalizovat</a>
+                                <a href="#" class="list-group-item" data-toggle="modal" data-target="#delete">Odstranit pacienta</a>
                             </div>
                         </div><!--/.sidebar-offcanvas-->                          
                     </div>
@@ -121,3 +122,71 @@
         </div>
     </div>
 </m:Base>
+    
+<!-- Update patient modal window -->    
+<div class="modal fade bs-example-modal-sm" id="update" tabindex="-1" role="dialog" aria-labelledby="modalDelete" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Aktualizace údajů</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form" method="POST" action="<c:url value="/updatePatient"/>">
+                    <div class="form-group">
+                        <label for="inputName" class="control-label change-form-label">Jméno</label>
+                        <div class="col-sm-10 doc-form">
+                            <input type="text" class="form-control change-form" value="${patient.name}" name="inputName"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputSurname" class="control-label change-form-label">Příjmení</label>
+                        <div class="col-sm-10 doc-form">
+                            <input type="text" class="form-control change-form" value="${patient.surname}" name="inputSurname"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputBirthNum" class="control-label change-form-label">Rodné číslo</label>
+                        <div class="col-sm-10 doc-form">
+                            <input type="text" class="form-control change-form" value="${patient.birthNum}" name="inputBirthNum"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddr" class="control-label change-form-label">Adresa</label>
+                        <div class="col-sm-10 doc-form">
+                            <input type="text" class="form-control change-form" value="${patient.address}" name="inputAddr"/>
+                        </div>
+                    </div>               
+                    <div class="form-group">
+                        <label for="inputCity" class="control-label change-form-label">Město</label>
+                        <div class="col-sm-10 doc-form">
+                            <input type="text" class="form-control change-form" value="${patient.city}" name="inputCity"/>
+                        </div>
+                    </div>               
+                    <div class="modal-footer">
+                        <input type="hidden" value="${patient.id}" name="defaultId"/>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
+                        <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+                        
+<!-- Delete patient modal window -->
+<div class="modal fade bs-example-modal-sm" id="delete" tabindex="-1" role="dialog" aria-labelledby="modalDelete" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Opravdu chcete pacienta odstranit z databáze?</h4>
+            </div>
+            <div class="modal-footer">
+                <form method="POST" action="<c:url value="/deletePatient"/>">
+                    <input type="hidden" value="${patient.id}" name="defaultId"/>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
+                    <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 

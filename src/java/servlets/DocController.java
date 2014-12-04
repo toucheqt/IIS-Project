@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Touche
  */
 @WebServlet(name = "DocController", urlPatterns = {"/docController", "/addPatient", "/actionAddPatient",
-        "/viewPatients", "/userSearch", "/searchFound", "/searchNotFound"})
+        "/viewPatients", "/userSearch", "/searchFound", "/searchNotFound", "/updatePatient", "/deletePatient"})
 public class DocController extends HttpServlet {
     
     // TODO oddeleni se nemeni, tak by ho stacilo nacist jen jednou
@@ -38,6 +38,8 @@ public class DocController extends HttpServlet {
     public static final String ACTION_ADD_PATIENT = "/actionAddPatient";
     public static final String VIEW_PATIENTS = "/viewPatients";
     public static final String DETAIL_PATIENT = "/patient";
+    public static final String UPDATE_PATIENT = "/updatePatient";
+    public static final String DELETE_PATIENT = "/deletePatient";
     
     public static final String USER_SEARCH = "/userSearch";
     public static final String SEARCH_FOUND = "/searchFound";
@@ -105,8 +107,8 @@ public class DocController extends HttpServlet {
             case SEARCH_NOT_FOUND:
                 
                 request.getRequestDispatcher(RootController.ERROR_PATH + "/patientNotFound.jsp").forward(request, response);
-                break;
-                                
+                break;               
+                
             default:
                 response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
                 break;
@@ -186,6 +188,37 @@ public class DocController extends HttpServlet {
                 }
                 
                 Controller.redirect(request, response, SEARCH_FOUND);
+                break;
+                
+            case UPDATE_PATIENT:
+                
+                try {
+                    EditPatient.updatePatient(Integer.parseInt(request.getParameter("defaultId")), request.getParameter("inputName"), 
+                            request.getParameter("inputSurname"), request.getParameter("inputBirthNum"), 
+                            request.getParameter("inputAddr"), request.getParameter("inputCity"));
+                }
+                
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                } 
+                
+                Controller.redirect(request, response, DETAIL_PATIENT + "?id=" + "dat sem spravne id"); // TODO id
+                break;
+                
+            case DELETE_PATIENT:
+                
+                try {
+                    EditPatient.deletePatient(Integer.parseInt(request.getParameter("defaultId")));
+                }
+            
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    ex.printStackTrace();
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, Controller.USER_CONTROLLER);
                 break;
  
             default:

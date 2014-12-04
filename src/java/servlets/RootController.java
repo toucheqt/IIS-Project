@@ -464,6 +464,7 @@ public class RootController extends HttpServlet {
                 // nekdy na zacatku a pak to jen aktualizovat, pokud se provede delete nebo update
                 catch (SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
                 }
             
                 Controller.redirect(request, response, SHOW_DEPARTMENT);
@@ -478,6 +479,7 @@ public class RootController extends HttpServlet {
             
                 catch (NumberFormatException | SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
                 }
             
                 Controller.redirect(request, response, SHOW_DEPARTMENT);

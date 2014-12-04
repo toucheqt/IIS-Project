@@ -31,6 +31,15 @@ public class EditPatient {
     public static final String SEARCH_PATIENTS = "SELECT * FROM patients"
             + " WHERE (patientName LIKE ? AND surname LIKE ?)"
             + " OR (patientName LIKE ? AND surname LIKE ?)";
+    public static final String UPDATE_PATIENT = "UPDATE patients SET patientName = ?, surname = ?, birthNum = ?, address = ?,"
+            + " city = ? WHERE id = ?";
+    public static final String DELETE_PATIENT = "DELETE FROM patients WHERE id = ?";
+    public static final String DELETE_PATIENT_PRESCRIPTIONS = "DELETE FROM prescriptions WHERE patientId = ?";
+    public static final String DELETE_PATIENT_RESULTS = "DELETE R FROM results R"
+            + " JOIN examination E ON E.id = R.examinationId"
+            + " WHERE E.patientId = ?";
+    public static final String DELETE_PATIENT_EXAM = "DELETE FROM examination WHERE patientId = ?";
+    public static final String DELETE_PATIENT_HOSPITALIZATION = "DELETE FROM hospitalization WHERE patientId = ?";
     
     public static void addPatient(Patient patient) throws SQLException, NamingException {
         
@@ -146,6 +155,59 @@ public class EditPatient {
         
         return patients;
         
+    }
+    
+    public static void updatePatient(int id, String name, String surname, String birthNum, String address, String city)
+            throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(UPDATE_PATIENT);
+        stmt.setString(1, name);
+        stmt.setString(2, surname);
+        stmt.setString(3, birthNum);
+        stmt.setString(4, address);
+        stmt.setString(5, city);
+        stmt.setInt(6, id);
+        stmt.executeUpdate();
+        
+        stmt.close();
+        connection.close();
+        
+    }
+    
+    public static void deletePatient(int patientId) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        
+        connection = Connect.getConnection();
+        
+        stmt = connection.prepareStatement(DELETE_PATIENT_PRESCRIPTIONS);
+        stmt.setInt(1, patientId);
+        stmt.executeUpdate();
+        
+        stmt = connection.prepareStatement(DELETE_PATIENT_RESULTS);
+        stmt.setInt(1, patientId);
+        stmt.executeUpdate();
+        
+        stmt = connection.prepareStatement(DELETE_PATIENT_EXAM);
+        stmt.setInt(1, patientId);
+        stmt.executeUpdate();
+        
+        stmt = connection.prepareStatement(DELETE_PATIENT_HOSPITALIZATION);
+        stmt.setInt(1, patientId);
+        stmt.executeUpdate();
+        
+        stmt = connection.prepareStatement(DELETE_PATIENT);
+        stmt.setInt(1, patientId);
+        stmt.executeUpdate();
+        
+        stmt.close();
+        connection.close();
+
     }
     
 }

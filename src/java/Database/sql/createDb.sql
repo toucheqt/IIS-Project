@@ -226,7 +226,7 @@ VALUES ("Infarkt", "2014-02-07", 2, "zelda@example.com");
 INSERT INTO examination (description, examTime, patientId, doctor)
 VALUES ("Problémy s erekcí", "2014-05-12", 6, "p.novak@seznam.cz");
 INSERT INTO examination (description, examTime, patientId, doctor)
-VALUES ("Bolest loket", "2014-05-11", 4, "zatop@seznam.cz");
+VALUES ("Bolest lokte", "2014-05-11", 4, "zatop@seznam.cz");
 INSERT INTO examination (description, examTime, patientId, doctor)
 VALUES ("Sedřená kůže", "2014-07-23", 1, "p.novak@seznam.cz");
 INSERT INTO examination (description, examTime, patientId, doctor)
