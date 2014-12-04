@@ -20,12 +20,12 @@ import javax.naming.NamingException;
  * @author Touche
  */
 public class EditPatient {
-    
+    // TODO pridat pacienta se mi musi cistit omg
     public static final String ADD_PATIENT = "INSERT INTO patients (patientName, surname, birthNum, address, city)"
             + " VALUES (?, ?, ?, ?, ?)";
     public static final String SELECT_PATIENTS = "SELECT P.*, D.depName, U.username, U.surname FROM patients P"
             + " LEFT JOIN hospitalization H ON P.id = H.id"
-            + " LEFT JOIN department D ON H.departmentNum = D.id"
+            + " LEFT JOIN department D ON H.departmentNum = D.id AND H.released IS NULL"
             + " LEFT JOIN usertable U ON H.doctor = U.email";
     public static final String SELECT_LAST_PATIENT = "SELECT patientName, surname FROM patients ORDER BY id DESC LIMIT 1";
     public static final String SEARCH_PATIENTS = "SELECT * FROM patients"
@@ -71,6 +71,8 @@ public class EditPatient {
             patients.get(i).setDepartmentName(rs.getString(columns[6]));
             patients.get(i).setDoctorName(rs.getString(columns[7]));
             patients.get(i).setDoctorSurname(rs.getString(columns[8]));
+            patients.get(i).setDrugs(EditPrescription.getUsedDrugs(patients.get(i).getId()));
+            patients.get(i).setExams(EditExamination.getPatientExamination(patients.get(i).getId()));
         }
         
         rs.close();
@@ -133,6 +135,9 @@ public class EditPatient {
             patients.add(new Patient(rs.getString(columns[1]), rs.getString(columns[2]), rs.getString(columns[3]), 
                 rs.getString(columns[4]), rs.getString(columns[5])));
             patients.get(i).setId(rs.getInt(columns[0]));
+            patients.get(i).setDrugs(EditPrescription.getUsedDrugs(patients.get(i).getId()));
+            patients.get(i).setExams(EditExamination.getPatientExamination(patients.get(i).getId()));
+            patients.get(i).setHospitalization(EditHospitalization.getHospitalizations(patients.get(i).getId()));
         }
         
         rs.close();

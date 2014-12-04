@@ -5,6 +5,9 @@
  */
 package Models;
 
+import java.sql.Date;
+import java.util.List;
+
 /**
  *
  * @author Touche
@@ -20,6 +23,9 @@ public class Patient {
     private String departmentName;
     private String doctorName;
     private String doctorSurname;
+    private List<UsedDrug> drugs;
+    private List<Examination> exams;
+    private List<Hospitalization> hospitalization;
     
     public Patient() {
         this.id = null;
@@ -31,6 +37,7 @@ public class Patient {
         this.departmentName = null;
         this.doctorName = null;
         this.doctorSurname = null;
+        
     }
     
     public Patient(String name, String surname, String birthNum, String address, String city) {
@@ -175,5 +182,48 @@ public class Patient {
     public void setDoctorSurname(String doctorSurname) {
         this.doctorSurname = doctorSurname;
     }
+
+    /**
+     * @return the drugs
+     */
+    public List<UsedDrug> getDrugs() {
+        return drugs;
+    }
+
+    /**
+     * @param drugs the drugs to set
+     */
+    public void setDrugs(List<UsedDrug> drugs) {
+        this.drugs = drugs;
+    }
+
+    /**
+     * @return the exams
+     */
+    public List<Examination> getExams() {
+        return exams;
+    }
+
+    /**
+     * @param exams the exams to set
+     */
+    public void setExams(List<Examination> exams) {
+        this.exams = exams;
+    }
+
+    /**
+     * @return the hospitalization
+     */
+    public List<Hospitalization> getHospitalization() {
+        return hospitalization;
+    }
+
+    /**
+     * @param hospitalization the hospitalization to set
+     */
+    public void setHospitalization(List<Hospitalization> hospitalization) {
+        this.hospitalization = hospitalization;
+    }
+
     
 }

@@ -25,22 +25,24 @@
                         <div class="table-responsive">
                           <table class="table table-striped">
                             <thead>
-                              <tr>
-                                <th>Název</th>
-                                <th>Kontraindikace</th>
-                                <th>Začátek užívání</th>
-                                <th>Konec užívání</th>
-                                <th>Dávkování</th>
-                              </tr>
+                                <tr>
+                                    <th>Název</th>
+                                    <th>Kontraindikace</th>
+                                    <th>Začátek užívání</th>
+                                    <th>Konec užívání</th>
+                                    <th>Dávkování</th>
+                                </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>1,001</td>
-                                <td>Lorem</td>
-                                <td>ipsum</td>
-                                <td>dolor</td>
-                                <td>sit</td>
-                              </tr>
+                                <c:forEach var="drugsInfo" items="${patient.drugs}" varStatus="status">
+                                    <tr>
+                                        <td>${patient.drugs[status.index].name}</td>
+                                        <td>${patient.drugs[status.index].contraindication}</td>
+                                        <td>${patient.drugs[status.index].startUsage}</td>
+                                        <td>${patient.drugs[status.index].endUsage}</td>
+                                        <td>${patient.drugs[status.index].dosage}</td>
+                                    </tr>
+                                </c:forEach>
                             </tbody>
                           </table>
                         </div>
@@ -58,13 +60,15 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>1,001 a asd asdash djs dbn lggas djasd</td>
-                                <td>Lorem</td>
-                                <td>ipsum</td>
-                                <td>ipsum</td>
-                                <td>ipsum</td>
-                              </tr>
+                                <c:forEach var="examInfo" items="${patient.exams}" varStatus="status">
+                                    <tr>
+                                        <td>${patient.exams[status.index].description}</td>
+                                        <td>${patient.exams[status.index].examTime}</td>
+                                        <td>${patient.exams[status.index].doctorName} ${patient.exams[status.index].doctorSurname}</td>
+                                        <td>${patient.exams[status.index].resultDate}</td>
+                                        <td>${patient.exams[status.index].result}</td>
+                                    </tr>
+                                </c:forEach>
                             </tbody>
                           </table>
                         </div>
@@ -81,12 +85,16 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>1,001 a asd asdash djs dbn lggas djasd</td>
-                                <td>Lorem</td>
-                                <td>ipsum</td>
-                                <td>ipsum</td>
-                              </tr>
+                                <c:forEach var="hospInfo" items="${patient.hospitalization}" varStatus="status">
+                                    <tr>
+                                        <td>${patient.hospitalization[status.index].hospitalized}</td>
+                                        <td>${patient.hospitalization[status.index].released}</td>
+                                        <td>${patient.hospitalization[status.index].departmentName}</td>
+                                        <td>${patient.hospitalization[status.index].doctorName} 
+                                            ${patient.exams[status.index].doctorSurname}
+                                        </td>
+                                    </tr>
+                                </c:forEach>
                             </tbody>
                           </table>
                         </div>

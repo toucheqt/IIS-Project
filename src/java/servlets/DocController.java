@@ -6,8 +6,12 @@
 package servlets;
 
 import Database.EditDepartment;
+import Database.EditExamination;
 import Database.EditPatient;
+import Database.EditPrescription;
+import Models.Examination;
 import Models.Patient;
+import Models.UsedDrug;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -88,7 +92,7 @@ public class DocController extends HttpServlet {
             case SEARCH_FOUND:
                                 
                 // found only one recored
-                if (getPatients().size() == 1) {
+                if (getPatients().size() == 1) {                         
                     request.setAttribute(attrPatient, getPatient(0));
                     request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatientInfo.jsp").forward(request, response);
                     break;
