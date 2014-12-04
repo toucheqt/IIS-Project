@@ -125,3 +125,24 @@
   padding-right: 2%;
 }
 
+.drug-select {
+    margin-left: 29.7%;
+    width: 51.4%
+}
+
+.drug-select-label {
+    margin-left: 17.8%;
+    margin-right: -10%;
+    
+}
+
+.exam-form-label {
+    margin-left: -33%;
+    margin-top: -0.5%;
+}
+
+.result-select-label {
+    margin-top: 1%;
+    margin-left: 15.4%;
+    margin-right: -3%;
+}

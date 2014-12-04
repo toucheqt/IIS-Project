@@ -13,6 +13,7 @@ import java.sql.Date;
  */
 public class Examination {
     
+    private int examId;
     private String description;
     private Date examTime;
     private String doctorName;
@@ -20,7 +21,9 @@ public class Examination {
     private Date resultDate;
     private String result;
     
-    public Examination(String description, Date examTime, String doctorName, String doctorSurname, Date resultDate, String result) {
+    public Examination(int examId, String description, Date examTime, String doctorName, String doctorSurname, Date resultDate, 
+            String result) {
+        this.examId = examId;
         this.description = description;
         this.examTime = examTime;
         this.doctorName = doctorName;
@@ -111,6 +114,20 @@ public class Examination {
      */
     public void setResult(String result) {
         this.result = result;
+    }
+
+    /**
+     * @return the examId
+     */
+    public int getExamId() {
+        return examId;
+    }
+
+    /**
+     * @param examId the examId to set
+     */
+    public void setExamId(int examId) {
+        this.examId = examId;
     }
     
 }

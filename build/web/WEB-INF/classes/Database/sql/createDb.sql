@@ -199,8 +199,6 @@ INSERT INTO hospitalization (hospitalized, released, patientId, departmentNum, d
 VALUES ("2014-03-27", "2014-04-1", 3, 2, "kulda@naveleslavine.cz");
 INSERT INTO hospitalization (hospitalized, released, patientId, departmentNum, doctor)
 VALUES ("2014-10-08", "2014-11-08", 2, 1, "zelda@example.com");
-INSERT INTO hospitalization (hospitalized, patientId, departmentNum, doctor)
-VALUES ("2014-12-01", 2, 1, "zelda@example.com");
 INSERT INTO hospitalization (hospitalized, released, patientId, departmentNum, doctor)
 VALUES ("2014-05-21", "2014-05-27", 6, 5, "p.novak@seznam.cz");
 
@@ -250,4 +248,4 @@ VALUES ("2014-10-08", "Zlomenina kosti", 5);
 INSERT INTO results (resultDate, resultDsc, examinationId)
 VALUES ("2013-01-05", "Přetrhnutý vnitřní vaz kotníku", 6);
 INSERT INTO results (resultDate, resultDsc, examinationId)
-VALUES ("2014-08-12", "ZPrasklá aorta", 7);
+VALUES ("2014-08-12", "Prasklá aorta", 7);

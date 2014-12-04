@@ -6,18 +6,23 @@
 package servlets;
 
 import Database.EditDepartment;
+import Database.EditDrugs;
 import Database.EditExamination;
 import Database.EditPatient;
 import Database.EditPrescription;
+import Database.EditResults;
 import Models.Examination;
 import Models.Patient;
 import Models.UsedDrug;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.HttpConstraint;
+import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +33,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author Touche
  */
 @WebServlet(name = "DocController", urlPatterns = {"/docController", "/addPatient", "/actionAddPatient",
-        "/viewPatients", "/userSearch", "/searchFound", "/searchNotFound", "/updatePatient", "/deletePatient"})
+        "/viewPatients", "/userSearch", "/searchFound", "/searchNotFound", "/updatePatient", "/deletePatient",
+        "/addDrugs", "/addExamination", "/addResult"})
+@ServletSecurity(@HttpConstraint(rolesAllowed = {"user"}))
 public class DocController extends HttpServlet {
     
     // TODO oddeleni se nemeni, tak by ho stacilo nacist jen jednou
@@ -40,12 +47,16 @@ public class DocController extends HttpServlet {
     public static final String DETAIL_PATIENT = "/patient";
     public static final String UPDATE_PATIENT = "/updatePatient";
     public static final String DELETE_PATIENT = "/deletePatient";
+    public static final String ADD_DRUG_TO_PATIENT = "/addDrugs";
+    public static final String ADD_EXAM_TO_PATIENT = "/addExamination";
+    public static final String ADD_RESULT_TO_EXAM = "/addResult";
     
     public static final String USER_SEARCH = "/userSearch";
     public static final String SEARCH_FOUND = "/searchFound";
     public static final String SEARCH_NOT_FOUND = "/searchNotFound";
     
     private List<Patient> patients;
+    private List<String> drugs;
     
     public DocController() {
         patients = new ArrayList();
@@ -59,6 +70,7 @@ public class DocController extends HttpServlet {
         
         String attrDep = "department";
         String attrPatient = "patient";
+        String attrDrug = "drugs";
         
         // TODO pridat vyhledavani
         // TODO prepsat odkazy na adresy
@@ -94,7 +106,18 @@ public class DocController extends HttpServlet {
             case SEARCH_FOUND:
                                 
                 // found only one recored
-                if (getPatients().size() == 1) {                         
+                if (getPatients().size() == 1) {
+                    
+                    try {
+                        setDrugs(EditDrugs.getDrugNames());
+                    }
+                                        
+                    catch (SQLException | NamingException ex) {
+                        response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                        break;
+                    }
+                    
+                    request.setAttribute(attrDrug, getDrugs());
                     request.setAttribute(attrPatient, getPatient(0));
                     request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatientInfo.jsp").forward(request, response);
                     break;
@@ -110,7 +133,7 @@ public class DocController extends HttpServlet {
                 break;               
                 
             default:
-                response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_404);
                 break;
             
         }
@@ -161,12 +184,12 @@ public class DocController extends HttpServlet {
                 
                 catch (SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
-                    getPatient(0).clear();
+                    //getPatient(0).clear(); // TODO poresit clearovani pacientu
                     break;
                 }
                                 
                 Controller.redirect(request, response, DETAIL_PATIENT + "?id=" + getPatient(0).getId());
-                getPatient(0).clear();
+                //getPatient(0).clear();
                 break;    
                 
             case USER_SEARCH:
@@ -177,6 +200,7 @@ public class DocController extends HttpServlet {
                 }
                 
                 catch (SQLException | NamingException ex) {
+                    ex.printStackTrace();
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
@@ -213,12 +237,63 @@ public class DocController extends HttpServlet {
                 }
             
                 catch (SQLException | NamingException | NumberFormatException ex) {
-                    ex.printStackTrace();
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
             
                 Controller.redirect(request, response, Controller.USER_CONTROLLER);
+                break;
+                
+            case ADD_DRUG_TO_PATIENT:
+
+                try {
+                    EditPrescription.addPrescription(EditDrugs.getDrugId(request.getParameter("inputName")), 
+                            java.sql.Date.valueOf(request.getParameter("inputStartUsage")), 
+                            java.sql.Date.valueOf(request.getParameter("inputStopUsage")), // TODO osetrit pokud se nic nezada 
+                            request.getParameter("inputDosage"),
+                            Integer.parseInt(request.getParameter("patientId")));
+                }
+            
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, "LEK PRIDAN"); // TODO
+                break;
+                
+            case ADD_EXAM_TO_PATIENT: // TODO zkontrolovat vsude JOINA a LEFT joiny
+                // TODO napsat hodnoty IDcek do selectu jako value a ne pico si to tahat z db
+                // TODO osetrit illegalArgumentException pri spatne zadanem datu
+                try {
+                    EditExamination.addExamination(request.getParameter("description"),
+                            java.sql.Date.valueOf(request.getParameter("examTime")),
+                            Integer.parseInt(request.getParameter("patientId")),
+                            request.getRemoteUser());
+                }
+            
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, "WTFFFFF !!");
+                break;
+                
+            case ADD_RESULT_TO_EXAM:
+                
+                try {
+                    EditResults.addResult(java.sql.Date.valueOf(request.getParameter("resultDate")),
+                            request.getParameter("resultDsc"),
+                            Integer.parseInt(request.getParameter("examId")));
+                }
+            
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, "ADDED RESULT BRO");
                 break;
  
             default:
@@ -260,5 +335,19 @@ public class DocController extends HttpServlet {
     
     public void setPatients(List<Patient> patients) {
         this.patients = patients;
+    }
+
+    /**
+     * @return the drugs
+     */
+    public List<String> getDrugs() {
+        return drugs;
+    }
+
+    /**
+     * @param drugs the drugs to set
+     */
+    public void setDrugs(List<String> drugs) {
+        this.drugs = drugs;
     }
 }

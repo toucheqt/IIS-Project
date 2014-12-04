@@ -102,7 +102,7 @@ public class RootController extends HttpServlet {
                 break;
                 
             case ADD_NURSE: {
-                List<String> departments;
+                List<String> departments; // TOTO muze byt klido v konstruktoru
                 try {
                      departments = EditDepartment.getDepartments();
                 }
