@@ -201,7 +201,7 @@ public class EditPatient {
         stmt.setInt(1, patientId);
         stmt.executeUpdate();
         
-        stmt = connection.prepareStatement(DELETE_PATIENT);
+        stmt = connection.prepareStatement(DELETE_PATIENT); // TODO refaktor, hospitalizace etc by se meli mazat ve vlastnich tridach
         stmt.setInt(1, patientId);
         stmt.executeUpdate();
         

@@ -111,7 +111,7 @@
                                 <a href="#" class="list-group-item" data-toggle="modal" data-target="#prescriptions">Přiřadit léky</a>
                                 <a href="#" class="list-group-item" data-toggle="modal" data-target="#examination">Zadat vyšetření</a>
                                 <a href="#" class="list-group-item" data-toggle="modal" data-target="#result">Zadat výsledky vyšetření</a>
-                                <a href="#" class="list-group-item">Hospitalizovat</a>
+                                <a href="#" class="list-group-item" data-toggle="modal" data-target="#hospitalization">Hospitalizovat</a>
                                 <a href="#" class="list-group-item" data-toggle="modal" data-target="#delete">Odstranit pacienta</a>
                             </div>
                         </div><!--/.sidebar-offcanvas-->                          
@@ -294,6 +294,47 @@
                             </select>
                         </div>
                         <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
+                            <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+                        
+    <!-- Add hospitalization to patient modal window -->    
+    <div class="modal fade bs-example-modal-sm" id="hospitalization" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Hospitalizace</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" method="POST" action="<c:url value="/addHospitalization"/>">
+                        <div class="form-group">
+                            <label for="enterDate" class="control-label exam-form-label">Čas nástupu</label>
+                            <div class="col-sm-10 doc-form">
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" name="enterDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="releaseDate" class="control-label exam-form-label">Propuštění</label>
+                            <div class="col-sm-10 doc-form">
+                                <input type="text" class="form-control change-form" name="releaseDate"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="depId" class="col-sm-2 result-select-label">Oddělení</label>
+                            <select name="depId" class="form-control select drug-select">
+                                <option disabled selected>Vyberte oddělení</option>
+                                <c:forEach var="examInfo" items="${department}" varStatus="status">
+                                    <option value="${status.index}">${department[status.index]}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" value="${patient.id}" name="patientId"/>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
                             <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
                         </div>

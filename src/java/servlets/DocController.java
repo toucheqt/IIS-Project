@@ -8,6 +8,7 @@ package servlets;
 import Database.EditDepartment;
 import Database.EditDrugs;
 import Database.EditExamination;
+import Database.EditHospitalization;
 import Database.EditPatient;
 import Database.EditPrescription;
 import Database.EditResults;
@@ -34,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "DocController", urlPatterns = {"/docController", "/addPatient", "/actionAddPatient",
         "/viewPatients", "/userSearch", "/searchFound", "/searchNotFound", "/updatePatient", "/deletePatient",
-        "/addDrugs", "/addExamination", "/addResult"})
+        "/addDrugs", "/addExamination", "/addResult", "/addHospitalization"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"user"}))
 public class DocController extends HttpServlet {
     
@@ -50,6 +51,7 @@ public class DocController extends HttpServlet {
     public static final String ADD_DRUG_TO_PATIENT = "/addDrugs";
     public static final String ADD_EXAM_TO_PATIENT = "/addExamination";
     public static final String ADD_RESULT_TO_EXAM = "/addResult";
+    public static final String ADD_HOSPITALIZATION = "/addHospitalization";
     
     public static final String USER_SEARCH = "/userSearch";
     public static final String SEARCH_FOUND = "/searchFound";
@@ -85,7 +87,7 @@ public class DocController extends HttpServlet {
                 request.getRequestDispatcher(RootController.VIEW_ADD_PATH + "/addPatient.jsp").forward(request, response);
                 break;
                 
-            case VIEW_PATIENTS:
+            case VIEW_PATIENTS: {
                 List<String> departments; // TODO toto hodit VSUDE do konstruktoru
                 
                 try {
@@ -102,14 +104,18 @@ public class DocController extends HttpServlet {
                 request.setAttribute(attrPatient, getPatients());
                 request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatients.jsp").forward(request, response);
                 break;  
+            }
                 
-            case SEARCH_FOUND:
+            case SEARCH_FOUND: {
+                
+                List<String> departments;
                                 
                 // found only one recored
                 if (getPatients().size() == 1) {
                     
                     try {
                         setDrugs(EditDrugs.getDrugNames());
+                        departments = EditDepartment.getDepartments();
                     }
                                         
                     catch (SQLException | NamingException ex) {
@@ -117,6 +123,7 @@ public class DocController extends HttpServlet {
                         break;
                     }
                     
+                    request.setAttribute(attrDep, departments);
                     request.setAttribute(attrDrug, getDrugs());
                     request.setAttribute(attrPatient, getPatient(0));
                     request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatientInfo.jsp").forward(request, response);
@@ -126,6 +133,7 @@ public class DocController extends HttpServlet {
                 request.setAttribute(attrPatient, getPatients());
                 request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatientSearch.jsp").forward(request, response);
                 break;
+            }
                 
             case SEARCH_NOT_FOUND:
                 
@@ -294,6 +302,24 @@ public class DocController extends HttpServlet {
                 }
             
                 Controller.redirect(request, response, "ADDED RESULT BRO");
+                break;
+                
+            case ADD_HOSPITALIZATION:
+                
+                try {
+                    EditHospitalization.addHospitalization(java.sql.Date.valueOf(request.getParameter("enterDate")),
+                            java.sql.Date.valueOf(request.getParameter("releaseDate")),
+                            Integer.parseInt(request.getParameter("patientId")),
+                            Integer.parseInt(request.getParameter("depId")),
+                            request.getRemoteUser());
+                }
+            
+                catch (SQLException | NamingException | NumberFormatException ex) {
+                    Controller.redirect(request, response, Controller.ERROR_500);
+                    break;
+                }
+            
+                Controller.redirect(request, response, "ADDED HOSPITALIZATION");
                 break;
  
             default:
