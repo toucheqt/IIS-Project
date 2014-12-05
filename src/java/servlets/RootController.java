@@ -68,6 +68,7 @@ public class RootController extends HttpServlet {
     private String address;
     private Doctor doctor;
     private Nurse nurse;
+    private Doctor activeUser;
     
 
     /**
@@ -80,24 +81,40 @@ public class RootController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        setAddress(request.getServletPath());
+        setAddress(request.getServletPath()); // TODO refaktor
         String attrDoc = "doctor";
         String attrNurse = "nurse";
         String attrDep = "department";
-        
+        String attrActiveUser = "activeUser";
+         
+                
         switch (address) {
             case Controller.ROOT_CONTROLLER:
+                
+                // load active users info
+                try {
+                    activeUser = EditDoctor.getDoctor(request.getRemoteUser());
+                }
+
+                catch (SQLException | NamingException ex) {
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    return;
+                }
+                
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_PATH + "/root.jsp").forward(request, response);
                 break;
                 
             case ADD_DOC:
                 request.setAttribute(attrDoc, getDoctor());
+                request.setAttribute(attrActiveUser, activeUser);
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addDoc.jsp").forward(request, response);
                 break;
                 
             case ADD_DOC_DEL:
                 if (getDoctor() != null) getDoctor().clearDoctor();
                 request.setAttribute(attrDoc, getDoctor());
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addDoc.jsp").forward(request, response);
                 break;
                 
@@ -114,6 +131,7 @@ public class RootController extends HttpServlet {
                 
                 request.setAttribute(attrDep, departments);
                 request.setAttribute(attrNurse, getNurse());
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
             }
@@ -133,6 +151,7 @@ public class RootController extends HttpServlet {
                 
                 request.setAttribute(attrDep, departments);
                 request.setAttribute(attrNurse, getNurse());
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/addNurse.jsp").forward(request, response);
                 break;
             }
@@ -156,6 +175,7 @@ public class RootController extends HttpServlet {
                 // TODO FRONT predelat par veci v db z varchar na enum
                 request.setAttribute(attrDoc, doctors);
                 request.setAttribute(attrDep, departments);
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_ADD_PATH + "/assignStaff.jsp").forward(request, response);
                 break;
             }
@@ -170,13 +190,13 @@ public class RootController extends HttpServlet {
                 }
                 
                 catch (SQLException | NamingException ex) {
-                    ex.printStackTrace();
                     response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
                     break; // TODO nahradit returny za break;
                 }
                 
                 request.setAttribute(attrDoc, doctors);
                 request.setAttribute(attrDep, departments);
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDoctor.jsp").forward(request, response);
                 break;
             }
@@ -197,6 +217,7 @@ public class RootController extends HttpServlet {
                 
                 request.setAttribute(attrNurse, nurses);
                 request.setAttribute(attrDep, departments);
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showNurse.jsp").forward(request, response);
                 break;
             }
@@ -219,6 +240,7 @@ public class RootController extends HttpServlet {
                 request.setAttribute(attrDoc, doctors);
                 request.setAttribute(attrNurse, nurses);
                 request.setAttribute(attrDep, departments);
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDepartment.jsp").forward(request, response);
                 break;
                 
@@ -269,7 +291,7 @@ public class RootController extends HttpServlet {
                     Controller.redirect(request, response, ADD_DOC + "?birthNum=True");
                     return;
                 }
-                   // todo checknout jestli v telefonu nejsou uplne picoviny 
+
                 else if (getDoctor().getEmail().isEmpty() || !getDoctor().getEmail().matches(regxpEmail)) {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?email=True");
@@ -370,7 +392,7 @@ public class RootController extends HttpServlet {
             case ACTION_ASSIGN_STAFF: {
                 
                 int departmentId;
-                Integer telNum = null;
+                String telNum = null;
                 String attribute = "staff";
                 String workingTime;
                 String doctorInfo;
@@ -381,7 +403,12 @@ public class RootController extends HttpServlet {
                     
                     // get telephone
                     if (!request.getParameter("inputTelDep").isEmpty()) { 
-                        telNum = Integer.parseInt(request.getParameter("inputTelDep"));
+                        telNum = request.getParameter("inputTelDep");
+
+                        if (!telNum.matches(regxpNotLetters)) {
+                            Controller.redirect(request, response, ASSIGN_STAFF + "?tel=True");
+                            break;
+                        }
                     }
                     
                     // parse email from doctorinfo
@@ -404,12 +431,11 @@ public class RootController extends HttpServlet {
                     return;
                 }
                 
-                catch (NumberFormatException ex) {
-                    Controller.redirect(request, response, ASSIGN_STAFF + "?tel=True");
-                    return;
-                }
                 // TODO FRONT nemel bych pri prirazeni zobrazovat lekare kteri uz plny uvazek maji
                 // save data to db
+                // TODO nefunguje zobrazit oddeleni
+                // TODO chtelo by to lekare zobrazovat jen jednou
+                // TODO kontrolovat zadavani poli i na to, jestli nejsou moc dlouhe
                 try {
                     EditIsWorking.assignDoctor(telNum, workingTime, departmentId, doctorInfo);
                     Controller.redirect(request, response, ADDED_ITEM + "?staff=True");

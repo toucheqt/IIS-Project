@@ -29,8 +29,6 @@ public class Autentificator extends HttpServlet {
     public static final String UPDATE_PASSWD = "/updatePasswd";
     public static final String UPDATE_ABOUT = "/updateAbout";
 
-    private String address;
-
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -44,9 +42,7 @@ public class Autentificator extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        setAddress(request.getServletPath());
-        
-        switch (getAddress()) {
+        switch (request.getServletPath()) {
             // TODO poresit aby se dal zadat vetsi mail nez 25 znaku :D
             case LOGOUT:
                 
@@ -71,11 +67,9 @@ public class Autentificator extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        String user = request.getRemoteUser();
-        setAddress(request.getServletPath());
         request.setCharacterEncoding("UTF-8");
 
-        switch (getAddress()) {
+        switch (request.getServletPath()) {
             
             case UPDATE_PASSWD:
                 
@@ -91,7 +85,7 @@ public class Autentificator extends HttpServlet {
                 
                 // check if old password is correct
                 try {
-                    defaultPasswd =  EditDoctor.getPasswd(user);
+                    defaultPasswd =  EditDoctor.getPasswd(request.getRemoteUser());
                 }
                 
                 catch (SQLException | NamingException ex) {
@@ -106,7 +100,7 @@ public class Autentificator extends HttpServlet {
             
                 // update passwd
                 try {
-                    EditDoctor.updatePasswd(user, MD5Generator.generatePassword(newPasswd));
+                    EditDoctor.updatePasswd(request.getRemoteUser(), MD5Generator.generatePassword(newPasswd));
                 }
             
                 catch (SQLException | NamingException ex) {
@@ -121,11 +115,10 @@ public class Autentificator extends HttpServlet {
             case UPDATE_ABOUT:
                 
                 try {
-                    // TODO: predvyplnit udaje ve zmene osobnich udaju
                     EditDoctor.updateDoctor(new Doctor(request.getParameter("inputName"),
                             request.getParameter("inputSurname"), request.getParameter("inputBirthNum"),
                             request.getParameter("inputAddr"), request.getParameter("inputCity"),
-                            request.getParameter("inputEmail"), request.getParameter("inputTel"), null), user);
+                            request.getParameter("inputEmail"), request.getParameter("inputTel"), null), request.getRemoteUser());
                 }
             
                 catch (NumberFormatException ex) {
@@ -138,7 +131,7 @@ public class Autentificator extends HttpServlet {
                     break;
                 }
             
-                Controller.redirect(request, response, "success update");
+                Controller.redirect(request, response, "success update"); // TODO vracel bych u vsech normalne na hlavni stranku
                 break; // TODO redirect
                 // TODO naplnit db daty
                 // TODO kontrolovat na korektni data i osobni udaje
@@ -161,19 +154,5 @@ public class Autentificator extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    /**
-     * @return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * @param address the address to set
-     */
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
 }

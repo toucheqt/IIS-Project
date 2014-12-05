@@ -43,6 +43,8 @@ public class EditDoctor {
             + " address = ?, city = ?, email = ?, tel = ? WHERE email = ?";
     public static final String SELECT_PASSWD = "SELECT password FROM usertable WHERE email = ?";
     public static final String UPDATE_PASSWD = "UPDATE usertable SET password = ? WHERE email = ?";
+    public static final String SELECT_ACTIVE_USER = "SELECT username, surname, birthNum, address, city, email, tel"
+            + " FROM usertable WHERE email = ?";
     // TODO prepsat selecty tj. pouzivat v nich ON
             /*select s.name as Student, c.name as Course 
 from student s
@@ -72,6 +74,31 @@ order by s.name*/
         stmt.close();
         connection.close();
  
+    }
+    
+    public static Doctor getDoctor(String doctorEmail) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        Doctor doctor;
+        String[] columns = {"username", "surname", "birthNum", "address", "city", "email", "tel"};
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_ACTIVE_USER);
+        stmt.setString(1, doctorEmail);
+        rs = stmt.executeQuery();
+        rs.next();
+        
+        doctor = new Doctor(rs.getString(columns[0]), rs.getString(columns[1]), rs.getString(columns[2]),
+                rs.getString(columns[3]), rs.getString(columns[4]), rs.getString(columns[5]), rs.getString(columns[6]), null);
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return doctor;
+        
     }
     
     public static String getUserRole(String user) throws SQLException, NamingException {

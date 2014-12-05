@@ -26,7 +26,7 @@ public class EditIsWorking {
     
     private EditIsWorking() {};
             
-    public static void assignDoctor(Integer telNum, String workingTime, int departmentNum, String docEmail) 
+    public static void assignDoctor(String telNum, String workingTime, int departmentNum, String docEmail) 
             throws NamingException, SQLException {
         
         Connection connection;
@@ -43,7 +43,7 @@ public class EditIsWorking {
         
         else {
             stmt = connection.prepareStatement(ASSIGN_DOCTOR_W_TEL);
-            stmt.setInt(1, telNum);
+            stmt.setString(1, telNum);
             stmt.setString(2, workingTime);
             stmt.setInt(3, departmentNum);
             stmt.setString(4, docEmail);

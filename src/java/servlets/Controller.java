@@ -9,6 +9,7 @@ package servlets;
 // TODO pokud zbyde cas, tak dodelat anglickou lokalizaci
 // TODO heslo pri prihlasovani se spatne zobrazuje na notasu - zkusit roztahnout div trochu (width)
 import Database.EditDoctor;
+import Models.Doctor;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.naming.NamingException;
@@ -35,10 +36,13 @@ public class Controller extends HttpServlet {
     public static final String ERROR_404 = "/404";
     public static final String ERROR_500 = "/500";
     
+    public static final String ATTR_ACTIVE_USER = "activeUser";
+    
     /** Default path where the server is launched */
     public static final String DEFAULT_PATH = "http://localhost:8084/IIS_Nemocnice";
     
     private String userRole;
+    
 
     /**
      * Processes requests for both HTTP GET and POST methods and redirect to next servlets according to
@@ -59,7 +63,7 @@ public class Controller extends HttpServlet {
         catch (SQLException | NamingException ex) {
             response.sendRedirect(DEFAULT_PATH + ERROR_500);
         }
-          
+
         // redirect root and user accordingly
         switch (userRole) {
             case ROLE_ROOT:
@@ -102,4 +106,5 @@ public class Controller extends HttpServlet {
     public String getUserRole() {
         return userRole;
     }
+
 }

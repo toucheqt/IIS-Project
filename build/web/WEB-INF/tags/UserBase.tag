@@ -95,49 +95,49 @@
                         <label for="inputName" class="control-label change-pass-label">Jméno</label>
                         <div class="col-sm-10 doc-form">
                             <input type="text" class="form-control change-pass" name="inputName"
-                                   value="${user.username}" placeholder="Jméno (povinné)"/>
+                                   value="${activeUser.username}" placeholder="Jméno (povinné)"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputSurname" class="control-label change-pass-label">Příjmení</label>
                         <div class="col-sm-10 doc-form">
                             <input type="text" class="form-control change-pass" name="inputSurname"
-                                   value="${user.surname}" placeholder="Příjmení (povinné)"/>
+                                   value="${activeUser.surname}" placeholder="Příjmení (povinné)"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputBirthNum" class="control-label change-pass-label">Rodné číslo</label>
                         <div class="col-sm-10 doc-form">
                             <input type="text" class="form-control change-pass" name="inputBirthNum"
-                                   value="${user.birthNum}" placeholder="Rodné číslo"/>
+                                   value="${activeUser.birthNum}" placeholder="Rodné číslo"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputAddr" class="control-label change-pass-label">Adresa</label>
                         <div class="col-sm-10 doc-form">
                             <input type="text" class="form-control change-pass" name="inputAddr"
-                                   value="${user.address}" placeholder="Adresa"/>
+                                   value="${activeUser.address}" placeholder="Adresa"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputCity" class="control-label change-pass-label">Město</label>
                         <div class="col-sm-10 doc-form">
                             <input type="text" class="form-control change-pass" name="inputCity"
-                                   value="${user.city}" placeholder="Město"/>
+                                   value="${activeUser.city}" placeholder="Město"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputEmail" class="control-label change-pass-label">E-mail</label>
                         <div class="col-sm-10 doc-form">
                             <input type="text" class="form-control change-pass" name="inputEmail"
-                                   value="${user.email}" placeholder="E-mail (povinné)"/>
+                                   value="${activeUser.email}" placeholder="E-mail (povinné)"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputTel" class="control-label change-pass-label">Telefon</label>
                         <div class="col-sm-10 doc-form">
                             <input type="text" class="form-control change-pass" name="inputTel"
-                                   value="${user.tel}" placeholder="Telefonní číslo"/>
+                                   value="${activeUser.tel}" placeholder="Telefonní číslo"/>
                         </div>
                     </div>
                     <div class="modal-footer">

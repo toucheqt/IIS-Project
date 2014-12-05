@@ -6,12 +6,14 @@
 package servlets;
 
 import Database.EditDepartment;
+import Database.EditDoctor;
 import Database.EditDrugs;
 import Database.EditExamination;
 import Database.EditHospitalization;
 import Database.EditPatient;
 import Database.EditPrescription;
 import Database.EditResults;
+import Models.Doctor;
 import Models.Examination;
 import Models.Patient;
 import Models.UsedDrug;
@@ -59,6 +61,7 @@ public class DocController extends HttpServlet {
     
     private List<Patient> patients;
     private List<String> drugs;
+    private Doctor activeUser;
     
     public DocController() {
         patients = new ArrayList();
@@ -79,11 +82,24 @@ public class DocController extends HttpServlet {
         switch (request.getServletPath()) {
             
             case Controller.USER_CONTROLLER:
+                
+                // load active users info
+                try {
+                    activeUser = EditDoctor.getDoctor(request.getRemoteUser());
+                }
+
+                catch (SQLException | NamingException ex) {
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    return;
+                }
+                
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.VIEW_PATH + "/user.jsp").forward(request, response);
                 break;
                 
             case ADD_PATIENT:
                 request.setAttribute(attrPatient, getPatient(0));
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.VIEW_ADD_PATH + "/addPatient.jsp").forward(request, response);
                 break;
                 
@@ -102,6 +118,7 @@ public class DocController extends HttpServlet {
                 
                 request.setAttribute(attrDep, departments);
                 request.setAttribute(attrPatient, getPatients());
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatients.jsp").forward(request, response);
                 break;  
             }
@@ -126,6 +143,7 @@ public class DocController extends HttpServlet {
                     request.setAttribute(attrDep, departments);
                     request.setAttribute(attrDrug, getDrugs());
                     request.setAttribute(attrPatient, getPatient(0));
+                    request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                     request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatientInfo.jsp").forward(request, response);
                     break;
                 }
@@ -137,6 +155,7 @@ public class DocController extends HttpServlet {
                 
             case SEARCH_NOT_FOUND:
                 
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.ERROR_PATH + "/patientNotFound.jsp").forward(request, response);
                 break;               
                 
