@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/Touche/Documents/NetBeansProjects/IIS-Project/src/java/servlets/Autentificator.java</file>
             <file>file:/C:/Users/Touche/Documents/NetBeansProjects/IIS-Project/src/java/servlets/DocController.java</file>
-            <file>file:/C:/Users/Touche/Documents/NetBeansProjects/IIS-Project/src/java/Database/EditPatient.java</file>
-            <file>file:/C:/Users/Touche/Documents/NetBeansProjects/IIS-Project/web/WEB-INF/views/showItems/viewPatients.jsp</file>
+            <file>file:/C:/Users/Touche/Documents/NetBeansProjects/IIS-Project/web/WEB-INF/views/showItems/viewPatientInfo.jsp</file>
+            <file>file:/C:/Users/Touche/Documents/NetBeansProjects/IIS-Project/src/java/servlets/ErrorController.java</file>
         </group>
     </open-files>
 </project-private>

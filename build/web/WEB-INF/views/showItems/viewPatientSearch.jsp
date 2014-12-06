@@ -22,8 +22,6 @@
                             <th>Rodné číslo</th>
                             <th>Adresa</th>
                             <th>Město</th>
-                            <th>Ošetřující lékář</th>
-                            <th>Oddělení</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,10 +32,9 @@
                                 <td>${patient[status.index].birthNum}</td>
                                 <td>${patient[status.index].address}</td>
                                 <td>${patient[status.index].city}</td>
-                                <td>${patient[status.index].doctorName} ${patient[status.index].doctorSurname}</td>
-                                <td>${patient[status.index].departmentName}</td>
                                 <td class="col-sm-1 col-md-1">
                                     <form method="GET" action="<c:url value="/patient"/>">
+                                        <input type="hidden" value="${patient[status.index].id}" name="patientId"/>
                                         <button type="submit" class="btn btn-sm btn-primary">
                                             Více informací &raquo;
                                         </button>

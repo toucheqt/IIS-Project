@@ -163,6 +163,7 @@
                         </div>               
                         <div class="modal-footer">
                             <input type="hidden" value="${patient.id}" name="defaultId"/>
+                            <input type="hidden" value="${patient.id}" name="patientId"/> <!-- todo ehm 2x rly ?? -->
                             <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
                             <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
                         </div>
@@ -193,13 +194,15 @@
                         <div class="form-group">
                             <label for="inputStartUsage" class="control-label change-form-label">Užívat od</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" name="inputStartUsage"/>
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka (YYYY-MM-DD)" 
+                                       name="inputStartUsage"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputStopUsage" class="control-label change-form-label">Užívat do</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" name="inputStopUsage"/>
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka (YYYY-MM-DD)" 
+                                       name="inputStopUsage"/>
                             </div>
                         </div>
                         <div class="form-group">

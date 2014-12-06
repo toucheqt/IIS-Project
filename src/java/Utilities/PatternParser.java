@@ -5,6 +5,9 @@
  */
 package Utilities;
 
+import java.sql.SQLException;
+import javax.naming.NamingException;
+
 /**
  *
  * @author Touche
@@ -41,6 +44,18 @@ public class PatternParser {
         
         setSurname(pomStr);
           
+    }
+    
+    public int parseQuery(String query) throws NumberFormatException {
+        
+        String id = ""; // todo string builder zase
+        
+        for (int i = 2; i < query.length(); i++) {
+            id += query.charAt(i);
+        }
+        
+        return Integer.parseInt(id);
+        
     }
 
     /**

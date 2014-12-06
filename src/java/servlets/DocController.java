@@ -17,6 +17,7 @@ import Models.Doctor;
 import Models.Examination;
 import Models.Patient;
 import Models.UsedDrug;
+import Utilities.PatternParser;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -37,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "DocController", urlPatterns = {"/docController", "/addPatient", "/actionAddPatient",
         "/viewPatients", "/userSearch", "/searchFound", "/searchNotFound", "/updatePatient", "/deletePatient",
-        "/addDrugs", "/addExamination", "/addResult", "/addHospitalization", "/patient"})
+        "/addDrugs", "/addExamination", "/addResult", "/addHospitalization", "/patient", "/errorPatient"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"user"}))
 public class DocController extends HttpServlet {
     
@@ -54,6 +55,7 @@ public class DocController extends HttpServlet {
     public static final String ADD_EXAM_TO_PATIENT = "/addExamination";
     public static final String ADD_RESULT_TO_EXAM = "/addResult";
     public static final String ADD_HOSPITALIZATION = "/addHospitalization";
+    public static final String ERROR_PATIENT = "/errorPatient";
     
     public static final String USER_SEARCH = "/userSearch";
     public static final String SEARCH_FOUND = "/searchFound";
@@ -160,7 +162,19 @@ public class DocController extends HttpServlet {
                 break;   
                 
             case DETAIL_PATIENT: {
-                int patientId = Integer.parseInt(request.getParameter("patientId")); // TODO osetrit
+                
+                /*PatternParser patternParser = new PatternParser();
+                int patientId = null;
+                try { // TODO checknout v db, jestli to id opravdu existuje
+                    patientId = patternParser.parseQuery(request.getQueryString());
+                }*/
+                int patientId = Integer.parseInt(request.getParameter("patientId"));
+                
+                /*catch (NumberFormatException ex) {
+                    response.sendRedirect(String.valueOf(patientId));
+                    break;
+                }*/
+                        
                 List<String> departments;
                 
                 try {
@@ -183,6 +197,10 @@ public class DocController extends HttpServlet {
                 break;
                 
             }
+            
+            case ERROR_PATIENT: 
+                request.getRequestDispatcher(RootController.ERROR_PATH + "/errorPatient.jsp").forward(request, response);
+                break;
                 
             default:
                 response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_404);
@@ -231,7 +249,7 @@ public class DocController extends HttpServlet {
                 // add patient to db
                 try {
                     EditPatient.addPatient(getPatient(0));
-                    setPatient(EditPatient.getLastPatient());
+                    getPatient(0).setId(EditPatient.getLastPatientId());
                 }
                 
                 catch (SQLException | NamingException ex) {
@@ -241,7 +259,7 @@ public class DocController extends HttpServlet {
                     break;
                 }
                                 
-                Controller.redirect(request, response, DETAIL_PATIENT + "?id=" + getPatient(0).getId());
+                Controller.redirect(request, response, DETAIL_PATIENT + "?patientId=" + getPatient(0).getId());
                 //getPatient(0).clear();
                 break;    
                 
@@ -269,7 +287,12 @@ public class DocController extends HttpServlet {
                 
             case UPDATE_PATIENT:
                 
-                try {
+                if (request.getParameter("inputName").isEmpty() || request.getParameter("inputSurname").isEmpty()) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
+                
+                try { // TODO AAAAAAAAAAAAAAAAAAAAAA osetrit aby musela byt zadano jmeno a prijmenu u aktualizace
                     EditPatient.updatePatient(Integer.parseInt(request.getParameter("defaultId")), request.getParameter("inputName"), 
                             request.getParameter("inputSurname"), request.getParameter("inputBirthNum"), 
                             request.getParameter("inputAddr"), request.getParameter("inputCity"));
@@ -279,8 +302,8 @@ public class DocController extends HttpServlet {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 } 
-                
-                Controller.redirect(request, response, DETAIL_PATIENT + "?id=" + "dat sem spravne id"); // TODO id
+
+                Controller.redirect(request, response, DETAIL_PATIENT + "?patientId=" + getPatient(0).getId());
                 break;
                 
             case DELETE_PATIENT:
@@ -298,11 +321,16 @@ public class DocController extends HttpServlet {
                 break;
                 
             case ADD_DRUG_TO_PATIENT:
+                
+                if (request.getParameter("inputDosage") == null || request.getParameter("inputName") == null) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
 
                 try {
                     EditPrescription.addPrescription(EditDrugs.getDrugId(request.getParameter("inputName")), 
                             java.sql.Date.valueOf(request.getParameter("inputStartUsage")), 
-                            java.sql.Date.valueOf(request.getParameter("inputStopUsage")), // TODO osetrit pokud se nic nezada 
+                            java.sql.Date.valueOf(request.getParameter("inputStopUsage")),
                             request.getParameter("inputDosage"),
                             Integer.parseInt(request.getParameter("patientId")));
                 }
@@ -311,13 +339,23 @@ public class DocController extends HttpServlet {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
+                
+                catch (IllegalArgumentException ex) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
             
-                Controller.redirect(request, response, "LEK PRIDAN"); // TODO
+                Controller.redirect(request, response, DETAIL_PATIENT + "?patientId=" + getPatient(0).getId());
                 break;
                 
             case ADD_EXAM_TO_PATIENT: // TODO zkontrolovat vsude JOINA a LEFT joiny
                 // TODO napsat hodnoty IDcek do selectu jako value a ne pico si to tahat z db
-                // TODO osetrit illegalArgumentException pri spatne zadanem datu
+
+                if (request.getParameter("description") == null) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
+                
                 try {
                     EditExamination.addExamination(request.getParameter("description"),
                             java.sql.Date.valueOf(request.getParameter("examTime")),
@@ -329,11 +367,21 @@ public class DocController extends HttpServlet {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
+                
+                catch (IllegalArgumentException ex) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
             
-                Controller.redirect(request, response, "WTFFFFF !!");
+                Controller.redirect(request, response, DETAIL_PATIENT + "?patientId=" + getPatient(0).getId());
                 break;
                 
             case ADD_RESULT_TO_EXAM:
+                
+                if (request.getParameter("resultDsc") == null || request.getParameter("examId") == null) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
                 
                 try {
                     EditResults.addResult(java.sql.Date.valueOf(request.getParameter("resultDate")),
@@ -345,16 +393,31 @@ public class DocController extends HttpServlet {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
+                
+                catch (IllegalArgumentException ex) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
             
-                Controller.redirect(request, response, "ADDED RESULT BRO");
+                Controller.redirect(request, response, DETAIL_PATIENT + "?patientId=" + getPatient(0).getId());
                 break;
                 
             case ADD_HOSPITALIZATION:
                 
+                if (request.getParameter("enterDate") == null || request.getParameter("depId") == null) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
+                
                 try {
+                    
+                    Date releaseDate = null;
+                    if (!request.getParameter("releaseDate").isEmpty()) {
+                        releaseDate = java.sql.Date.valueOf(request.getParameter("releaseDate"));
+                    }
+                    
                     EditHospitalization.addHospitalization(java.sql.Date.valueOf(request.getParameter("enterDate")),
-                            java.sql.Date.valueOf(request.getParameter("releaseDate")),
-                            Integer.parseInt(request.getParameter("patientId")),
+                            releaseDate, Integer.parseInt(request.getParameter("patientId")),
                             Integer.parseInt(request.getParameter("depId")),
                             request.getRemoteUser());
                 }
@@ -363,8 +426,13 @@ public class DocController extends HttpServlet {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
+                
+                catch (IllegalArgumentException ex) {
+                    Controller.redirect(request, response, ERROR_PATIENT);
+                    break;
+                }
             
-                Controller.redirect(request, response, "ADDED HOSPITALIZATION");
+                Controller.redirect(request, response, DETAIL_PATIENT + "?patientId=" + getPatient(0).getId());
                 break;
  
             default:

@@ -71,6 +71,7 @@
         <url-pattern>/addResult</url-pattern>
         <url-pattern>/addHospitalization</url-pattern>
         <url-pattern>/patient</url-pattern>
+        <url-pattern>/errorPatient</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
