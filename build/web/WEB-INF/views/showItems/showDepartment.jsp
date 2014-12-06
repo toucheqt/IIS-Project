@@ -71,12 +71,7 @@
                                             <td>${doctor[status.index].email}</td>
                                             <td>${doctor[status.index].departmentName}</td>
                                             <td>${doctor[status.index].workingTime}</td>
-                                            <c:if test="${doctor[status.index].tel != 0}">
-                                                <td>${doctor[status.index].tel}</td>
-                                            </c:if>
-                                            <c:if test="${doctor[status.index].tel == 0}">
-                                                <td></td>
-                                            </c:if>                                
+                                            <td>${doctor[status.index].tel}</td>                               
                                             <td class="col-sm-1 col-md-1">
                                                 <button type="button" class="btn btn-sm btn-primary nurse-change"
                                                         data-toggle="modal" data-target="#${status.index}-change">Změnit
@@ -170,7 +165,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>     
+                                            </div>
                                         </tr>
                                     </c:forEach>
                                 </c:when>
@@ -183,12 +178,7 @@
                                                 <td>${doctor[status.index].email}</td>
                                                 <td>${doctor[status.index].departmentName}</td>
                                                 <td>${doctor[status.index].workingTime}</td>
-                                                <c:if test="${doctor[status.index].tel != 0}">
-                                                    <td>${doctor[status.index].tel}</td>
-                                                </c:if>
-                                                <c:if test="${doctor[status.index].tel == 0}">
-                                                    <td></td>
-                                                </c:if>                                
+                                                <td>${doctor[status.index].tel}</td>                               
                                                 <td class="col-sm-1 col-md-1">
                                                     <button type="button" class="btn btn-sm btn-primary nurse-change"
                                                             data-toggle="modal" data-target="#${status.index}-change">Změnit

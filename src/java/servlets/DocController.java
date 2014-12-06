@@ -98,6 +98,7 @@ public class DocController extends HttpServlet {
                 break;
                 
             case ADD_PATIENT:
+                //getPatient(0).clear();
                 request.setAttribute(attrPatient, getPatient(0));
                 request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.VIEW_ADD_PATH + "/addPatient.jsp").forward(request, response);
@@ -210,6 +211,7 @@ public class DocController extends HttpServlet {
                 }
                 
                 catch (SQLException | NamingException ex) {
+                    ex.printStackTrace();
                     Controller.redirect(request, response, Controller.ERROR_500);
                     //getPatient(0).clear(); // TODO poresit clearovani pacientu
                     break;

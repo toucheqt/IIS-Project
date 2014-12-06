@@ -72,7 +72,7 @@ public class EditIsWorking {
                 
     }
     
-    public static void updateDocWork(Integer telNum, String workingTime, int departmentNum, int defDepartmentNum, 
+    public static void updateDocWork(String telNum, String workingTime, int departmentNum, int defDepartmentNum, 
             String docEmail) throws SQLException, NamingException {
         
         Connection connection;
@@ -80,7 +80,7 @@ public class EditIsWorking {
         
         connection = Connect.getConnection();
         stmt = connection.prepareStatement(UPDATE_DOC_WORK);
-        stmt.setInt(1, telNum);
+        stmt.setString(1, telNum);
         stmt.setString(2, workingTime);
         stmt.setInt(3, departmentNum);
         stmt.setInt(4, defDepartmentNum);

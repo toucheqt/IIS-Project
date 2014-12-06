@@ -22,13 +22,23 @@ import javax.servlet.http.HttpSession;
  *
  * @author Touche
  */
-@WebServlet(name = "Autentificator", urlPatterns = {"/logout", "/updatePasswd", "/updateAbout"})
+@WebServlet(name = "Autentificator", urlPatterns = {"/logout", "/updatePasswd", "/updateAbout", "/errOldPasswd",
+        "/errNewPasswd", "/sucPasswdUpdate", "/errAboutUpdate", "/sucAboutUpdate"})
 public class Autentificator extends HttpServlet {
     
     public static final String LOGOUT = "/logout";
     public static final String UPDATE_PASSWD = "/updatePasswd";
     public static final String UPDATE_ABOUT = "/updateAbout";
-
+    
+    public static final String ERROR_OLD_PASSWD = "/errOldPasswd";
+    public static final String ERROR_NEW_PASSWD = "/errNewPasswd";
+    public static final String ERROR_EMAIL = "/errAboutUpdate";
+    
+    public static final String SUCCESS_PASSWD_UPDATE = "/sucPasswdUpdate";
+    public static final String SUCCESS_ABOUT_UPDATE = "/sucAboutUpdate";
+    
+    private String userRole;
+    
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -50,6 +60,26 @@ public class Autentificator extends HttpServlet {
                 session.invalidate();
                 response.sendRedirect(Controller.DEFAULT_PATH);
                 break;
+                
+            case ERROR_OLD_PASSWD:
+                request.getRequestDispatcher(RootController.ERROR_PATH + "/passwdOldNotMatch.jsp").forward(request, response);
+                break;
+                
+            case ERROR_NEW_PASSWD:
+                request.getRequestDispatcher(RootController.ERROR_PATH + "/passwdNewNotMatch.jsp").forward(request, response);
+                break;
+                
+            case ERROR_EMAIL:
+                request.getRequestDispatcher(RootController.ERROR_PATH + "/updateAbout.jsp").forward(request, response);
+                break;
+                
+            case SUCCESS_ABOUT_UPDATE:
+                request.getRequestDispatcher(RootController.SUCCESS_PATH + "/updateAbout.jsp").forward(request, response);
+                break; // TODO tyhle errorovy a successovy stranky spojit do jedny
+                
+            case SUCCESS_PASSWD_UPDATE:
+                request.getRequestDispatcher(RootController.SUCCESS_PATH + "/passwdUpdate.jsp").forward(request, response);
+                break;
             
         }
         
@@ -68,6 +98,14 @@ public class Autentificator extends HttpServlet {
             throws ServletException, IOException {
         
         request.setCharacterEncoding("UTF-8");
+        try {
+            userRole = EditDoctor.getUserRole(request.getRemoteUser());
+        }
+                    
+        catch (SQLException | NamingException ex) {
+            Controller.redirect(request, response, Controller.ERROR_500);
+            return;
+        }
 
         switch (request.getServletPath()) {
             
@@ -79,8 +117,13 @@ public class Autentificator extends HttpServlet {
                 
                 // check if new passwords are identical
                 if (!newPasswd.equals(newPasswdCheck)) {
-                    Controller.redirect(request, response, "nesedi nova hesla");
-                    break; // TODO nejak vymyslet error pri spatne zadanych heslech
+
+                    if (userRole.equals(Controller.ROLE_ROOT)) {
+                        Controller.redirect(request, response, ERROR_NEW_PASSWD + "?root=True");
+                    }
+                    
+                    else Controller.redirect(request, response, ERROR_NEW_PASSWD);
+                    break;
                 }
                 
                 // check if old password is correct
@@ -94,7 +137,11 @@ public class Autentificator extends HttpServlet {
                 }
                 
                 if (!defaultPasswd.equals(MD5Generator.generatePassword(request.getParameter("oldPasswd")))) {
-                    Controller.redirect(request, response, "nesedi stara hesla");
+                    if (userRole.equals(Controller.ROLE_ROOT)) {
+                        Controller.redirect(request, response, ERROR_OLD_PASSWD + "?root=True");
+                    }
+                    
+                    else Controller.redirect(request, response, ERROR_OLD_PASSWD);
                     break;
                 }
             
@@ -109,31 +156,43 @@ public class Autentificator extends HttpServlet {
                     // TODO error pri prihlasovani vycentrovat na stred
                 }
             
-                Controller.redirect(request, response, Controller.ROOT_CONTROLLER); // TODO presmerovat na success kid page
+                
+                if (userRole.equals(Controller.ROLE_ROOT)) {
+                    Controller.redirect(request, response, SUCCESS_PASSWD_UPDATE + "?root=True");
+                }
+                    
+                else Controller.redirect(request, response, SUCCESS_PASSWD_UPDATE);
                 break;
                 
             case UPDATE_ABOUT:
+                
+                if (request.getParameter("inputEmail").isEmpty()) { // TODO osetrit to poradne
+                    if (userRole.equals(Controller.ROLE_ROOT)) {
+                        Controller.redirect(request, response, ERROR_EMAIL + "?root=True");
+                    }
+                    
+                    else Controller.redirect(request, response, ERROR_EMAIL);
+                    break;
+                }
                 
                 try {
                     EditDoctor.updateDoctor(new Doctor(request.getParameter("inputName"),
                             request.getParameter("inputSurname"), request.getParameter("inputBirthNum"),
                             request.getParameter("inputAddr"), request.getParameter("inputCity"),
                             request.getParameter("inputEmail"), request.getParameter("inputTel"), null), request.getRemoteUser());
-                }
-            
-                catch (NumberFormatException ex) {
-                    Controller.redirect(request, response, "chybny telefon"); // TODO error
-                    break;
-                }
+                }     
             
                 catch (SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }
             
-                Controller.redirect(request, response, "success update"); // TODO vracel bych u vsech normalne na hlavni stranku
-                break; // TODO redirect
-                // TODO naplnit db daty
+                if (userRole.equals(Controller.ROLE_ROOT)) {
+                        Controller.redirect(request, response, SUCCESS_ABOUT_UPDATE + "?root=True");
+                    }
+                    
+                else Controller.redirect(request, response, SUCCESS_ABOUT_UPDATE);
+                break;
                 // TODO kontrolovat na korektni data i osobni udaje
                 // TODO rodne cislo predelat na regulak obsahujici 0-9/
                 

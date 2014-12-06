@@ -14,7 +14,6 @@
     <div class="container">
         <div class="jumbotron">
             <h1>Zpráva dne</h1>
-            <h2>${activeUser.email} trololo</h2>
             <p>Upozornění pro veškerý personál! Experimentální lék na ebolu C8H12N4O5 prozatím došel. Dodávky by měli být opět v dostupné v brzké době. Mezitím je třeba přijmout patřičné kroky, aby se nákaza nešířila i mezi personálem.</p>
             <p>Prosím, řiďte se instrukcemi zaslanými v soukromých zprávách.</p>
         

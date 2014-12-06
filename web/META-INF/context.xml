@@ -9,4 +9,5 @@
         dataSourceName="jdbc/mysql" digest="MD5" localDataSource="true"
         userTable="usertable" userNameCol="email" userCredCol="password"
         userRoleTable="usertable" roleNameCol="roleType"/>
+    <Valve className="org.apache.catalina.authenticator.FormAuthenticator" landingPage="/signIn.jsp" />
 </Context>

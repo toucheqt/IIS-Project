@@ -60,10 +60,11 @@ public class RootController extends HttpServlet {
     public static final String UPDATE_NURSE = "/updateNurse";
     public static final String UPDATE_DOCTOR = "/updateDoctor";
     
-    public static final String VIEW_PATH = "/WEB-INF/views";
+    public static final String VIEW_PATH = "/WEB-INF/views"; // TODO tohle by melo byt v hlavnim controlleru
     public static final String VIEW_ADD_PATH = "/WEB-INF/views/addItems";
     public static final String VIEW_SHOW_PATH = "/WEB-INF/views/showItems";
     public static final String ERROR_PATH = "/WEB-INF/views/errorPages";
+    public static final String SUCCESS_PATH = "/WEB-INF/views/successPages";
   
     private String address;
     private Doctor doctor;
@@ -237,8 +238,8 @@ public class RootController extends HttpServlet {
                     return;
                 }
                 
-                request.setAttribute(attrDoc, doctors);
                 request.setAttribute(attrNurse, nurses);
+                request.setAttribute(attrDoc, doctors);
                 request.setAttribute(attrDep, departments);
                 request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(VIEW_SHOW_PATH + "/showDepartment.jsp").forward(request, response);
@@ -258,8 +259,6 @@ public class RootController extends HttpServlet {
         setAddress(request.getServletPath());
         request.setCharacterEncoding("UTF-8");
              
-        String regxpAlpha = "[\\p{L}]+";
-        String regxpBirthNum = "[0-9]{6}/[0-9]{4}";
         String regxpEmail = ".+@.+";
         String regxpNotLetters = "[^a-zA-z]+";
                 // TODO najit jinou bootstrap sablonu
@@ -274,21 +273,15 @@ public class RootController extends HttpServlet {
                         request.getParameter("inputTel"), MD5Generator.generatePassword(passwd.substring(0, 7))));   
                 
                 // check if all required values are correctly filled
-                if (getDoctor().getUsername().isEmpty() || !getDoctor().getUsername().matches(regxpAlpha)) {
+                if (getDoctor().getUsername().isEmpty()) {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?username=True");
                     return;
                 }
                     
-                else if (getDoctor().getSurname().isEmpty() || !getDoctor().getSurname().matches(regxpAlpha)) {
+                else if (getDoctor().getSurname().isEmpty()) {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?surname=True");
-                    return;
-                }
-                    
-                else if (!getDoctor().getBirthNum().isEmpty() && !getDoctor().getBirthNum().matches(regxpBirthNum)) {
-                    request.setAttribute(attribute, getDoctor());
-                    Controller.redirect(request, response, ADD_DOC + "?birthNum=True");
                     return;
                 }
 
@@ -296,13 +289,7 @@ public class RootController extends HttpServlet {
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?email=True");
                     return;
-                }
-                                        
-                else if (!getDoctor().getCity().isEmpty() && !getDoctor().getCity().matches(regxpAlpha)) {
-                    request.setAttribute(attribute, getDoctor());
-                    Controller.redirect(request, response, ADD_DOC + "?city=True");
-                    return;
-                }
+                }                      
                 
                 else if (!getDoctor().getTel().isEmpty() && !getDoctor().getTel().matches(regxpNotLetters)) {
                     request.setAttribute(attribute, getDoctor());
@@ -318,6 +305,7 @@ public class RootController extends HttpServlet {
                 }
 
                 catch (SQLException ex) {
+                    ex.printStackTrace();
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?used=True");
                     return;
@@ -353,29 +341,17 @@ public class RootController extends HttpServlet {
                 }       
                 
                 // check if all required values are correctly filled
-                if (getNurse().getUsername().isEmpty() || !getNurse().getUsername().matches(regxpAlpha)) {
+                if (getNurse().getUsername().isEmpty()) {
                     request.setAttribute(attribute, getNurse());
                     Controller.redirect(request, response, ADD_NURSE + "?username=True");
                     return;
                 }
 
-                else if (getNurse().getSurname().isEmpty() || !getNurse().getSurname().matches(regxpAlpha)) {
+                else if (getNurse().getSurname().isEmpty()) {
                     request.setAttribute(attribute, getNurse());
                     Controller.redirect(request, response, ADD_NURSE + "?surname=True");
                     return;
-                }
-
-                else if (!getNurse().getBirthNum().isEmpty() && !getNurse().getBirthNum().matches(regxpBirthNum)) {
-                    request.setAttribute(attribute, getNurse());
-                    Controller.redirect(request, response, ADD_NURSE + "?birthNum=True");
-                    return;
-                }
-
-                else if (!getNurse().getCity().isEmpty() && !getNurse().getCity().matches(regxpAlpha)) {
-                    request.setAttribute(attribute, getNurse());
-                    Controller.redirect(request, response, ADD_NURSE + "?city=True");
-                    return;
-                }       
+                }      
                 
                 try {
                     EditNurse.addNurse(getNurse());             
@@ -473,19 +449,17 @@ public class RootController extends HttpServlet {
                 
             case UPDATE_DOC_WORK:
                 // TODO uvolnovat nepouzivane objekty
+                // TODO refaktorovat vsechny IDCKA u selectu (jsp)
                 try {
-                    EditIsWorking.updateDocWork(Integer.parseInt(request.getParameter("inputTel")),
+                    EditIsWorking.updateDocWork(request.getParameter("inputTel"),
                             request.getParameter("inputWorkingTime"), 
-                            EditDepartment.getDepartmentId(request.getParameter("inputDepName")),
+                            EditDepartment.getDepartmentId(request.getParameter("inputDepName")), // TOTO REFAKTOROVAT TVLE
                             EditDepartment.getDepartmentId(request.getParameter("defaultDepName")),
                             request.getParameter("defaultEmail"));
                 }
 // TODO: odstranit osetreni jmen a cisel pomoci regulaku
-                // TODO: poresit SQL injection
-                // TODO: poresit aby se u updatovani nemohlo stat, ze nezadam hodnotu
-                catch (NumberFormatException ex) {
-                    Controller.redirect(request, response, SHOW_DEPARTMENT + "?err=True"); // TODO vypsat error ze bylo blby cislo
-                }
+                // TODO A: poresit aby se u updatovani nemohlo stat, ze nezadam hodnotu
+
             // TODO zavest praci s db jen tam, kde je to nutne, udelat si tridni promenne do kterych nacist data z db
                 // nekdy na zacatku a pak to jen aktualizovat, pokud se provede delete nebo update
                 catch (SQLException | NamingException ex) {
@@ -518,6 +492,7 @@ public class RootController extends HttpServlet {
                 }
             
                 catch (SQLException | NamingException ex) {
+                    ex.printStackTrace();
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
                 }

@@ -49,6 +49,11 @@
         <url-pattern>/logout</url-pattern>
         <url-pattern>/updatePasswd</url-pattern>
         <url-pattern>/updateAbout</url-pattern>
+        <url-pattern>/errOldPasswd</url-pattern>
+        <url-pattern>/errNewPasswd</url-pattern>
+        <url-pattern>/errAboutUpdate</url-pattern>
+        <url-pattern>/sucPasswdUpdate</url-pattern>
+        <url-pattern>/sucAboutUpdate</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DocController</servlet-name>
@@ -68,7 +73,7 @@
     </servlet-mapping>
     <session-config>
         <session-timeout>
-            5
+            15
         </session-timeout>
     </session-config>
     <welcome-file-list>

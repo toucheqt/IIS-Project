@@ -20,7 +20,7 @@ import servlets.Controller;
  * @author Touche
  */
 public class EditDoctor {
-    
+    // TODO predelat delete Doctor
     public static final String INSERT_USER = "INSERT INTO usertable (username, surname, birthNum,"
             + " address, city, email, tel, roleType, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
     public static final String SELECT_ROLE_TYPE = "SELECT roleType FROM usertable WHERE email = ?";
@@ -30,7 +30,7 @@ public class EditDoctor {
             + " FROM usertable"
             + " JOIN isworking ON usertable.email = isworking.doctor"
             + " JOIN department ON isworking.departmentNum = department.id"
-            + " ORDER BY username";
+            + " WHERE roleType = 'user'";
     public static final String SELECT_DOCTOR = "SELECT username, surname, birthNum, address, city, email, usertable.tel,"
             + " depName"
             + " FROM usertable"
@@ -38,7 +38,7 @@ public class EditDoctor {
             + " LEFT JOIN department ON isworking.departmentNum = department.id"
             + " WHERE roleType = ?"
             + " ORDER BY username";
-    public static final String DELETE_DOCTOR = "DELETE FROM usertable WHERE email = ?";
+    public static final String DELETE_DOCTOR = "UPDATE usertable SET roleType = 'none' WHERE email = ?";
     public static final String UPDATE_DOCTOR = "UPDATE usertable SET username = ?, surname = ?, birthNum = ?,"
             + " address = ?, city = ?, email = ?, tel = ? WHERE email = ?";
     public static final String SELECT_PASSWD = "SELECT password FROM usertable WHERE email = ?";

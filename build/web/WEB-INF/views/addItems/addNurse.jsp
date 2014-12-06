@@ -48,22 +48,12 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${!param.birthNum}">
-                    <div class='form-group'>
-                        <label for='inputBirthNum' class='col-sm-2 control-label'>Rodné číslo</label>
-                        <div class='col-sm-10 doc-form'>
-                            <input type='text' class='form-control' value="${nurse.birthNum}" name='inputBirthNum' placeHolder='Rodné číslo'>
-                        </div>
+                <div class='form-group'>
+                    <label for='inputBirthNum' class='col-sm-2 control-label'>Rodné číslo</label>
+                    <div class='col-sm-10 doc-form'>
+                        <input type='text' class='form-control' value="${nurse.birthNum}" name='inputBirthNum' placeHolder='Rodné číslo'>
                     </div>
-                </c:if>
-                <c:if test="${param.birthNum}">
-                    <div class='form-group has-error'>
-                        <label for='inputBirthNum' class='col-sm-2 control-label'>Rodné číslo</label>
-                        <div class='col-sm-10 doc-form'>
-                            <input type='text' class='form-control' name='inputBirthNum' placeHolder='Rodné číslo'>
-                        </div>
-                    </div>
-                </c:if>
+                </div>
                 <div class='form-group'>
                     <label for='inputAddr' class='col-sm-2 control-label'>Adresa</label>
                     <div class='col-sm-10 doc-form'>
@@ -71,27 +61,16 @@
                                placeholder="Adresa">
                     </div>
                 </div>
-                <c:if test="${!param.city}">
-                    <div class='form-group'>
-                        <label for='inputCity' class='col-sm-2 control-label'>Město</label>
-                        <div class='col-sm-10 doc-form'>
-                            <input type='text' class='form-control' value="${nurse.city}" name='inputCity' 
-                                   placeholder="Město">
-                        </div>
+                <div class='form-group'>
+                    <label for='inputCity' class='col-sm-2 control-label'>Město</label>
+                    <div class='col-sm-10 doc-form'>
+                        <input type='text' class='form-control' value="${nurse.city}" name='inputCity' placeholder="Město">
                     </div>
-                </c:if>
-                <c:if test="${param.city}">
-                    <div class='form-group has-error'>
-                        <label for='inputCity' class='col-sm-2 control-label'>Město</label>
-                        <div class='col-sm-10 doc-form'>
-                            <input type='text' class='form-control' name='inputCity' placeholder="Město">
-                        </div>
-                    </div>
-                </c:if>
+                </div>
                 <div class="form-group">
                     <label for="inputDepNum" class="col-sm-2 control-label">Oddělení</label>
                     <select name="inputDepNum" class="form-control doc-form select">
-                        <option disabled selected>Vyberte oddělení</option>
+                        <option disabled selected value="-1">Vyberte oddělení</option>
                         <c:forEach var="depName" items="${department}" varStatus="status">
                             <option>${department[status.index]}</option>
                         </c:forEach>
@@ -101,7 +80,7 @@
             </fieldset>
         </form>
     </div>
-    <c:if test="${param.username or param.surname or param.birthNum or param.city or param.depNum}">
+    <c:if test="${param.username or param.surname or param.depNum}">
         <div class="alert alert-dismissable alert-danger myAlert docAlert">
             <button type="button" class="close" data-dismiss="alert">×</button>
             <c:if test="${param.username}">
@@ -109,15 +88,6 @@
             </c:if>
             <c:if test="${param.surname}">
                 <strong class='doc-warn'>Prosím, zadejte korektně příjmení.</strong>
-            </c:if>
-            <c:if test="${param.birthNum}">
-                <strong class='doc-warn'>Prosím, zadejte korektně rodné číslo.</strong>
-            </c:if>
-            <c:if test="${param.address}">
-                <strong class='doc-warn'>Prosím, zadejte korektně adresu.</strong>
-            </c:if>    
-            <c:if test="${param.city}">
-                <strong class='doc-warn'>Prosím, zadejte korektně město.</strong>
             </c:if>
             <c:if test="${param.depNum}">
                 <strong class="doc-warn">Prosím, zařaďte sestru na oddělení.</strong>

@@ -80,12 +80,7 @@
                                             <td>${doctor[status.index].address}</td>
                                             <td>${doctor[status.index].city}</td>
                                             <td>${doctor[status.index].email}</td>
-                                            <c:if test="${empty doctor[status.index].tel}">
-                                                <td></td>
-                                            </c:if>
-                                            <c:if test="${not empty doctor[status.index].tel}">
-                                                <td>${doctor[status.index].tel}</td>
-                                            </c:if>
+                                            <td>${doctor[status.index].tel}</td>
                                             <td>${doctor[status.index].departmentName}</td>
                                             <td class="col-sm-1 col-md-1">
                                                 <button type="button" class="btn btn-sm btn-primary nurse-change"
@@ -195,12 +190,7 @@
                                                 <td>${doctor[status.index].address}</td>
                                                 <td>${doctor[status.index].city}</td>
                                                 <td>${doctor[status.index].email}</td>
-                                                <c:if test="${doctor[status.index].tel == 0}">
-                                                    <td></td>
-                                                </c:if>
-                                                <c:if test="${doctor[status.index].tel != 0}">
-                                                    <td>${doctor[status.index].tel}</td>
-                                                </c:if>
+                                                <td>${doctor[status.index].tel}</td>
                                                 <td>${doctor[status.index].departmentName}</td>
                                                 <td class="col-sm-1 col-md-1">
                                                     <button type="button" class="btn btn-sm btn-primary nurse-change"

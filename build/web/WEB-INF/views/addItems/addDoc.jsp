@@ -48,23 +48,12 @@
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${!param.birthNum}">
-                    <div class='form-group'>
-                        <label for='inputBirthNum' class='col-sm-2 control-label'>Rodné číslo</label>
-                        <div class='col-sm-10 doc-form'>
-                            <input type='text' class='form-control' value="${doctor.birthNum}" name='inputBirthNum'
-                                   placeHolder='Rodné číslo'>
-                        </div>
+                <div class='form-group'>
+                    <label for='inputBirthNum' class='col-sm-2 control-label'>Rodné číslo</label>
+                    <div class='col-sm-10 doc-form'>
+                        <input type='text' class='form-control' value="${doctor.birthNum}" name='inputBirthNum' placeHolder='Rodné číslo'>
                     </div>
-                </c:if>
-                <c:if test="${param.birthNum}">
-                    <div class='form-group has-error'>
-                        <label for='inputBirthNum' class='col-sm-2 control-label'>Rodné číslo</label>
-                        <div class='col-sm-10 doc-form'>
-                            <input type='text' class='form-control' name='inputBirthNum' placeHolder='Rodné číslo'>
-                        </div>
-                    </div>
-                </c:if>
+                </div>
                 <c:if test="${!param.email && !param.used}">
                     <div class='form-group'>
                         <label for='inputMail' class='col-sm-2 control-label'>E-mail</label>
@@ -109,29 +98,17 @@
                                placeholder="Adresa">
                     </div>
                 </div>
-                <c:if test="${!param.city}">
-                    <div class='form-group'>
-                        <label for='inputCity' class='col-sm-2 control-label'>Město</label>
-                        <div class='col-sm-10 doc-form'>
-                            <input type='text' class='form-control' value="${doctor.city}" name='inputCity' 
-                                   placeholder="Město">
-                        </div>
+                <div class='form-group'>
+                    <label for='inputCity' class='col-sm-2 control-label'>Město</label>
+                    <div class='col-sm-10 doc-form'>
+                        <input type='text' class='form-control' value="${doctor.city}" name='inputCity' placeholder="Město">
                     </div>
-                </c:if>
-                <c:if test="${param.city}">
-                    <div class='form-group has-error'>
-                        <label for='inputCity' class='col-sm-2 control-label'>Město</label>
-                        <div class='col-sm-10 doc-form'>
-                            <input type='text' class='form-control' name='inputCity' placeholder="Město">
-                        </div>
-                    </div>
-                </c:if>
+                </div>
                 <button type='submit' class='btn btn-primary doc-button'>Přidat</button>
             </fieldset>
         </form>
     </div>
-        <c:if test="${param.username or param.surname or param.birthNum or param.email
-              or param.tel or param.city or param.used}">
+        <c:if test="${param.username or param.surname or param.email or param.tel or param.used}">
         <div class="alert alert-dismissable alert-danger myAlert docAlert">
             <button type="button" class="close" data-dismiss="alert">×</button>
             <c:if test="${param.username}">
@@ -139,9 +116,6 @@
             </c:if>
             <c:if test="${param.surname}">
                 <strong class='doc-warn'>Prosím, zadejte korektně příjmení.</strong>
-            </c:if>
-            <c:if test="${param.birthNum}">
-                <strong class='doc-warn'>Prosím, zadejte korektně rodné číslo.</strong>
             </c:if>
             <c:if test="${param.email}">
                 <strong class='doc-warn'>Prosím, zadejte korektně e-mail.</strong>
@@ -152,11 +126,7 @@
             <c:if test="${param.tel}">
                 <strong class='doc-warn'>Prosím, zadejte korektně telefon.</strong>
             </c:if>   
-            <c:if test="${param.city}">
-                <strong class='doc-warn'>Prosím, zadejte korektně město.</strong>
-            </c:if>
         </div>          
     </c:if>
-    <img src='res/virtualni-nemocnice-logo.png' alt='logo' class='footer_logo'/>
-    
+    <img src='res/virtualni-nemocnice-logo.png' alt='logo' class='footer_logo'/>  
 </m:Base>
