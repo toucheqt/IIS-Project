@@ -8,9 +8,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib tagdir="/WEB-INF/tags" prefix="m"%>
 
-<m:Base title="Nemocnice - správa">
+<m:Base title="Nemocnice - Stránka nenalezena">
     <m:RootBase/>
-    
+        
     <div class="alert alert-danger mySuccess" role="alert">
         <p><strong>Chyba 404!</strong> Omlouváme se, ale požadovaná stránka nebyla bohužel nalezena.</p>
         <a class="btn btn-lg btn-danger my-btn-success" href='<c:url value="/RootController"/>' role="button">Pokračovat</a>

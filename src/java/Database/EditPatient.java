@@ -27,6 +27,7 @@ public class EditPatient {
             + " LEFT JOIN hospitalization H ON P.id = H.id"
             + " LEFT JOIN department D ON H.departmentNum = D.id AND H.released IS NULL"
             + " LEFT JOIN usertable U ON H.doctor = U.email";
+    public static final String SELECT_PATIENT = "SELECT * FROM patients WHERE id = ?";
     public static final String SELECT_LAST_PATIENT = "SELECT patientName, surname FROM patients ORDER BY id DESC LIMIT 1";
     public static final String SEARCH_PATIENTS = "SELECT * FROM patients"
             + " WHERE (patientName LIKE ? AND surname LIKE ?)"
@@ -60,6 +61,32 @@ public class EditPatient {
         
     }
     
+    public static Patient getPatient(int patientId) throws SQLException, NamingException {
+        
+        Connection connection;
+        PreparedStatement stmt;
+        ResultSet rs;
+        Patient patient;
+        String[] columns = {"id", "patientName", "surname", "birthNum", "address", "city"};
+        
+        connection = Connect.getConnection();
+        stmt = connection.prepareStatement(SELECT_PATIENT);
+        stmt.setInt(1, patientId);
+        rs = stmt.executeQuery();
+        rs.next();
+        
+        // TODO vsude kde delam rs.next to chce osetrovat kraviny
+        patient = new Patient(rs.getString(columns[1]), rs.getString(columns[2]),
+                rs.getString(columns[3]), rs.getString(columns[4]), rs.getString(columns[5]));
+        patient.setId(rs.getInt(columns[0]));
+        patient.setDrugs(EditPrescription.getUsedDrugs(patientId));
+        patient.setExams(EditExamination.getPatientExamination(patientId));
+        patient.setHospitalization(EditHospitalization.getHospitalizations(patientId));
+        
+        return patient;
+        
+    }
+    
     public static List<Patient> getPatients() throws SQLException, NamingException {
         
         Connection connection;
@@ -80,8 +107,8 @@ public class EditPatient {
             patients.get(i).setDepartmentName(rs.getString(columns[6]));
             patients.get(i).setDoctorName(rs.getString(columns[7]));
             patients.get(i).setDoctorSurname(rs.getString(columns[8]));
-            patients.get(i).setDrugs(EditPrescription.getUsedDrugs(patients.get(i).getId()));
-            patients.get(i).setExams(EditExamination.getPatientExamination(patients.get(i).getId()));
+            //patients.get(i).setDrugs(EditPrescription.getUsedDrugs(patients.get(i).getId()));
+            //patients.get(i).setExams(EditExamination.getPatientExamination(patients.get(i).getId()));
         }
         
         rs.close();

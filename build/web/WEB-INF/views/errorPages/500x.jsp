@@ -9,7 +9,7 @@
 <%@taglib tagdir="/WEB-INF/tags" prefix="m"%>
 
 <m:Base title="Nemocnice - Chyba serveru">
-    <m:RootBase/>
+    <m:UserBase/>
         
     <div class="alert alert-danger mySuccess" role="alert">
         <p><strong>Chyba 500!</strong> Omlouváme se, ale při zpracování Vašeho požadavku došlo k interní chybě serveru.</p>

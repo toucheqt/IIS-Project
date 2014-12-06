@@ -70,6 +70,7 @@
         <url-pattern>/addExamination</url-pattern>
         <url-pattern>/addResult</url-pattern>
         <url-pattern>/addHospitalization</url-pattern>
+        <url-pattern>/patient</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ErrorController extends HttpServlet {
     
     private Doctor activeUser; 
+    private String userRole;
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,6 +33,7 @@ public class ErrorController extends HttpServlet {
         // load active users info
         try {
             activeUser = EditDoctor.getDoctor(request.getRemoteUser());
+            userRole = EditDoctor.getUserRole(request.getRemoteUser());
         }
         
         catch (SQLException | NamingException ex) {
@@ -42,11 +44,21 @@ public class ErrorController extends HttpServlet {
         switch (request.getServletPath()) {
                             
             case Controller.ERROR_500:
+                if (userRole.equals(Controller.ROLE_USER)) {
+                    request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser); // TODO toto udelaj jako jeden soubor jeeez
+                    request.getRequestDispatcher(RootController.ERROR_PATH + "/500x.jsp").forward(request, response);
+                    break;
+                }
                 request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.ERROR_PATH + "/500.jsp").forward(request, response);
                 break;
                 
             default: // as default app should redirect to /404
+                if (userRole.equals(Controller.ROLE_USER)) {
+                    request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser); // TODO toto udelaj jako jeden soubor jeeez
+                    request.getRequestDispatcher(RootController.ERROR_PATH + "/404x.jsp").forward(request, response);
+                    break;
+                }
                 request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.ERROR_PATH + "/404.jsp").forward(request, response);
                 break;

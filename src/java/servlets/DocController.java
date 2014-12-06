@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "DocController", urlPatterns = {"/docController", "/addPatient", "/actionAddPatient",
         "/viewPatients", "/userSearch", "/searchFound", "/searchNotFound", "/updatePatient", "/deletePatient",
-        "/addDrugs", "/addExamination", "/addResult", "/addHospitalization"})
+        "/addDrugs", "/addExamination", "/addResult", "/addHospitalization", "/patient"})
 @ServletSecurity(@HttpConstraint(rolesAllowed = {"user"}))
 public class DocController extends HttpServlet {
     
@@ -98,7 +98,6 @@ public class DocController extends HttpServlet {
                 break;
                 
             case ADD_PATIENT:
-                //getPatient(0).clear();
                 request.setAttribute(attrPatient, getPatient(0));
                 request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.VIEW_ADD_PATH + "/addPatient.jsp").forward(request, response);
@@ -158,7 +157,32 @@ public class DocController extends HttpServlet {
                 
                 request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                 request.getRequestDispatcher(RootController.ERROR_PATH + "/patientNotFound.jsp").forward(request, response);
-                break;               
+                break;   
+                
+            case DETAIL_PATIENT: {
+                int patientId = Integer.parseInt(request.getParameter("patientId")); // TODO osetrit
+                List<String> departments;
+                
+                try {
+                    setDrugs(EditDrugs.getDrugNames());
+                    departments = EditDepartment.getDepartments();
+                    setPatient(EditPatient.getPatient(patientId));
+                }
+                                        
+                catch (SQLException | NamingException ex) {
+                    ex.printStackTrace();
+                    response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_500);
+                    break;
+                }
+                    
+                request.setAttribute(attrDep, departments);
+                request.setAttribute(attrDrug, getDrugs());
+                request.setAttribute(attrPatient, getPatient(0));
+                request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
+                request.getRequestDispatcher(RootController.VIEW_SHOW_PATH + "/viewPatientInfo.jsp").forward(request, response);
+                break;
+                
+            }
                 
             default:
                 response.sendRedirect(Controller.DEFAULT_PATH + Controller.ERROR_404);
