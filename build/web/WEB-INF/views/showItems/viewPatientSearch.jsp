@@ -10,7 +10,7 @@
 
 <m:Base title="Nemocnice - Pacienti">
     <m:UserBase/>
-    <div class="container-fluid"> <!-- TODO synchronizovat vsechny show na view -->
+    <div class="container-fluid">
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-1">
             <h2 class="sub-header">Nalezení pacienti</h2>
             <div class="table-responsive">

@@ -7,7 +7,6 @@
 
 package servlets;
 // TODO pokud zbyde cas, tak dodelat anglickou lokalizaci
-// TODO heslo pri prihlasovani se spatne zobrazuje na notasu - zkusit roztahnout div trochu (width)
 import Database.EditDoctor;
 import java.io.IOException;
 import java.sql.SQLException;

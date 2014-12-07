@@ -409,7 +409,6 @@ public class RootController extends HttpServlet {
                 
                 // TODO FRONT nemel bych pri prirazeni zobrazovat lekare kteri uz plny uvazek maji
                 // save data to db
-                // TODO nefunguje zobrazit oddeleni
                 // TODO chtelo by to lekare zobrazovat jen jednou
                 // TODO kontrolovat zadavani poli i na to, jestli nejsou moc dlouhe
                 try {

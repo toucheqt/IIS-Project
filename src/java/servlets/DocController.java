@@ -79,7 +79,6 @@ public class DocController extends HttpServlet {
         String attrPatient = "patient";
         String attrDrug = "drugs";
         
-        // TODO pridat vyhledavani
         // TODO prepsat odkazy na adresy
         switch (request.getServletPath()) {
             

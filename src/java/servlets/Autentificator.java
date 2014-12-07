@@ -53,7 +53,6 @@ public class Autentificator extends HttpServlet {
             throws ServletException, IOException {
         
         switch (request.getServletPath()) {
-            // TODO poresit aby se dal zadat vetsi mail nez 25 znaku :D
             case LOGOUT:
                 
                 HttpSession session = request.getSession();
@@ -153,7 +152,6 @@ public class Autentificator extends HttpServlet {
                 catch (SQLException | NamingException ex) {
                     Controller.redirect(request, response, Controller.ERROR_500);
                     break;
-                    // TODO error pri prihlasovani vycentrovat na stred
                 }
             
                 

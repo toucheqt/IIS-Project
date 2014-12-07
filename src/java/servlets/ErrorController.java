@@ -45,7 +45,7 @@ public class ErrorController extends HttpServlet {
                             
             case Controller.ERROR_500:
                 if (userRole.equals(Controller.ROLE_USER)) {
-                    request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser); // TODO toto udelaj jako jeden soubor jeeez
+                    request.setAttribute(Controller.ATTR_ACTIVE_USER, activeUser);
                     request.getRequestDispatcher(RootController.ERROR_PATH + "/500x.jsp").forward(request, response);
                     break;
                 }
