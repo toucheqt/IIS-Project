@@ -261,7 +261,7 @@ public class RootController extends HttpServlet {
              
         String regxpEmail = ".+@.+";
         String regxpNotLetters = "[^a-zA-z]+";
-                // TODO najit jinou bootstrap sablonu
+
         switch (getAddress()) {
             case ACTION_DOC: {
 
@@ -305,13 +305,13 @@ public class RootController extends HttpServlet {
                 }
 
                 catch (SQLException ex) {
-                    ex.printStackTrace();
                     request.setAttribute(attribute, getDoctor());
                     Controller.redirect(request, response, ADD_DOC + "?used=True");
                     return;
                 }
-                // TODO errorove stranky MUSI zohlednit, ktery uzivatel je prihlaseny
+
                 catch (NamingException | MessagingException ex) {
+                    ex.printStackTrace();
                     Controller.redirect(request, response, Controller.ERROR_500);
                     return;
                 }          

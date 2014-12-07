@@ -5,8 +5,9 @@ body {
 }
 
 .myAlert {
-    width: 30%;
-    margin-left: 35%;
+    text-align: center;
+    width: 35%;
+    margin-left: 32%;
 }
 
 .form-signin {

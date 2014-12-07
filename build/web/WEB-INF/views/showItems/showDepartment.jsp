@@ -50,7 +50,7 @@
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                 <h2 class="sub-header">Oddělení ${param.dep} | doktoři</h2> <!-- TODO predelat at se v pripade zadnych parametru vypise pouze oddeleni | lekari a pokud tam neco bude tak jen NAYEVODDELENI | lekari, to same u sester -->
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table id="sortTable" class="table table-striped tablesorter">
                         <thead>
                             <tr>
                                 <th>Jméno</th>
@@ -288,86 +288,21 @@
                 </c:if>
             </div>
             <div class="col-sm-2 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-              <h2 class="sub-header">Oddělení ${param.dep} | sestry</h2>
-              <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Identifikační číslo</th>
-                            <th>Jméno</th>
-                            <th>Příjmení</th>
-                            <th>Název oddělení</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:choose>
-                            <c:when test="${empty param.dep}">
-                                <c:forEach var="nurseInfo" items="${nurse}" varStatus="status">
-                                    <tr>
-                                        <td class="col-sm-1 col-md-2">${nurse[status.index].id}</td>
-                                        <td>${nurse[status.index].username}</td>
-                                        <td>${nurse[status.index].surname}</td>
-                                        <td>${nurse[status.index].departmentName}</td>
-                                        <td class="col-sm-1 col-md-1">
-                                            <button type='submit' class='btn btn-sm btn-primary nurse-update'
-                                                    data-toggle="modal" data-target="#${status.index}-nurse-update">Změnit
-                                            </button>
-                                        </td>
-                                        <div class="modal fade bs-example-modal-sm" id="${status.index}-nurse-update" tabindex="-1" role="dialog"
-                                                aria-labelledby="modalDelete" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h4 class="modal-title">Úprava sestry</h4>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form class="form-horizontal" role="form" method="POST" action="<c:url value="/updateNurseWork"/>">
-                                                            <div class="form-group">
-                                                                <label for="inputId" class="control-label change-form-label">Id</label>
-                                                                <div class="col-sm-10 doc-form">
-                                                                    <input type="text" class="form-control change-form" value="${nurse[status.index].id}"
-                                                                            name="inputId" disabled="true"/>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="inputName" class="control-label change-form-label">Jméno</label>
-                                                                <div class="col-sm-10 doc-form">
-                                                                    <input type="text" class="form-control change-form" value="${nurse[status.index].username}"
-                                                                            name="inputName" disabled="true"/>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="inputSurname" class="control-label change-form-label">Příjmení</label>
-                                                                <div class="col-sm-10 doc-form">
-                                                                    <input type="text" class="form-control change-form" value="${nurse[status.index].surname}"
-                                                                            name="inputSurname" disabled="true"/>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="inputDepName" class="col-sm-2 control-label change-form-select-label">Oddělení</label>
-                                                                <select name="inputDepName" class="form-control doc-form select change-form-select">
-                                                                    <option disabled selected>Vyberte oddělení</option>
-                                                                    <c:forEach var="depName" items="${department}" varStatus="iterator">
-                                                                        <option>${department[iterator.index]}</option>
-                                                                    </c:forEach>
-                                                                </select>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <input type="hidden" value="${nurse[status.index].id}" name="defaultId"/>
-                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
-                                                                <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </tr>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <c:forEach var="nurseInfo" items="${nurse}" varStatus="status">
-                                    <c:if test="${param.dep == nurse[status.index].departmentName}">
+                <h2 class="sub-header">Oddělení ${param.dep} | sestry</h2>
+                <div class="table-responsive">
+                    <table id="sortTableSecond" class="table table-striped tablesorter">
+                        <thead>
+                            <tr>
+                                <th>Identifikační číslo</th>
+                                <th>Jméno</th>
+                                <th>Příjmení</th>
+                                <th>Název oddělení</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:choose>
+                                <c:when test="${empty param.dep}">
+                                    <c:forEach var="nurseInfo" items="${nurse}" varStatus="status">
                                         <tr>
                                             <td class="col-sm-1 col-md-2">${nurse[status.index].id}</td>
                                             <td>${nurse[status.index].username}</td>
@@ -428,13 +363,78 @@
                                                 </div>
                                             </div>
                                         </tr>
-                                    </c:if>    
-                                </c:forEach>
-                            </c:otherwise>        
-                        </c:choose>
-                    </tbody>
-                </table>
-              </div>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="nurseInfo" items="${nurse}" varStatus="status">
+                                        <c:if test="${param.dep == nurse[status.index].departmentName}">
+                                            <tr>
+                                                <td class="col-sm-1 col-md-2">${nurse[status.index].id}</td>
+                                                <td>${nurse[status.index].username}</td>
+                                                <td>${nurse[status.index].surname}</td>
+                                                <td>${nurse[status.index].departmentName}</td>
+                                                <td class="col-sm-1 col-md-1">
+                                                    <button type='submit' class='btn btn-sm btn-primary nurse-update'
+                                                            data-toggle="modal" data-target="#${status.index}-nurse-update">Změnit
+                                                    </button>
+                                                </td>
+                                                <div class="modal fade bs-example-modal-sm" id="${status.index}-nurse-update" tabindex="-1" role="dialog"
+                                                        aria-labelledby="modalDelete" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title">Úprava sestry</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-horizontal" role="form" method="POST" action="<c:url value="/updateNurseWork"/>">
+                                                                    <div class="form-group">
+                                                                        <label for="inputId" class="control-label change-form-label">Id</label>
+                                                                        <div class="col-sm-10 doc-form">
+                                                                            <input type="text" class="form-control change-form" value="${nurse[status.index].id}"
+                                                                                    name="inputId" disabled="true"/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="inputName" class="control-label change-form-label">Jméno</label>
+                                                                        <div class="col-sm-10 doc-form">
+                                                                            <input type="text" class="form-control change-form" value="${nurse[status.index].username}"
+                                                                                    name="inputName" disabled="true"/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="inputSurname" class="control-label change-form-label">Příjmení</label>
+                                                                        <div class="col-sm-10 doc-form">
+                                                                            <input type="text" class="form-control change-form" value="${nurse[status.index].surname}"
+                                                                                    name="inputSurname" disabled="true"/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="inputDepName" class="col-sm-2 control-label change-form-select-label">Oddělení</label>
+                                                                        <select name="inputDepName" class="form-control doc-form select change-form-select">
+                                                                            <option disabled selected>Vyberte oddělení</option>
+                                                                            <c:forEach var="depName" items="${department}" varStatus="iterator">
+                                                                                <option>${department[iterator.index]}</option>
+                                                                            </c:forEach>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" value="${nurse[status.index].id}" name="defaultId"/>
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Storno</button>
+                                                                        <input type="submit" value="Potvrdit" class="btn btn-primary" data-dissmiss="modal"/>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </tr>
+                                        </c:if>    
+                                    </c:forEach>
+                                </c:otherwise>        
+                            </c:choose>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

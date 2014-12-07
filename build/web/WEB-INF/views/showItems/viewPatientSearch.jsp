@@ -14,7 +14,7 @@
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-1">
             <h2 class="sub-header">Nalezení pacienti</h2>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table id="sortTable" class="table table-striped tablesorter">
                     <thead>
                         <tr>
                             <th>Jméno</th>

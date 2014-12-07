@@ -48,7 +48,11 @@
 }
 
 .doc-warn {
-    margin-left: 20%;
+    margin-left: 5%;
+}
+
+.jumbotron-shift-bot {
+    margin-top: 3%;
 }
 
 .mySuccess {

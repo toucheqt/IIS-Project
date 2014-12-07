@@ -56,7 +56,7 @@
                     </c:otherwise>
                 </c:choose>
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table id="sortTable" class="table table-striped tablesorter">
                         <thead>
                             <tr>
                                 <th>Id</th>
@@ -167,7 +167,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>     
+                                            </div>   
                                         </tr>
                                     </c:forEach>
                                 </c:when>

@@ -19,4 +19,10 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function() 
+    { 
+        $("#sortTable").tablesorter(); 
+        $("#sortTableSecond").tablesorter(); 
+    } 
+); 
 

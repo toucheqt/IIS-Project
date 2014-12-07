@@ -56,12 +56,12 @@
                     </c:otherwise>
                 </c:choose>
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table id="sortTable" class="table table-striped tablesorter">
                         <thead>
                             <tr>
                                 <th>Jméno</th>
                                 <th>Příjmení</th>
-                                <th>Rodné číslo</th>
+                                <th>Rodné č.</th>
                                 <th>Adresa</th>
                                 <th>Město</th>
                                 <th>E-mail</th>

@@ -10,6 +10,7 @@
 
 <m:Base title="Nemocnice - Pacienti">
     <m:UserBase/>
+    
     <div class="container-fluid">
         <div class="row"> <!-- TODO synchronizovat vsechny show na view -->
             <div class="col-sm-3 col-md-2 sidebar">
@@ -49,14 +50,14 @@
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                 <c:choose>
                     <c:when test="${empty param.dep}">
-                        <h2 class="sub-header">Vyšetření</h2>
+                        <h2 class="sub-header">Pacienti</h2>
                     </c:when>
                     <c:otherwise>
                         <h2 class="sub-header">${param.dep} | hospitalizace</h2>
                     </c:otherwise>
                 </c:choose>
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table id="sortTable" class="table table-striped tablesorter">
                         <thead>
                             <tr>
                                 <th>Jméno</th>
@@ -64,7 +65,6 @@
                                 <th>Rodné číslo</th>
                                 <th>Adresa</th>
                                 <th>Město</th>
-                                <th>Ošetřující lékář</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -77,7 +77,6 @@
                                             <td>${patient[status.index].birthNum}</td>
                                             <td>${patient[status.index].address}</td>
                                             <td>${patient[status.index].city}</td>
-                                            <td>${patient[status.index].doctorName} ${patient[status.index].doctorSurname}</td>
                                             <td class="col-sm-1 col-md-1">
                                                 <form method="GET" action="<c:url value="/patient"/>">
                                                     <input type="hidden" value="${patient[status.index].id}" name="patientId"/>

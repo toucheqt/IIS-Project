@@ -351,7 +351,7 @@ public class DocController extends HttpServlet {
             case ADD_EXAM_TO_PATIENT: // TODO zkontrolovat vsude JOINA a LEFT joiny
                 // TODO napsat hodnoty IDcek do selectu jako value a ne pico si to tahat z db
 
-                if (request.getParameter("description") == null) {
+                if (request.getParameter("description") == null || request.getParameter("description").isEmpty()) {
                     Controller.redirect(request, response, ERROR_PATIENT);
                     break;
                 }
