@@ -15,6 +15,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
         <title>${title}</title>
         <link rel='stylesheet' href='<c:url value="/bootstrap/css/bootstrap.css"/>' />
+        <link rel='stylesheet' href='<c:url value="/bootstrap/css/datepicker.css"/>' />
         <link rel='stylesheet' href='<c:url value="/css/signin.css"/>' />   
         <link rel='stylesheet' href='<c:url value="/css/style.css"/>' />
         <link rel="stylesheet" href="<c:url value="/css/dashboard.css"/>" />
@@ -32,4 +33,8 @@
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script type="text/javascript" src='<c:url value="/bootstrap/js/bootstrap.js"/>' ></script>
+        <script type="text/javascript" src='<c:url value="/bootstrap/js/jquery-1.9.1.min.js"/>' ></script>
+        <script type="text/javascript" src='<c:url value="/bootstrap/js/bootstrap-datepicker.js"/>' ></script>
+        <script type="text/javascript" src='<c:url value="/bootstrap/js/myDatepicker.js"/>' ></script>
+        <!-- TODO ten datepicker by mohl byt jen na ty jedny strance -->
 </html>

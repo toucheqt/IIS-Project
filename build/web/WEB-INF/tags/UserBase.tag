@@ -39,7 +39,7 @@
                         <li><a href='#' data-toggle="modal" data-target="#updateAbout">Změnit osobní údaje</a></li>
                     </ul>
                 </li>
-                <li class="active"><a href="<c:url value="/logout"/>">Logout</a></li>
+                <li class="active"><a href="<c:url value="/logout"/>">Odhlásit se</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

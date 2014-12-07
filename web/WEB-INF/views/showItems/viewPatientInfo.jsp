@@ -190,18 +190,18 @@
                                     <option>${drugs[status.index]}</option>
                                 </c:forEach>
                             </select>
-                        </div>
+			</div>
                         <div class="form-group">
                             <label for="inputStartUsage" class="control-label change-form-label">Užívat od</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka (YYYY-MM-DD)" 
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" id="drugStart" 
                                        name="inputStartUsage"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputStopUsage" class="control-label change-form-label">Užívat do</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka (YYYY-MM-DD)" 
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" id="drugEnd" 
                                        name="inputStopUsage"/>
                             </div>
                         </div>
@@ -241,13 +241,15 @@
                         <div class="form-group">
                             <label for="description" class="control-label exam-form-label">Popis</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" name="description"/>
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" 
+                                       name="description"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="examTime" class="control-label exam-form-label">Čas vyšetření</label>
+                            <label for="examTime" class="control-label exam-form-label">Datum vyšetření</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" name="examTime"/>
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" id="examDate" 
+                                       name="examTime"/>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -271,9 +273,10 @@
                 <div class="modal-body">
                     <form class="form-horizontal" role="form" method="POST" action="<c:url value="/addResult"/>">
                         <div class="form-group">
-                            <label for="resultDate" class="control-label exam-form-label">Doba vystavení</label>
+                            <label for="resultDate" class="control-label exam-form-label">Datum vystavení</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" name="resultDate"/>
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" id="resultDate" 
+                                       name="resultDate"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -316,15 +319,16 @@
                 <div class="modal-body">
                     <form class="form-horizontal" role="form" method="POST" action="<c:url value="/addHospitalization"/>">
                         <div class="form-group">
-                            <label for="enterDate" class="control-label exam-form-label">Čas nástupu</label>
+                            <label for="enterDate" class="control-label exam-form-label">Datum nástupu</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" name="enterDate"/>
+                                <input type="text" class="form-control change-form" placeholder="Povinná kolonka" id="hospEnter" 
+                                       name="enterDate"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="releaseDate" class="control-label exam-form-label">Propuštění</label>
+                            <label for="releaseDate" class="control-label exam-form-label">Datum propuštění</label>
                             <div class="col-sm-10 doc-form">
-                                <input type="text" class="form-control change-form" name="releaseDate"/>
+                                <input type="text" class="form-control change-form" id="hospRelease" name="releaseDate"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -332,7 +336,7 @@
                             <select name="depId" class="form-control select drug-select">
                                 <option disabled selected>Vyberte oddělení</option>
                                 <c:forEach var="examInfo" items="${department}" varStatus="status">
-                                    <option value="${status.index}">${department[status.index]}</option>
+                                    <option value="${status.index + 1}">${department[status.index]}</option>
                                 </c:forEach>
                             </select>
                         </div>
@@ -363,7 +367,8 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
+                        
 </m:Base>
     
 
