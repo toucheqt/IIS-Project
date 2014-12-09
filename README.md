@@ -8,11 +8,11 @@ Pro samotný vzhled aplikace byl ovšem použit framework Bootstrap, zejména pr
 
 Cílem bylo implementovat informační systém pro nemocnici.
 
-Výslednou aplikaci lze najít na adrese - http://iis-toucheqt.rhcloud.com/
+Výslednou aplikaci lze najít na adrese http://iis-toucheqt.rhcloud.com/
 Pro demonstraci jsou připraveny dva uživatelé, každý s různou rolí v systému. Role administrátora pro správu zaměstnanců.
-Login: admin
-Heslo: admin
+<br>Login: admin
+<br>Heslo: admin
 
 A následně role lékařů, pro správu pacientů.
-Login: user
-Heslo: user
+<br>Login: user
+<br>Heslo: user
