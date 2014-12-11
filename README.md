@@ -16,3 +16,5 @@ Pro demonstraci jsou připraveny dva uživatelé, každý s různou rolí v syst
 A následně role lékařů, pro správu pacientů.
 <br>Login: user
 <br>Heslo: user
+
+<strong>Momentálně nepoběží přihlašování uživatelů, protože server není napojen na databázi</strong>
