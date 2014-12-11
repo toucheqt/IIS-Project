@@ -17,4 +17,4 @@ A následně role lékařů, pro správu pacientů.
 <br>Login: user
 <br>Heslo: user
 
-<strong>Momentálně nepoběží přihlašování uživatelů, protože server není napojen na databázi</strong>
+<strong>Momentálně nepoběží přihlašování uživatelů, protože server není napojen na databázi.</strong>
